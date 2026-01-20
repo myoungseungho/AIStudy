@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>배치 정규화가 뭐야? - Section 4</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #9C27B0;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #9C27B0;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f3e5f5;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #f3e5f5;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #6a1b9a;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #f3e5f5;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #9C27B0; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 4</a>
+            <span>/</span>
+            Topic 10
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 10</div>
+            <h1>배치 정규화가 뭐야?</h1>
+            <p>Q. 데이터를 왜 정규화해?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 배치 정규화란?</h2>
+
+            <div class="chat">
+                <div class="q">배치 정규화(Batch Normalization, BN)가 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">각 층의 출력을 정규화하는 기법</span>이야.</p>
+                    <p>평균을 0, 분산을 1로 맞춰주는 거지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">수식:
+
+입력: x = [x₁, x₂, ..., xₙ] (배치)
+
+1. 평균 계산:
+   μ = (1/n) Σxᵢ
+
+2. 분산 계산:
+   σ² = (1/n) Σ(xᵢ - μ)²
+
+3. 정규화:
+   x̂ᵢ = (xᵢ - μ) / √(σ² + ε)
+   (ε는 0으로 나누기 방지용 작은 값)
+
+4. 스케일 & 시프트:
+   yᵢ = γx̂ᵢ + β
+   (γ와 β는 학습 가능한 파라미터)</code>
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>쉽게 말하면:</p>
+                    <p><span class="highlight">모든 데이터를 비슷한 범위로 맞춰주는 것</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 왜 필요해?</h2>
+
+            <div class="chat">
+                <div class="q">정규화를 왜 해야 돼?</div>
+                <div class="a">
+                    <p>문제 상황을 먼저 보여줄게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">문제: Internal Covariate Shift
+
+학습하면서 각 층의 출력 분포가 계속 바뀜:
+
+초기:
+층1 출력: [-1, 0, 1, 2]
+층2 출력: [-0.5, 0.2, 0.8]
+
+10번 학습 후:
+층1 출력: [-10, -5, 5, 15]  ← 범위가 바뀜!
+층2 출력: [-100, 50, 200]   ← 폭발!
+
+문제점:
+1. 다음 층이 계속 새로운 분포에 적응해야 함
+2. 학습 불안정
+3. 기울기 폭발/소실 위험
+
+
+비유:
+축구 시합인데 경기 중에 골대 크기가 계속 바뀜
+→ 선수들이 적응하기 어렵겠지?
+
+신경망도 마찬가지:
+입력 분포가 계속 바뀌면 학습이 어려움</code>
+        </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 배치 정규화의 효과</h2>
+
+            <div class="chat">
+                <div class="q">배치 정규화하면 뭐가 좋아?</div>
+                <div class="a">
+                    <p>엄청 많아!</p>
+                </div>
+            </div>
+
+            <div class="code-block">효과 1: 학습 속도 향상
+
+BN 없음:
+- epoch 100에 수렴
+
+BN 있음:
+- epoch 30에 수렴
+
+→ 3배 이상 빠름!
+
+
+효과 2: 높은 학습률 사용 가능
+
+BN 없음:
+- 학습률 0.01 사용
+- 더 높이면 발산
+
+BN 있음:
+- 학습률 0.1 사용 가능
+- 더 빠른 학습
+
+
+효과 3: 초기화에 덜 민감
+
+BN 없음:
+- 가중치 초기화 잘못하면 학습 실패
+- Xavier, He 초기화 필수
+
+BN 있음:
+- 초기화 대충해도 학습됨
+- 안정적
+
+
+효과 4: 정규화 효과 (과적합 방지)
+
+BN 자체가 약간의 노이즈 추가
+→ Dropout처럼 정규화 효과
+→ 과적합 감소
+
+
+효과 5: 기울기 소실/폭발 완화
+
+값의 범위가 일정하게 유지됨
+→ 기울기 흐름 안정적
+→ 깊은 네트워크 학습 가능</code>
+        </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 어디에 적용해?</h2>
+
+            <div class="code-block">적용 위치:
+
+일반적인 순서:
+선형 변환 → Batch Norm → 활성화 함수
+
+예시:
+x → Linear(x) → BN → ReLU → Linear → BN → ReLU → ...
+
+
+코드로 보면:
+
+import torch.nn as nn
+
+class Model(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(784, 256)
+        self.bn1 = nn.BatchNorm1d(256)  ← BN 추가
+        self.fc2 = nn.Linear(256, 128)
+        self.bn2 = nn.BatchNorm1d(128)  ← BN 추가
+        self.fc3 = nn.Linear(128, 10)
+        self.relu = nn.ReLU()
+
+    def forward(self, x):
+        x = self.fc1(x)
+        x = self.bn1(x)  ← 정규화
+        x = self.relu(x)
+
+        x = self.fc2(x)
+        x = self.bn2(x)  ← 정규화
+        x = self.relu(x)
+
+        x = self.fc3(x)
+        return x
+
+
+주의:
+- 마지막 출력층에는 BN 안 씀
+- 출력값을 정규화하면 의미가 달라질 수 있음</code>
+        </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 학습 vs 추론</h2>
+
+            <div class="chat">
+                <div class="q">배치 정규화는 학습할 때만 쓰는 거야?</div>
+                <div class="a">
+                    <p><span class="warning">학습과 추론에서 다르게 작동</span>해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">학습 시 (Training):
+
+배치 단위로 통계 계산:
+μ_batch = 현재 배치의 평균
+σ²_batch = 현재 배치의 분산
+
+정규화:
+x̂ = (x - μ_batch) / √(σ²_batch + ε)
+
+
+추론 시 (Inference):
+
+전체 데이터의 통계 사용:
+μ_global = 학습 중 계산한 이동 평균
+σ²_global = 학습 중 계산한 이동 분산
+
+정규화:
+x̂ = (x - μ_global) / √(σ²_global + ε)
+
+
+왜 다를까?
+
+추론 시:
+- 데이터가 1개만 올 수도 있음
+- 배치 평균/분산 계산 불가능
+- 학습 때 저장한 통계 사용
+
+
+코드:
+model.train()  # 학습 모드: 배치 통계 사용
+model.eval()   # 추론 모드: 글로벌 통계 사용</code>
+        </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 최신 트렌드</h2>
+
+            <div class="code-block">배치 정규화의 변형들:
+
+1. Layer Normalization
+   - 배치가 아닌 특징 차원으로 정규화
+   - Transformer에서 주로 사용
+   - 배치 크기에 독립적
+
+2. Instance Normalization
+   - 각 샘플마다 독립적으로 정규화
+   - 스타일 전이(Style Transfer)에 효과적
+
+3. Group Normalization
+   - 채널을 그룹으로 나눠서 정규화
+   - 작은 배치 크기에 효과적
+
+4. Weight Normalization
+   - 가중치를 정규화
+   - 간단하고 빠름
+
+
+트렌드:
+- CNN: Batch Norm이 여전히 주류
+- Transformer: Layer Norm 사용
+- GAN: Instance Norm 또는 No Norm
+- 작은 배치: Group Norm</code>
+        </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>배치 정규화</strong> - 각 층의 출력을 평균 0, 분산 1로 정규화</li>
+                <li><strong>Internal Covariate Shift 해결</strong> - 분포 변화 문제 완화</li>
+                <li><strong>학습 속도 향상</strong> - 더 빠르고 안정적인 학습</li>
+                <li><strong>정규화 효과</strong> - 과적합 방지, 기울기 안정화</li>
+                <li><strong>학습/추론 모드</strong> - 학습 시 배치 통계, 추론 시 글로벌 통계</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic09/">← 이전: 기울기 소실 문제는 뭐야?</a>
+            <a href="../topic11/">다음: 드롭아웃은 왜 해? →</a>
+        </div>
+    </div>
+</body>
+</html>

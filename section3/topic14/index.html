@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>의사결정나무는 어떻게 결정해? - Section 3</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #2196F3;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #2196F3;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e3f2fd;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #bbdefb;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #0d47a1;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #2196F3 0%, #42A5F5 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #bbdefb;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 3</a>
+            <span>/</span>
+            Topic 14
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 14</div>
+            <h1>의사결정나무는 어떻게 결정해?</h1>
+            <p>Q. 스무고개 게임이랑 비슷하다고?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 스무고개처럼 질문하기</h2>
+
+            <div class="chat">
+                <div class="q">의사결정나무(Decision Tree)가 뭐야? 나무랑 무슨 관계야?</div>
+                <div class="a">
+                    <p><span class="key-point">의사결정나무 = 질문을 반복해서 답을 찾는 알고리즘</span></p>
+                    <p>스무고개 게임 해봤지? 그거랑 똑같아.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 스무고개 게임
+
+친구가 동물 하나를 생각함
+
+나: "포유류야?"
+친구: "응"
+
+나: "크기가 고양이보다 커?"
+친구: "응"
+
+나: "육식동물이야?"
+친구: "아니"
+
+나: "코끼리?"
+친구: "맞아!"
+
+
+의사결정나무도 똑같아:
+
+이메일 분류
+
+Q1: "무료"라는 단어 있어?
+→ YES: Q2로
+→ NO: Q3으로
+
+Q2: "클릭" 단어 있어?
+→ YES: 스팸!
+→ NO: Q4로
+
+Q3: 링크가 5개 이상?
+→ YES: 스팸!
+→ NO: 정상!
+
+→ 질문 반복해서 최종 결론!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">나무 모양으로 질문이 가지치듯 펼쳐져서 "나무"라고 불러.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 나무 구조</h2>
+
+            <div class="chat">
+                <div class="q">나무가 어떻게 생겼는데?</div>
+                <div class="a">
+                    <p>위에서 아래로 자라는 거꾸로 된 나무야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">의사결정나무 구조:
+
+              [뿌리 노드]
+                  |
+          평수 > 30평?
+         /            \
+      YES              NO
+       |                |
+   [내부 노드]      [내부 노드]
+  강남구?            층수 > 5?
+   /   \              /    \
+ YES   NO          YES     NO
+  |     |           |       |
+[잎]  [잎]        [잎]    [잎]
+비싸  보통         보통    저렴
+
+
+용어:
+- 뿌리 노드 (Root): 첫 질문
+- 내부 노드 (Internal): 중간 질문
+- 잎 노드 (Leaf): 최종 답
+- 가지 (Branch): 질문 결과에 따른 경로
+
+
+실제 예측:
+32평, 강남, 3층 집?
+→ 평수 > 30? YES
+→ 강남구? YES
+→ 결과: 비싸!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">위에서 아래로 질문하면서 내려가다가 잎(답)에 도달</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 어떤 질문을 먼저 할까?</h2>
+
+            <div class="chat">
+                <div class="q">질문 순서는 어떻게 정해?</div>
+                <div class="a">
+                    <p><span class="key-point">"가장 잘 나누는" 질문을 먼저 해.</span></p>
+                    <p>이걸 <strong>정보 이득(Information Gain)</strong>이라고 해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">질문 선택 기준:
+
+데이터: 고양이 50마리, 개 50마리
+
+나쁜 질문:
+"꼬리가 있어?"
+→ YES: 고양이 50, 개 50 (전부)
+→ 전혀 안 나눠짐!
+
+
+좋은 질문:
+"귀가 뾰족해?"
+→ YES: 고양이 45, 개 5
+→ NO: 고양이 5, 개 45
+→ 잘 나눠짐!
+
+
+측정:
+순도(Purity) 계산:
+- 섞여있으면 불순함 (나쁨)
+- 한쪽만 있으면 순수함 (좋음)
+
+정보 이득 = 질문 전 불순도 - 질문 후 불순도
+
+→ 정보 이득이 큰 질문을 먼저!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">AI가 자동으로 "어떤 질문이 가장 효율적인지" 계산해.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 학습 과정</h2>
+
+            <div class="chat">
+                <div class="q">의사결정나무는 어떻게 만들어져?</div>
+                <div class="a">
+                    <p>재귀적으로 계속 나눠.</p>
+                </div>
+            </div>
+
+            <div class="code-block">의사결정나무 학습:
+
+Step 1: 전체 데이터
+스팸 100개, 정상 100개
+
+가장 좋은 질문 찾기:
+→ "무료 단어 있어?"가 최선
+
+Step 2: 데이터 분할
+YES 쪽: 스팸 80, 정상 20
+NO 쪽: 스팸 20, 정상 80
+
+Step 3: 각 가지에서 반복
+YES 쪽에서 다시 질문:
+→ "클릭 단어 있어?"
+  → YES: 스팸 70, 정상 5 (거의 순수!)
+  → NO: 스팸 10, 정상 15
+
+NO 쪽에서 다시 질문:
+→ "링크 5개 이상?"
+  → YES: 스팸 15, 정상 10
+  → NO: 스팸 5, 정상 70 (거의 순수!)
+
+Step 4: 중단 조건
+- 완전히 순수해지면 멈춤
+- 더 이상 질문할 게 없으면 멈춤
+- 데이터가 너무 적으면 멈춤
+- 최대 깊이 도달하면 멈춤</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">탐욕적(Greedy)으로 매번 최선의 질문을 선택해.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 장점과 단점</h2>
+
+            <div class="chat">
+                <div class="q">의사결정나무는 언제 좋고 언제 나빠?</div>
+                <div class="a">
+                    <p>명확한 장단점이 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">의사결정나무 장점:
+
+1. 해석하기 쉬움
+→ 사람이 봐도 이해됨
+→ "왜 이렇게 판단했어?" 설명 가능
+
+2. 특징 스케일링 불필요
+→ 큰 숫자, 작은 숫자 상관없음
+→ 순서만 중요
+
+3. 비선형 관계 포착
+→ 곡선도 계단식으로 표현
+→ 복잡한 패턴 학습 가능
+
+4. 빠름
+→ 학습도 빠름
+→ 예측도 빠름 (질문 몇 개만)
+
+
+의사결정나무 단점:
+
+1. 과적합 쉬움
+→ 나무가 너무 깊어지면
+→ 훈련 데이터만 외움
+
+2. 불안정함
+→ 데이터 조금만 바뀌어도
+→ 완전히 다른 나무 생성
+
+3. 최적 보장 안 됨
+→ 탐욕적 선택이라
+→ 전체적으로는 최선 아닐 수 있음
+
+4. 선형 관계 비효율
+→ 직선 하나면 되는데
+→ 계단 여러 개로 표현</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">해석 가능성이 최대 장점, 과적합이 최대 단점</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 과적합 방지와 확장</h2>
+
+            <div class="chat">
+                <div class="q">과적합은 어떻게 막아?</div>
+                <div class="a">
+                    <p>여러 방법이 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">과적합 방지:
+
+1. 최대 깊이 제한
+→ "최대 5단계까지만"
+→ 너무 깊어지는 거 방지
+
+2. 최소 샘플 수
+→ "노드에 최소 10개는 있어야 분할"
+→ 너무 세세하게 나누는 거 방지
+
+3. 가지치기 (Pruning)
+→ 일단 크게 만들고
+→ 불필요한 가지 잘라내기
+
+
+앙상블 (여러 나무 합치기):
+
+랜덤 포레스트 (Random Forest):
+→ 나무 100개 만들기
+→ 투표해서 최종 결정
+→ 과적합 줄고, 성능 향상!
+
+그래디언트 부스팅:
+→ 나무를 순차적으로 만들기
+→ 이전 나무의 실수 보완
+→ XGBoost, LightGBM 등
+
+→ 실전에서는 단일 나무보다
+→ 앙상블을 더 많이 써!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">한 그루보다 숲(Forest)이 강하다!</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>스무고개 방식</strong> - 질문 반복해서 답 찾기</li>
+                <li><strong>나무 구조</strong> - 뿌리→가지→잎 형태로 질문 전개</li>
+                <li><strong>정보 이득</strong> - 가장 잘 나누는 질문을 먼저</li>
+                <li><strong>재귀적 학습</strong> - 순수해질 때까지 계속 분할</li>
+                <li><strong>해석 가능</strong> - 사람이 이해하기 쉬움, 설명 가능 AI</li>
+                <li><strong>과적합 주의</strong> - 깊이 제한, 가지치기, 앙상블로 해결</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic13/">← 이전: 로지스틱 회귀는 왜 '회귀'야?</a>
+            <a href="../topic15/">다음: k-최근접 이웃은 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

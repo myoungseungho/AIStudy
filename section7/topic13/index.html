@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actor-Critic이 뭐야? - Section 7</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF5722;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF5722;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #ffebe9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #ffccbc;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #d84315;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #FF5722 0%, #FF7043 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #ffccbc; }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #FF5722; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 7</a>
+            <span>/</span>
+            Topic 13
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 13</div>
+            <h1>Actor-Critic이 뭐야?</h1>
+            <p>Q. 행동하는 애랑 평가하는 애를 나눈다고?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. Actor-Critic이란?</h2>
+
+            <div class="chat">
+                <div class="q">Actor-Critic이 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">Actor(행동자)와 Critic(평론가)을 분리해서 학습하는 방법</span>이야.</p>
+                    <p>가치 기반과 정책 기반의 <strong>장점을 결합</strong>한 거지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 요리사와 맛 평론가
+
+Actor (배우/행동자):
+→ 요리사
+→ 요리를 만듦 (행동 선택)
+→ "이번엔 소금을 더 넣어볼까?"
+
+Critic (평론가):
+→ 맛 평론가
+→ 요리를 평가함 (가치 평가)
+→ "이 요리는 7점입니다"
+
+학습:
+1. 요리사가 요리 만듦
+2. 평론가가 평가
+3. 요리사가 피드백으로 개선
+4. 평론가도 평가 실력 향상</div>
+
+            <div class="chat">
+                <div class="q">왜 둘로 나눠?</div>
+                <div class="a">
+                    <p><span class="highlight">각자의 강점을 살리기 위해</span>서야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. Actor와 Critic의 역할</h2>
+
+            <div class="chat">
+                <div class="q">각각 정확히 뭘 하는 거야?</div>
+                <div class="a">
+                    <p>명확하게 역할이 나뉘어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Actor (정책 네트워크):
+
+역할: 행동 선택
+입력: 상태 s
+출력: 행동 확률 π(a|s)
+
+예시:
+state = 게임 화면
+↓
+Actor
+↓
+[위: 20%, 아래: 50%, 좌: 15%, 우: 15%]
+
+→ 확률에 따라 샘플링
+→ "아래" 선택!</div>
+
+            <div class="code-block">Critic (가치 네트워크):
+
+역할: 행동 평가
+입력: 상태 s (또는 상태-행동 (s,a))
+출력: 가치 V(s) (또는 Q(s,a))
+
+예시:
+state = 게임 화면
+↓
+Critic
+↓
+V(s) = 15.3
+
+→ "이 상태의 가치는 15.3점"
+→ Actor에게 피드백 제공</div>
+
+            <div class="code-block">협력 과정:
+
+1. Actor가 행동 선택
+   state → Actor → action
+
+2. 환경이 반응
+   action → env → reward, next_state
+
+3. Critic이 평가
+   state → Critic → V(state)
+   next_state → Critic → V(next_state)
+
+4. TD 오차 계산
+   δ = reward + γ × V(next_state) - V(state)
+   "예상보다 좋았나? 나빴나?"
+
+5. 업데이트
+   Actor: δ가 양수면 이 행동 확률 증가
+   Critic: V(state)를 실제 결과에 맞게 조정</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. Advantage Actor-Critic (A2C)</h2>
+
+            <div class="chat">
+                <div class="q">대표적인 Actor-Critic 알고리즘은?</div>
+                <div class="a">
+                    <p><span class="highlight">A2C (Advantage Actor-Critic)</span>가 가장 기본이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">A2C 알고리즘:
+
+# 네트워크 2개
+Actor: π(a|s; θ)  # 정책
+Critic: V(s; w)    # 가치
+
+# 학습 루프
+while not done:
+    # 1. Actor로 행동 선택
+    action = Actor(state).sample()
+
+    # 2. 환경 상호작용
+    next_state, reward, done = env.step(action)
+
+    # 3. Advantage 계산
+    V_s = Critic(state)
+    V_s_next = Critic(next_state)
+    A = reward + γ × V_s_next - V_s
+
+    # 4. Actor 업데이트
+    loss_actor = -log π(action|state) × A
+    Actor.update(loss_actor)
+
+    # 5. Critic 업데이트
+    target = reward + γ × V_s_next
+    loss_critic = (target - V_s)²
+    Critic.update(loss_critic)
+
+    state = next_state</div>
+
+            <div class="chat">
+                <div class="q">Advantage가 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">A = "이 행동이 평균보다 얼마나 나은가?"</span></p>
+                    <p>양수면 평균보다 좋음 → 확률 증가</p>
+                    <p>음수면 평균보다 나쁨 → 확률 감소</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. A3C (Asynchronous A2C)</h2>
+
+            <div class="chat">
+                <div class="q">A3C는 뭐가 다른데?</div>
+                <div class="a">
+                    <p><span class="highlight">여러 에이전트를 병렬로 학습</span>시키는 거야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">A3C 구조:
+
+      Global Network (중앙)
+            ↑ ↓
+    ┌───────┼───────┐
+    ↓       ↓       ↓
+Worker 1  Worker 2  Worker 3
+(env 1)   (env 2)   (env 3)
+
+각 Worker:
+1. Global에서 파라미터 복사
+2. 자기 환경에서 플레이
+3. 그래디언트 계산
+4. Global에 전송
+5. 반복
+
+장점:
+→ 빠른 학습 (병렬화)
+→ 다양한 경험 (여러 환경)
+→ 안정적 (평균화 효과)</div>
+
+            <div class="code-block">A2C vs A3C:
+
+A2C (Synchronous):
+→ 하나의 에이전트
+→ 순차적 학습
+→ 느리지만 구현 간단
+
+A3C (Asynchronous):
+→ 여러 에이전트 병렬
+→ 비동기적 업데이트
+→ 빠르지만 복잡
+
+최근 트렌드:
+→ A2C + vectorized env
+→ 동기적이지만 빠름
+→ 더 안정적</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. Actor-Critic의 장단점</h2>
+
+            <div class="chat">
+                <div class="q">Actor-Critic이 왜 좋아?</div>
+                <div class="a">
+                    <p>두 방법의 장점을 결합했거든.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>방법</th>
+                    <th>장점</th>
+                    <th>단점</th>
+                </tr>
+                <tr>
+                    <td><strong>Value-based<br/>(DQN)</strong></td>
+                    <td>• 샘플 효율 높음<br/>• 안정적</td>
+                    <td>• 연속 행동 불가<br/>• 결정적 정책만</td>
+                </tr>
+                <tr>
+                    <td><strong>Policy Gradient<br/>(REINFORCE)</strong></td>
+                    <td>• 연속 행동 가능<br/>• 확률적 정책</td>
+                    <td>• 분산 큼<br/>• 불안정</td>
+                </tr>
+                <tr>
+                    <td><strong>Actor-Critic<br/>(A2C/A3C)</strong></td>
+                    <td>• 연속 행동 가능<br/>• 분산 감소<br/>• 더 안정적</td>
+                    <td>• 두 네트워크 필요<br/>• 조율 필요</td>
+                </tr>
+            </table>
+
+            <div class="code-block">Actor-Critic의 효과:
+
+순수 Policy Gradient:
+에피소드 1: +100
+에피소드 2: -50
+에피소드 3: +150
+→ 분산이 커서 학습 불안정
+
+Actor-Critic:
+매 스텝마다:
+A = +5 (좋음)
+A = -2 (나쁨)
+A = +10 (매우 좋음)
+→ 즉각적 피드백
+→ 분산 감소
+→ 안정적 학습</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 실전 활용</h2>
+
+            <div class="chat">
+                <div class="q">Actor-Critic은 어디에 써?</div>
+                <div class="a">
+                    <p>연속 제어, 로봇, 게임 AI 등 다양한 곳에 쓰여.</p>
+                </div>
+            </div>
+
+            <div class="code-block">활용 사례:
+
+1. 로봇 제어
+   → PPO (Actor-Critic 계열)
+   → 관절 제어, 보행 학습
+   → Boston Dynamics 로봇
+
+2. 게임 AI
+   → A3C로 아타리 게임
+   → IMPALA (대규모 병렬)
+   → 실시간 전략 게임
+
+3. 자율주행
+   → SAC (Soft Actor-Critic)
+   → 연속 제어 (핸들, 가속)
+   → 시뮬레이터 학습
+
+4. 추천 시스템
+   → 사용자 행동 예측
+   → 장기적 engagement 최적화</div>
+
+            <div class="code-block">최신 발전:
+
+SAC (Soft Actor-Critic):
+→ 최대 엔트로피 강화학습
+→ 탐험을 자동으로 조절
+→ 로봇 제어에 최적
+
+TD3 (Twin Delayed DDPG):
+→ Q 네트워크 2개 사용
+→ 과대평가 방지
+→ 연속 제어 강력
+
+PPO (Proximal Policy Optimization):
+→ Actor-Critic 기반
+→ 가장 안정적
+→ 현재 업계 표준</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">Actor-Critic은 현대 강화학습의 핵심</span>이야.</p>
+                    <p><strong>거의 모든 최신 알고리즘이 Actor-Critic 기반</strong>이지.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>Actor-Critic</strong> - 행동자(Actor)와 평론가(Critic) 분리</li>
+                <li><strong>Actor</strong> - 정책 학습, 행동 선택</li>
+                <li><strong>Critic</strong> - 가치 평가, 피드백 제공</li>
+                <li><strong>Advantage</strong> - 평균 대비 행동의 좋음을 측정</li>
+                <li><strong>A2C/A3C</strong> - 대표적 알고리즘, 병렬 학습 가능</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic12/">← 이전: 정책 경사법이 뭐야?</a>
+            <a href="../topic14/">다음: OpenAI Five는 어떻게 학습했어? →</a>
+        </div>
+    </div>
+</body>
+</html>

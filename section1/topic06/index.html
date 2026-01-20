@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>왜 요즘 갑자기 AI가 난리야? - Section 1</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #4CAF50;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e8f5e9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #c8e6c9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #2e7d32;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #c8e6c9; }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #4CAF50; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 1</a>
+            <span>/</span>
+            Topic 06
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 06</div>
+            <h1>왜 요즘 갑자기 AI가 난리야?</h1>
+            <p>Q. AI는 1950년대부터 있었다는데?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. AI는 오래됐어</h2>
+
+            <div class="chat">
+                <div class="q">AI가 갑자기 나온 거 아니야? 요즘 갑자기 난리인데?</div>
+                <div class="a">
+                    <p><span class="warning">착각이야!</span></p>
+                    <p><span class="highlight">AI는 1950년대부터 있었어.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">AI 역사 타임라인:
+
+1950년 - 앨런 튜링 "기계가 생각할 수 있는가?"
+1956년 - "인공지능(AI)" 용어 탄생
+1997년 - IBM 딥블루, 체스 세계 챔피언 이김
+2011년 - IBM 왓슨, 퀴즈쇼 Jeopardy 우승
+2016년 - 알파고, 이세돌 이김
+2022년 - ChatGPT 공개 ← 대중이 주목
+
+→ AI는 70년 전부터 있었어.
+</div>
+
+            <div class="chat">
+                <div class="q">그럼 왜 요즘 갑자기 난리야?</div>
+                <div class="a">
+                    <p><strong>이유 3가지:</strong></p>
+                    <p>1. 데이터 폭발</p>
+                    <p>2. 컴퓨팅 파워 증가</p>
+                    <p>3. 알고리즘 혁신</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 이유 1 - 데이터 폭발</h2>
+
+            <div class="chat">
+                <div class="q">데이터가 왜 중요해?</div>
+                <div class="a">
+                    <p><span class="key-point">AI는 데이터로 배워. 데이터가 많을수록 똑똑해져.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">데이터 양의 변화:
+
+2000년: 전 세계 데이터 = 수 테라바이트
+→ 인터넷 초기, 데이터 적음
+
+2010년: 수 엑사바이트
+→ 소셜미디어 폭발 (페이스북, 유튜브)
+
+2020년: 수십 제타바이트
+→ 사진, 동영상, 텍스트 폭발
+
+2024년: 하루에 2.5 엑사바이트 생성
+→ ChatGPT 같은 AI 학습 가능
+
+
+1 엑사바이트 = 1,000,000 테라바이트
+1 제타바이트 = 1,000 엑사바이트
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>왜 데이터가 많아졌어?</strong></p>
+                    <p>• 스마트폰 보급 (사진, 동영상 폭발)</p>
+                    <p>• 소셜미디어 (인스타, 유튜브, 트위터)</p>
+                    <p>• IoT 센서 (스마트워치, 스마트홈)</p>
+                    <p>• 클라우드 (데이터 저장 비용 ↓)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 이유 2 - 컴퓨팅 파워</h2>
+
+            <div class="chat">
+                <div class="q">컴퓨터는 원래 빨랐잖아?</div>
+                <div class="a">
+                    <p><span class="highlight">특히 GPU의 발전이 AI를 가능하게 했어.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">CPU vs GPU:
+
+CPU (일반 프로세서)
+→ 복잡한 계산 하나를 빠르게
+→ 순차 처리
+
+GPU (그래픽 카드)
+→ 단순한 계산을 엄청 많이 동시에
+→ 병렬 처리
+
+AI 학습은?
+→ 간단한 계산(곱셈, 덧셈)을 수천억 번
+→ GPU가 딱 맞음!
+
+
+2010년 이전: CPU로 학습 = 수개월 걸림
+2012년 이후: GPU로 학습 = 수일~수주
+2020년 이후: 특화 칩(TPU) = 수시간
+
+→ 계산 속도가 1000배 이상 빨라짐
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>중요한 전환점:</strong></p>
+                    <p>2012년 - AlexNet (GPU로 이미지 인식 혁신)</p>
+                    <p>이때부터 모두가 GPU 사용하기 시작</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 이유 3 - 알고리즘 혁신</h2>
+
+            <div class="chat">
+                <div class="q">알고리즘도 발전했어?</div>
+                <div class="a">
+                    <p><span class="highlight">2017년 Transformer 등장 = 게임 체인저</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">알고리즘 발전사:
+
+1980년대: 역전파 (Backpropagation)
+→ 신경망 학습 가능
+
+2012년: CNN (이미지 인식 혁신)
+→ AlexNet, ResNet
+
+2014년: RNN, LSTM (순차 데이터)
+→ 음성, 텍스트 처리
+
+2017년: Transformer 🔥
+→ "Attention is All You Need" 논문
+→ GPT, BERT, ChatGPT의 기반
+
+2020년~: 대규모 언어 모델 (LLM)
+→ GPT-3, GPT-4
+→ 파라미터 수백억~수천억 개
+</div>
+
+            <div class="chat">
+                <div class="q">Transformer가 뭐가 그렇게 대단해?</div>
+                <div class="a">
+                    <p><strong>핵심: "Attention" 메커니즘</strong></p>
+                    <p>• 문장 전체를 한 번에 볼 수 있음 (병렬 처리)</p>
+                    <p>• 중요한 부분에 집중 (Attention)</p>
+                    <p>• 긴 문맥도 이해 가능</p>
+                    <p>→ ChatGPT, DALL-E, Midjourney 전부 이 기반</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 세 가지가 동시에 만났어</h2>
+
+            <div class="chat">
+                <div class="q">그래서 뭐가 바뀐 건데?</div>
+                <div class="a">
+                    <p><span class="key-point">2022년 ChatGPT = 세 가지가 완벽하게 만난 순간</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">왜 ChatGPT가 폭발했나?
+
+1. 데이터
+   → 인터넷 전체 텍스트 학습
+   → 수조 개의 단어
+
+2. 컴퓨팅
+   → 수천 개의 GPU로 학습
+   → 비용: 수백억 원
+
+3. 알고리즘
+   → Transformer 기반 GPT
+   → 1750억 개 파라미터 (GPT-3)
+
+결과:
+→ 사람처럼 대화 가능
+→ 글쓰기, 번역, 코딩 전부 가능
+→ 누구나 쉽게 사용 가능
+
+→ 대중이 "오, AI가 이 정도였어?" 깨달음
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. AI의 겨울을 넘어서</h2>
+
+            <div class="chat">
+                <div class="q">그럼 이전에는 왜 안 됐어?</div>
+                <div class="a">
+                    <p>AI에는 <span class="warning">"AI의 겨울"</span>이라는 시기가 있었어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">AI의 역사 = 기대와 실망의 반복
+
+1차 겨울 (1974~1980)
+→ 기대: "10년 안에 사람 수준 AI!"
+→ 현실: 컴퓨팅 파워 부족, 데이터 부족
+→ 결과: 투자 중단
+
+2차 겨울 (1987~1993)
+→ 기대: "전문가 시스템으로 모든 문제 해결!"
+→ 현실: 유지보수 어려움, 확장성 없음
+→ 결과: 투자 중단
+
+2010년대~
+→ 딥러닝 혁명
+→ AlexNet (2012), AlphaGo (2016)
+→ ChatGPT (2022)
+
+→ 이번엔 진짜야. 데이터, 컴퓨팅, 알고리즘 전부 준비됨
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>이번에는 다른 이유:</strong></p>
+                    <p>• 실제로 작동하는 제품이 나옴 (ChatGPT, Midjourney)</p>
+                    <p>• 누구나 사용 가능 (웹사이트 접속만 하면 됨)</p>
+                    <p>• 실용적 (업무, 창작, 학습에 바로 활용)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>AI는 오래됐다</strong> - 1950년대부터 연구, 70년 역사</li>
+                <li><strong>데이터 폭발</strong> - 인터넷, SNS로 학습 데이터 폭발적 증가</li>
+                <li><strong>GPU 발전</strong> - 계산 속도 1000배 증가, 학습 시간 단축</li>
+                <li><strong>Transformer</strong> - 2017년 알고리즘 혁신, ChatGPT의 기반</li>
+                <li><strong>세 가지 동시 충족</strong> - 2022년 ChatGPT에서 모든 조건 만남</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic05/">← 이전: AI는 프로그래밍이랑 뭐가 다를까?</a>
+            <a href="../topic07/">다음: AI는 어떻게 '학습'해? →</a>
+        </div>
+    </div>
+</body>
+</html>

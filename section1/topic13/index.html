@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학습과 추론이 뭐야? - Section 1</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fafafa; color: #333; line-height: 1.9; }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number { display: inline-block; background: #4CAF50; color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-bottom: 16px; }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation { background: white; border-radius: 16px; padding: 32px; margin: 32px 0; border: 1px solid #e0e0e0; }
+        .conversation h2 { font-size: 1.3rem; color: #4CAF50; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid #e8f5e9; }
+        .chat { margin-bottom: 20px; }
+        .q { background: #fff3e0; border-left: 4px solid #ff9800; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; font-weight: 500; }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight { background: #e3f2fd; padding: 2px 8px; border-radius: 4px; font-weight: 600; color: #1565c0; }
+        .key-point { background: #c8e6c9; padding: 2px 8px; border-radius: 4px; font-weight: 600; color: #2e7d32; }
+        .warning { background: #ffcdd2; padding: 2px 8px; border-radius: 4px; font-weight: 600; color: #c62828; }
+        .code-block { background: #263238; border-radius: 8px; padding: 16px 20px; margin: 16px 0; font-family: 'Consolas', monospace; font-size: 0.9rem; color: #eceff1; overflow-x: auto; line-height: 1.6; white-space: pre-wrap; }
+        .compare-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+        .compare-table th, .compare-table td { padding: 12px; border: 1px solid #e0e0e0; text-align: left; }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box { background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%); border-radius: 16px; padding: 32px; color: white; margin: 32px 0; }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #c8e6c9; }
+        .nav-links { display: flex; justify-content: space-between; margin-top: 60px; padding-top: 24px; border-top: 1px solid #e0e0e0; }
+        .nav-links a { color: #4CAF50; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 1</a>
+            <span>/</span>
+            Topic 13
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 13</div>
+            <h1>학습과 추론이 뭐야?</h1>
+            <p>Q. AI 만드는 것과 쓰는 게 다른 거야?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 배우기 vs 쓰기</h2>
+
+            <div class="chat">
+                <div class="q">학습과 추론이 뭔데? 같은 거 아니야?</div>
+                <div class="a">
+                    <p><span class="key-point">완전히 다른 단계야.</span></p>
+                    <p>학습 = 공부하기, 추론 = 시험 보기</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 학생
+
+학습 (Training):
+→ 수학 문제집 풀기
+→ 공식 외우기
+→ 패턴 파악하기
+→ 시간: 수개월~수년
+
+추론 (Inference):
+→ 실전 시험 보기
+→ 배운 걸로 문제 풀기
+→ 새로운 문제에 적용
+→ 시간: 수분
+
+
+AI도 똑같아:
+
+학습:
+→ 고양이 사진 10만 장 보기
+→ 가중치 조정하기
+→ 패턴 찾기
+→ 시간: GPU로 수일~수주
+
+추론:
+→ 새 사진 보고 "고양이!" 판단
+→ 학습한 가중치 사용
+→ 빠르게 결과 출력
+→ 시간: 수 밀리초
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 자세한 차이</h2>
+
+            <div class="chat">
+                <div class="q">그럼 구체적으로 뭐가 달라?</div>
+                <div class="a">
+                    <p>여러 면에서 달라:</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th></th>
+                    <th>학습 (Training)</th>
+                    <th>추론 (Inference)</th>
+                </tr>
+                <tr>
+                    <td><strong>목적</strong></td>
+                    <td>모델 만들기</td>
+                    <td>모델 사용하기</td>
+                </tr>
+                <tr>
+                    <td><strong>데이터</strong></td>
+                    <td>수만~수억 개</td>
+                    <td>1개</td>
+                </tr>
+                <tr>
+                    <td><strong>시간</strong></td>
+                    <td>수시간~수개월</td>
+                    <td>수 밀리초</td>
+                </tr>
+                <tr>
+                    <td><strong>비용</strong></td>
+                    <td>매우 비쌈 (수억~수백억)</td>
+                    <td>저렴</td>
+                </tr>
+                <tr>
+                    <td><strong>하드웨어</strong></td>
+                    <td>수천 개 GPU 필요</td>
+                    <td>CPU도 가능</td>
+                </tr>
+                <tr>
+                    <td><strong>누가?</strong></td>
+                    <td>AI 회사 (OpenAI, Google)</td>
+                    <td>일반 사용자</td>
+                </tr>
+                <tr>
+                    <td><strong>변화</strong></td>
+                    <td>가중치 계속 변함</td>
+                    <td>가중치 고정</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 왜 분리해?</h2>
+
+            <div class="chat">
+                <div class="q">왜 구분하는 거야? 계속 학습하면 안 돼?</div>
+                <div class="a">
+                    <p><strong>이유 1: 비용</strong></p>
+                </div>
+            </div>
+
+            <div class="code-block">비용 차이:
+
+GPT-3 학습 (2020):
+→ GPU 10,000개 사용
+→ 355 GPU-년
+→ 비용: 약 460만 달러 (약 60억 원)
+→ 한 번만 함
+
+ChatGPT 사용 (추론):
+→ 질문 1개당 약 0.01달러
+→ 일반 서버로 가능
+→ 계속 반복
+
+
+→ 학습은 비싸서 한 번만
+→ 추론은 싸서 계속 사용
+</code>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>이유 2: 안정성</strong></p>
+                    <p>계속 학습하면 성능이 오히려 나빠질 수 있어.</p>
+                    <p>→ 학습 = 검증된 환경에서</p>
+                    <p>→ 추론 = 고정된 모델로 안정적으로</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 실시간 학습은 안 돼?</h2>
+
+            <div class="chat">
+                <div class="q">ChatGPT가 내 대화에서 배우지 않는 거야?</div>
+                <div class="a">
+                    <p><span class="warning">맞아, 실시간으로는 안 배워.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">ChatGPT 사용 시:
+
+너: "내 이름은 철수야"
+GPT: "안녕하세요 철수님!"
+
+[5분 후]
+너: "내 이름 뭐야?"
+GPT: "죄송하지만 대화 기록이 없어서..."
+
+→ 배우지 않음!
+
+
+실제 작동:
+
+대화 중:
+→ 현재 대화만 임시 기억 (메모리)
+→ 가중치는 변하지 않음
+
+대화 후:
+→ 메모리 삭제
+→ 다음 사용자는 깨끗한 상태
+
+
+나중에:
+→ 대화 로그 수집
+→ 다음 버전 학습 시 활용
+→ GPT-4 → GPT-5 업그레이드 때
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. Fine-tuning</h2>
+
+            <div class="chat">
+                <div class="q">그럼 내 데이터로 AI를 만들 수는 없어?</div>
+                <div class="a">
+                    <p>있어! <span class="highlight">Fine-tuning (미세 조정)</span>이라고 해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Fine-tuning 개념:
+
+기본 학습 (Pre-training):
+→ OpenAI가 인터넷 전체 학습
+→ GPT-3 완성
+→ 범용 능력
+
+Fine-tuning:
+→ 네가 특정 데이터 추가 학습
+→ "의료 챗봇"으로 특화
+→ 의료 데이터 1만 개만 추가
+
+
+비유:
+의대생이 의사 되는 과정:
+
+1. 기본 교육 (Pre-training)
+   → 초중고 12년 공부
+   → 범용 지식
+
+2. 전문 교육 (Fine-tuning)
+   → 의대 6년
+   → 의료 특화
+
+
+→ 처음부터 학습하는 것보다 훨씬 빠르고 싸
+</code>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>장점:</strong></p>
+                    <p>• 데이터 적게 필요 (1000~10000개)</p>
+                    <p>• 비용 저렴 (수백만~수천만 원)</p>
+                    <p>• 시간 단축 (며칠)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 온디바이스 AI</h2>
+
+            <div class="chat">
+                <div class="q">스마트폰 AI는 어떻게 작동해?</div>
+                <div class="a">
+                    <p><span class="key-point">학습은 클라우드, 추론은 기기에서</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">온디바이스 AI:
+
+학습:
+→ Google/Apple 서버에서
+→ 수백만 장 사진으로 학습
+→ 모델 완성
+
+배포:
+→ 학습된 모델을 스마트폰에 다운로드
+→ 파일 크기: 수 MB~수백 MB
+
+추론 (스마트폰에서):
+→ 카메라로 사진 찍기
+→ 모델이 "고양이!" 판단
+→ 서버 통신 불필요
+→ 빠르고 프라이버시 보호
+
+
+예시:
+- 아이폰 얼굴 인식
+- 구글 렌즈
+- 삼성 빅스비 비전
+
+→ 학습은 회사가, 추론은 기기에서
+</code>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>학습</strong> - 데이터로 모델 만들기, 비싸고 오래 걸림</li>
+                <li><strong>추론</strong> - 만든 모델 사용하기, 빠르고 저렴</li>
+                <li><strong>분리 이유</strong> - 비용, 안정성, 효율성</li>
+                <li><strong>실시간 학습 안 함</strong> - ChatGPT는 대화에서 안 배움</li>
+                <li><strong>Fine-tuning</strong> - 기존 모델을 내 데이터로 특화</li>
+                <li><strong>온디바이스</strong> - 학습은 서버, 추론은 기기</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic12/">← 이전: AI도 실수해?</a>
+            <a href="../topic14/">다음: 모델이 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

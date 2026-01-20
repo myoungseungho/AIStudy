@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학습률은 어떻게 정해? - Section 4</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #9C27B0;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #9C27B0;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f3e5f5;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #f3e5f5;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #6a1b9a;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #f3e5f5;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #9C27B0; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 4</a>
+            <span>/</span>
+            Topic 12
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 12</div>
+            <h1>학습률은 어떻게 정해?</h1>
+            <p>Q. 너무 크면? 너무 작으면?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 학습률이 뭐야?</h2>
+
+            <div class="chat">
+                <div class="q">학습률(Learning Rate)이 정확히 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">가중치를 얼마나 크게 업데이트할지 결정하는 값</span>이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">가중치 업데이트 공식:
+
+w_new = w_old - 학습률 × 기울기
+
+예:
+w_old = 0.5
+기울기 = 0.2
+
+학습률 = 0.01:
+w_new = 0.5 - 0.01×0.2 = 0.498 (작게 변함)
+
+학습률 = 0.1:
+w_new = 0.5 - 0.1×0.2 = 0.48 (적당히 변함)
+
+학습률 = 1.0:
+w_new = 0.5 - 1.0×0.2 = 0.3 (크게 변함)
+
+
+비유:
+산을 내려가는데:
+- 학습률 작음 = 조금씩 조심스럽게
+- 학습률 큼 = 큰 보폭으로 빠르게</code>
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 너무 크면?</h2>
+
+            <div class="chat">
+                <div class="q">학습률이 너무 크면 뭐가 문제야?</div>
+                <div class="a">
+                    <p><span class="warning">발산(divergence)해버려.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">학습률이 너무 큰 경우:
+
+손실 함수 그래프:
+      ↑
+    3 |    ●
+    2 |  ●   ●
+    1 | ●  ○  ●  ← 최적점(○)
+    0 |__________→
+         여기
+
+학습률 너무 큼:
+시작: ●
+1단계: 반대편으로 점프 →    ●
+2단계: 다시 반대편으로 →  ●
+3단계: 더 멀리... →      ●
+→ 왔다갔다하다가 발산!
+
+
+실제 현상:
+epoch 1: loss = 2.5
+epoch 2: loss = 3.8
+epoch 3: loss = 8.2
+epoch 4: loss = 23.5
+epoch 5: loss = inf
+epoch 6: loss = NaN ← 폭발!
+
+
+증상:
+- 손실이 증가
+- NaN 에러 발생
+- 가중치가 무한대
+- 학습 실패</code>
+        </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 너무 작으면?</h2>
+
+            <div class="chat">
+                <div class="q">그럼 작게 하면 되는 거 아니야?</div>
+                <div class="a">
+                    <p><span class="warning">너무 작아도 문제</span>야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">학습률이 너무 작은 경우:
+
+손실 함수 그래프:
+      ↑
+    3 |  ●
+    2 |   ●
+    1 |    ● ← 여기서 멈춤 (지역 최솟값)
+    0 |_____○____→
+           진짜 최적점
+
+
+학습률 너무 작음:
+시작: ●
+100단계 후: ●→ (거의 안 움직임)
+1000단계 후: ●→→ (조금 움직임)
+10000단계 후: ●→→→ (여전히 멀음)
+
+
+실제 현상:
+epoch 100: loss = 2.45
+epoch 200: loss = 2.43
+epoch 500: loss = 2.41
+epoch 1000: loss = 2.40
+→ 너무 느림!
+
+
+문제점:
+1. 학습 속도 매우 느림
+2. 지역 최솟값에 갇힘
+3. 시간 낭비
+4. 실전에서 사용 불가능</code>
+        </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 적절한 학습률 찾기</h2>
+
+            <div class="chat">
+                <div class="q">그럼 어떻게 적절한 학습률을 찾아?</div>
+                <div class="a">
+                    <p>여러 방법이 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">방법 1: 경험적 가이드
+
+일반적인 범위:
+- SGD: 0.01 ~ 0.1
+- Adam: 0.001 ~ 0.0001
+- RMSprop: 0.001 ~ 0.0001
+
+시작점:
+1. Adam 쓴다면: 0.001부터
+2. SGD 쓴다면: 0.01부터
+3. 결과 보고 조정
+
+
+방법 2: Learning Rate Finder
+
+1. 아주 작은 학습률로 시작
+2. 매 배치마다 학습률 증가
+3. 손실 그래프 그리기
+4. 손실이 가장 빠르게 감소하는 구간 선택
+
+코드:
+lrs = []
+losses = []
+lr = 1e-7
+for batch in data:
+    loss = train(batch, lr)
+    lrs.append(lr)
+    losses.append(loss)
+    lr *= 1.1  # 10%씩 증가
+
+# 그래프로 최적 lr 찾기
+plt.plot(lrs, losses)
+→ 기울기가 가장 가파른 곳 선택
+
+
+방법 3: Grid Search
+
+여러 값 시도:
+lrs = [0.1, 0.01, 0.001, 0.0001]
+for lr in lrs:
+    model = train(lr)
+    print(f"LR {lr}: Accuracy {accuracy}")
+
+→ 가장 좋은 거 선택</code>
+        </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 학습률 스케줄링</h2>
+
+            <div class="chat">
+                <div class="q">학습률을 중간에 바꿀 수는 없어?</div>
+                <div class="a">
+                    <p><span class="highlight">바꾸는 게 오히려 좋아!</span></p>
+                    <p>이걸 학습률 스케줄링(Learning Rate Scheduling)이라고 해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">주요 스케줄링 기법:
+
+1. Step Decay
+   일정 epoch마다 감소
+   epoch 0-30: lr = 0.1
+   epoch 31-60: lr = 0.01
+   epoch 61-90: lr = 0.001
+
+2. Exponential Decay
+   지수적으로 감소
+   lr = lr_0 × 0.95^epoch
+
+3. Cosine Annealing
+   코사인 곡선으로 감소
+   부드럽게 줄어듦
+
+4. Reduce on Plateau
+   성능 개선 멈추면 감소
+   val_loss가 5 epoch 동안 안 줄면 lr/10
+
+5. Warm-up + Decay
+   처음엔 천천히 증가 → 이후 감소
+   epoch 0-10: 0.0001 → 0.001 (증가)
+   epoch 10+: 0.001 → 0.0001 (감소)
+
+
+왜 효과적?
+- 초기: 큰 학습률로 빠르게 학습
+- 후기: 작은 학습률로 정밀하게 미세조정
+→ 빠르고 정확함!
+
+
+코드:
+from torch.optim.lr_scheduler import StepLR
+
+optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
+scheduler = StepLR(optimizer, step_size=30, gamma=0.1)
+
+for epoch in range(100):
+    train(...)
+    scheduler.step()  # 학습률 업데이트</code>
+        </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 실전 팁</h2>
+
+            <div class="code-block">실전 가이드:
+
+1. 옵티마이저별 추천 학습률:
+   SGD: 0.01 (momentum 있으면 0.1)
+   Adam: 0.001 (가장 무난)
+   AdamW: 0.0001
+   RMSprop: 0.001
+
+2. 배치 크기와의 관계:
+   배치 크기 큼 → 학습률 크게
+   배치 크기 작음 → 학습률 작게
+
+   공식: lr = base_lr × (batch_size / 256)
+
+3. 문제별 가이드:
+   이미지 분류: 0.1 (SGD) or 0.001 (Adam)
+   자연어 처리: 0.0001 ~ 0.00001
+   강화학습: 0.0001 ~ 0.00001
+
+4. 디버깅:
+   손실 NaN → 학습률 너무 큼, 1/10로
+   손실 안 줄어 → 학습률 너무 작음, 10배로
+   진동 심함 → 학습률 줄이기
+
+5. 전이 학습:
+   사전학습 층: lr × 0.1
+   새 층: lr × 1.0
+   → 다른 층에 다른 학습률 적용</code>
+        </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>학습률 = 업데이트 크기</strong> - 가중치를 얼마나 바꿀지 결정</li>
+                <li><strong>너무 크면 발산</strong> - NaN 에러, 학습 실패</li>
+                <li><strong>너무 작으면 느림</strong> - 지역 최솟값, 시간 낭비</li>
+                <li><strong>적절한 값 찾기</strong> - LR Finder, Grid Search 활용</li>
+                <li><strong>스케줄링 활용</strong> - 처음엔 크게, 나중엔 작게</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic11/">← 이전: 드롭아웃은 왜 해?</a>
+            <a href="../topic13/">다음: 옵티마이저가 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

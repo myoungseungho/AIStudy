@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DQN은 뭐가 다를까? - Section 7</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF5722;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF5722;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #ffebe9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #ffccbc;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #d84315;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #FF5722 0%, #FF7043 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #ffccbc; }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #FF5722; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 7</a>
+            <span>/</span>
+            Topic 09
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 09</div>
+            <h1>DQN은 뭐가 다를까?</h1>
+            <p>Q. Q-러닝에 딥러닝을 합쳤다고?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. DQN이란?</h2>
+
+            <div class="chat">
+                <div class="q">DQN이 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">DQN = Deep Q-Network</span></p>
+                    <p>Q-러닝 + 딥러닝(신경망)을 합친 거야.</p>
+                    <p>2013년 DeepMind가 발표해서 <strong>강화학습 역사를 바꿨어</strong>.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Q-러닝 vs DQN:
+
+Q-러닝:
+Q 테이블 사용
+┌──────────┬────────┐
+│ 상태     │ Q값들  │
+└──────────┴────────┘
+→ 상태가 적을 때만 가능
+
+DQN:
+신경망 사용
+게임 화면 → [신경망] → Q값들
+→ 복잡한 상태도 처리 가능!
+
+
+핵심 차이:
+Q-러닝: 테이블에 값 저장
+DQN: 함수(신경망)로 Q값 예측</div>
+
+            <div class="chat">
+                <div class="q">왜 중요한데?</div>
+                <div class="a">
+                    <p><span class="highlight">아타리 게임을 인간 수준으로 플레이</span>한 첫 AI야.</p>
+                    <p>게임 화면(픽셀)만 보고 학습했어. <strong>엄청난 돌파구</strong>였지.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. Q 테이블의 한계</h2>
+
+            <div class="chat">
+                <div class="q">Q 테이블이 뭐가 문제였어?</div>
+                <div class="a">
+                    <p>상태 공간이 조금만 커져도 불가능해져.</p>
+                </div>
+            </div>
+
+            <div class="code-block">상태 공간 폭발:
+
+그리드 월드 (10×10):
+→ 상태 100개
+→ Q 테이블 가능!
+
+체스:
+→ 상태 10^47개
+→ Q 테이블 불가능... (우주 원자보다 많음)
+
+아타리 게임 (Breakout):
+→ 화면 210×160 픽셀 × RGB
+→ 상태 256^(210×160×3) 개
+→ 완전히 불가능...!!!
+
+
+문제:
+1. 메모리 부족
+2. 모든 상태 방문 불가능
+3. 비슷한 상태인데 별개로 취급</div>
+
+            <div class="chat">
+                <div class="q">그래서 어떻게 해결했어?</div>
+                <div class="a">
+                    <p><span class="highlight">테이블 대신 함수 근사(Function Approximation)</span>를 써.</p>
+                    <p>신경망으로 Q값을 <strong>예측</strong>하는 거야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. DQN의 구조</h2>
+
+            <div class="chat">
+                <div class="q">DQN은 어떻게 생겼어?</div>
+                <div class="a">
+                    <p>CNN(합성곱 신경망)을 사용해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">DQN 아키텍처:
+
+입력: 게임 화면 (84×84×4)
+      ↓
+Conv Layer 1: 32 filters (8×8, stride 4)
+      ↓
+Conv Layer 2: 64 filters (4×4, stride 2)
+      ↓
+Conv Layer 3: 64 filters (3×3, stride 1)
+      ↓
+Fully Connected: 512 units
+      ↓
+출력: Q(s, a) for each action
+      [Q(s, 위), Q(s, 아래), Q(s, 좌), Q(s, 우)]
+
+
+예시 (Breakout):
+입력: 게임 화면
+출력: [Q(정지)=2.3, Q(좌)=5.1, Q(우)=3.8]
+      → "좌" 선택!</div>
+
+            <div class="code-block">테이블 vs 신경망:
+
+Q-러닝 (테이블):
+Q[(state=10, action=위)] = 5.2
+→ 정확히 이 상태-행동만
+
+DQN (신경망):
+Q_network(state=10) → [5.2, 3.1, 4.5, 2.9]
+→ 비슷한 상태도 일반화!
+
+예:
+state=10: Q(위)=5.2 학습
+state=11: Q(위)=5.1 자동 예측 (일반화!)
+
+→ 모든 상태를 방문 안 해도 됨</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. DQN의 핵심 기법들</h2>
+
+            <div class="chat">
+                <div class="q">그냥 신경망으로 Q-러닝하면 안 돼?</div>
+                <div class="a">
+                    <p><span class="warning">안정적으로 학습이 안 돼.</span></p>
+                    <p>DQN은 두 가지 핵심 기법을 추가했어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">1. 경험 재생 (Experience Replay)
+
+문제:
+→ 연속된 경험이 너무 비슷함
+→ 신경망이 최근 경험에만 편향됨
+
+해결:
+메모리에 경험 저장
+memory = []
+memory.append((state, action, reward, next_state))
+
+학습 시 랜덤 샘플링
+batch = random_sample(memory, size=32)
+for (s, a, r, s') in batch:
+    Q 네트워크 업데이트
+
+효과:
+→ 다양한 경험으로 학습
+→ 상관관계 제거
+→ 안정적 학습</div>
+
+            <div class="code-block">2. 타겟 네트워크 (Target Network)
+
+문제:
+→ 예측값과 목표값이 같은 네트워크
+→ 목표가 계속 움직임 (moving target)
+→ 학습 불안정
+
+해결:
+네트워크 2개 사용!
+
+Q_network: 학습하는 네트워크 (자주 업데이트)
+Q_target: 타겟 계산용 네트워크 (가끔 복사)
+
+업데이트:
+target = R + γ × max Q_target(s', a')
+                    a'
+loss = (target - Q_network(s, a))²
+
+주기적으로 복사:
+every 10000 steps:
+    Q_target ← Q_network
+
+효과:
+→ 목표가 고정됨
+→ 학습 안정화</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. DQN 알고리즘</h2>
+
+            <div class="chat">
+                <div class="q">전체 알고리즘은?</div>
+                <div class="a">
+                    <p>단계별로 보자.</p>
+                </div>
+            </div>
+
+            <div class="code-block">DQN 알고리즘:
+
+# 초기화
+Q_network 생성 (랜덤 가중치)
+Q_target = Q_network 복사
+memory = []
+ε = 1.0
+
+# 학습 루프
+for episode in range(num_episodes):
+    state = env.reset()
+
+    while not done:
+        # 1. 행동 선택 (ε-greedy)
+        if random() < ε:
+            action = random_action()
+        else:
+            q_values = Q_network(state)
+            action = argmax(q_values)
+
+        # 2. 행동 실행
+        next_state, reward, done = env.step(action)
+
+        # 3. 경험 저장
+        memory.append((state, action, reward, next_state, done))
+
+        # 4. 배치 학습
+        if len(memory) > batch_size:
+            batch = random_sample(memory, batch_size)
+
+            for (s, a, r, s', d) in batch:
+                if d:  # 종료 상태
+                    target = r
+                else:
+                    target = r + γ × max Q_target(s')
+
+                # 그래디언트 하강
+                loss = (target - Q_network(s, a))²
+                Q_network 업데이트 (역전파)
+
+        # 5. 타겟 네트워크 업데이트
+        if step % target_update_freq == 0:
+            Q_target ← Q_network
+
+        state = next_state
+
+    ε *= ε_decay</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. DQN의 성공</h2>
+
+            <div class="chat">
+                <div class="q">DQN이 뭘 달성했어?</div>
+                <div class="a">
+                    <p>아타리 2600 게임 49개를 학습했어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">DQN 성과 (2015):
+
+게임별 성능:
+
+Breakout:
+→ 인간: 31점
+→ DQN: 401점 (인간의 13배!)
+
+Space Invaders:
+→ 인간: 1652점
+→ DQN: 3690점
+
+Pong:
+→ 인간: -3점
+→ DQN: 20점 (완벽!)
+
+총 49개 게임 중:
+→ 29개: 인간 수준 이상
+→ 20개: 인간보다 낮음
+
+학습 방법:
+→ 게임 화면만 입력
+→ 게임 규칙 모름
+→ 자동으로 전략 발견!</div>
+
+            <div class="code-block">Breakout 학습 과정:
+
+0-100 에피소드:
+→ 공을 못 받음
+→ 랜덤하게 움직임
+
+100-200 에피소드:
+→ 공을 받기 시작
+→ 가끔 블록 파괴
+
+200-400 에피소드:
+→ 안정적으로 플레이
+→ 인간 수준 도달
+
+400+ 에피소드:
+→ 최적 전략 발견!
+→ 블록 뒤로 공을 보내서 엄청난 점수
+→ 인간이 생각 못한 전략!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">DQN은 "화면만 보고" 게임을 배운 첫 AI</span>야.</p>
+                    <p>이게 <strong>딥러닝 + 강화학습의 시대</strong>를 연 거지.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>DQN</strong> - Q-러닝 + 딥러닝, 복잡한 상태 처리 가능</li>
+                <li><strong>함수 근사</strong> - 테이블 대신 신경망으로 Q값 예측</li>
+                <li><strong>경험 재생</strong> - 메모리에 저장, 랜덤 샘플링으로 학습</li>
+                <li><strong>타겟 네트워크</strong> - 안정적 학습을 위한 고정 타겟</li>
+                <li><strong>성과</strong> - 아타리 게임 인간 수준 달성, 강화학습 혁신</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic08/">← 이전: Q-러닝이 뭐야?</a>
+            <a href="../topic10/">다음: 알파고는 어떻게 이겼어? →</a>
+        </div>
+    </div>
+</body>
+</html>

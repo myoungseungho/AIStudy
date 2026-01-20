@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>퍼셉트론은 뭐야? - Section 4</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+
+        .breadcrumb {
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #9C27B0;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #9C27B0;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f3e5f5;
+        }
+
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before {
+            content: "Q. ";
+            color: #e65100;
+            font-weight: 700;
+        }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #f3e5f5;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #6a1b9a;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .summary-box ul {
+            list-style: none;
+        }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #f3e5f5;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #9C27B0;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 4</a>
+            <span>/</span>
+            Topic 02
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 02</div>
+            <h1>퍼셉트론은 뭐야?</h1>
+            <p>Q. 입력 받아서 출력하는 게 다야?</p>
+        </header>
+
+        <!-- Part 1: 퍼셉트론의 기본 개념 -->
+        <div class="conversation">
+            <h2>Part 1. 퍼셉트론이 뭔데?</h2>
+
+            <div class="chat">
+                <div class="q">퍼셉트론(Perceptron)이 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">신경망의 가장 작은 단위</span>야.</p>
+                    <p>생각해봐. 레고로 집을 만든다면 퍼셉트론은 레고 블록 하나야.</p>
+                    <p>이 블록들을 수백만 개 연결하면 ChatGPT 같은 거대한 모델이 되는 거지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">퍼셉트론의 구조:
+
+[입력1]  ──(가중치1)──┐
+[입력2]  ──(가중치2)──┤
+[입력3]  ──(가중치3)──┼──> [합산] ──> [활성화] ──> [출력]
+    ⋮                  │
+[입력n]  ──(가중치n)──┘
+
+단계:
+1. 여러 입력을 받음
+2. 각 입력에 가중치를 곱함
+3. 전부 더함 (가중합)
+4. 활성화 함수 통과
+5. 최종 출력</div>
+
+            <div class="chat">
+                <div class="q">그냥 더하기만 하는 거야?</div>
+                <div class="a">
+                    <p><span class="warning">단순해 보이지만</span>, 이 간단한 구조가 모든 딥러닝의 기초야.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: 수식으로 이해하기 -->
+        <div class="conversation">
+            <h2>Part 2. 수식으로 보면 어떻게 돼?</h2>
+
+            <div class="chat">
+                <div class="q">수학적으로는 어떻게 표현해?</div>
+                <div class="a">
+                    <p>생각보다 간단해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">퍼셉트론 수식:
+
+출력 = f(w₁x₁ + w₂x₂ + w₃x₃ + ... + wₙxₙ + b)
+
+여기서:
+- x₁, x₂, x₃, ..., xₙ = 입력값들
+- w₁, w₂, w₃, ..., wₙ = 가중치들 (weights)
+- b = 편향 (bias)
+- f = 활성화 함수 (activation function)
+
+
+간단히 쓰면:
+출력 = f(Σ(wᵢxᵢ) + b)
+
+더 간단히:
+출력 = f(W·X + b)
+      (행렬 곱셈)</div>
+
+            <div class="chat">
+                <div class="q">그래서 이게 뭘 하는 건데?</div>
+                <div class="a">
+                    <p><span class="highlight">입력을 받아서 판단을 내리는 거야.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: 구체적 예시 -->
+        <div class="conversation">
+            <h2>Part 3. 실제 예시로 이해하기</h2>
+
+            <div class="chat">
+                <div class="q">예를 들어줘.</div>
+                <div class="a">
+                    <p>시험 합격 여부를 판단하는 퍼셉트론을 만들어볼게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">예시: 합격 판단 퍼셉트론
+
+입력:
+- x₁ = 필기시험 점수 (0~100)
+- x₂ = 면접 점수 (0~100)
+- x₃ = 출석률 (0~100)
+
+가중치 (중요도):
+- w₁ = 0.5  (필기가 제일 중요)
+- w₂ = 0.3  (면접도 중요)
+- w₃ = 0.2  (출석은 덜 중요)
+
+편향:
+- b = -40  (기준점 조정)
+
+
+계산:
+점수 = 0.5×필기 + 0.3×면접 + 0.2×출석 - 40
+
+활성화 함수 (계단 함수):
+- 점수 > 0 이면 합격 (1)
+- 점수 ≤ 0 이면 불합격 (0)
+
+
+실제 예:
+학생 A: 필기 80, 면접 70, 출석 90
+→ 0.5×80 + 0.3×70 + 0.2×90 - 40
+→ 40 + 21 + 18 - 40
+→ 39 > 0
+→ 합격!
+
+학생 B: 필기 50, 면접 60, 출석 70
+→ 0.5×50 + 0.3×60 + 0.2×70 - 40
+→ 25 + 18 + 14 - 40
+→ 17 > 0
+→ 합격!
+
+학생 C: 필기 40, 면접 50, 출석 60
+→ 0.5×40 + 0.3×50 + 0.2×60 - 40
+→ 20 + 15 + 12 - 40
+→ 7 > 0
+→ 합격!
+
+학생 D: 필기 30, 면접 40, 출석 50
+→ 0.5×30 + 0.3×40 + 0.2×50 - 40
+→ 15 + 12 + 10 - 40
+→ -3 ≤ 0
+→ 불합격</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="key-point">퍼셉트론은 여러 요소를 종합해서 판단하는 의사결정 도구</span>야.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: 퍼셉트론의 한계 -->
+        <div class="conversation">
+            <h2>Part 4. 퍼셉트론만으로 충분해?</h2>
+
+            <div class="chat">
+                <div class="q">그럼 퍼셉트론 하나면 모든 문제를 풀 수 있어?</div>
+                <div class="a">
+                    <p><span class="warning">아니야. 퍼셉트론 하나는 매우 제한적</span>이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">퍼셉트론의 한계:
+
+1. 선형 분리만 가능
+   - 직선(또는 평면) 하나로 나눌 수 있는 것만 분류 가능
+   - 복잡한 패턴은 불가능
+
+예: AND 연산 (가능)
+x₁  x₂  결과
+0   0    0
+0   1    0
+1   0    0
+1   1    1
+→ 직선으로 0과 1을 분리할 수 있음 ✅
+
+예: XOR 연산 (불가능)
+x₁  x₂  결과
+0   0    0
+0   1    1
+1   0    1
+1   1    0
+→ 직선 하나로는 절대 분리 불가 ❌
+
+
+2. 단순한 결정 경계
+   - 복잡한 곡선이나 비선형 패턴 인식 불가
+
+3. 표현력의 한계
+   - 이미지, 자연어 같은 고차원 데이터 처리 불가</div>
+
+            <div class="chat">
+                <div class="q">그럼 어떻게 해결해?</div>
+                <div class="a">
+                    <p><span class="highlight">여러 개를 연결</span>하면 돼!</p>
+                    <p>퍼셉트론을 층층이 쌓으면 → <strong>다층 퍼셉트론(MLP)</strong></p>
+                    <p>이게 바로 <strong>신경망(Neural Network)</strong>의 시작이야.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: 퍼셉트론에서 신경망으로 -->
+        <div class="conversation">
+            <h2>Part 5. 퍼셉트론을 연결하면?</h2>
+
+            <div class="chat">
+                <div class="q">어떻게 연결하는데?</div>
+                <div class="a">
+                    <p>층(layer)을 만들어서 쌓는 거야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">단일 퍼셉트론:
+[입력] → [퍼셉트론] → [출력]
+
+
+다층 퍼셉트론 (MLP):
+
+[입력층]    [은닉층1]    [은닉층2]    [출력층]
+  ●           ●            ●            ●
+  ●    →      ●     →      ●     →      ●
+  ●           ●            ●            ●
+              ●            ●
+                           ●
+
+각 화살표 = 가중치
+각 동그라미 = 퍼셉트론
+
+
+왜 이렇게 하면 좋아?
+
+1. XOR 문제 해결 가능
+   - 은닉층이 비선형 특징을 학습
+   - 복잡한 패턴 인식 가능
+
+2. 계층적 특징 학습
+   - 첫 번째 층: 간단한 특징 (선, 색)
+   - 두 번째 층: 조합된 특징 (모양)
+   - 세 번째 층: 복잡한 패턴 (얼굴)
+
+3. 보편 근사 정리
+   - 충분한 뉴런이 있으면 어떤 함수도 근사 가능</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐지?</p>
+                    <p><span class="key-point">퍼셉트론 = 레고 블록 하나</span></p>
+                    <p><span class="key-point">신경망 = 레고 블록을 엄청 많이 쌓은 것</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 6: 실제 코드로 보기 -->
+        <div class="conversation">
+            <h2>Part 6. 실제로는 어떻게 구현해?</h2>
+
+            <div class="chat">
+                <div class="q">퍼셉트론을 코드로 짜면 어떻게 돼?</div>
+                <div class="a">
+                    <p>파이썬으로 간단히 만들어볼게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">import numpy as np
+
+class Perceptron:
+    def __init__(self, input_size):
+        # 가중치 초기화 (작은 랜덤값)
+        self.weights = np.random.randn(input_size) * 0.01
+        # 편향 초기화
+        self.bias = 0
+
+    def predict(self, x):
+        # 가중합 계산
+        weighted_sum = np.dot(self.weights, x) + self.bias
+        # 활성화 함수 (계단 함수)
+        return 1 if weighted_sum > 0 else 0
+
+
+# 사용 예시
+p = Perceptron(input_size=3)
+
+# 입력: [필기, 면접, 출석]
+student = [80, 70, 90]
+
+# 예측
+result = p.predict(student)
+print("합격" if result == 1 else "불합격")
+
+
+# NumPy 없이 순수하게:
+def perceptron(inputs, weights, bias):
+    # 가중합
+    total = sum(w * x for w, x in zip(weights, inputs))
+    total += bias
+    # 활성화
+    return 1 if total > 0 else 0
+
+# 예시
+inputs = [80, 70, 90]
+weights = [0.5, 0.3, 0.2]
+bias = -40
+
+result = perceptron(inputs, weights, bias)
+print(result)  # 1 (합격)</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>보이지? <span class="highlight">정말 간단한 계산</span>이야.</p>
+                    <p>그런데 이런 걸 수백만 개 연결하면 ChatGPT가 되는 거지.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>퍼셉트론 = 신경망의 기본 단위</strong> - 입력받아 가중합 계산 후 출력</li>
+                <li><strong>가중합 + 활성화</strong> - (입력 × 가중치)를 전부 더하고 활성화 함수 통과</li>
+                <li><strong>단일 퍼셉트론의 한계</strong> - 선형 분리만 가능, XOR 같은 문제 불가</li>
+                <li><strong>다층 퍼셉트론(MLP)</strong> - 퍼셉트론을 층층이 쌓으면 복잡한 패턴 학습 가능</li>
+                <li><strong>구현은 간단</strong> - 곱하기, 더하기, 활성화 함수뿐</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic01/">← 이전: 신경망은 정말 뇌를 닮았어?</a>
+            <a href="../topic03/">다음: 가중치와 편향은 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

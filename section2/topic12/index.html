@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정규분포가 왜 중요해? - Section 2</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF9800;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF9800;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #fff3e0;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #fff3e0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #e65100;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #FF9800 0%, #FFB74D 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fff3e0;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #FF9800; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 2</a>
+            <span>/</span>
+            Topic 12
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 12</div>
+            <h1>정규분포가 왜 중요해?</h1>
+            <p>Q. 종 모양 그래프가 왜 자주 나와?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 정규분포가 뭔데?</h2>
+
+            <div class="chat">
+                <div class="q">정규분포(Normal Distribution)가 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">자연에서 가장 흔한 확률 분포</span></p>
+                    <p>종 모양(bell curve)이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">정규분포:
+
+         ╱‾╲
+        ╱   ╲
+       ╱     ╲
+   ___╱       ╲___
+      μ
+
+
+특징:
+1. 평균(μ) 중심으로 대칭
+2. 평균에서 멀수록 확률 낮음
+3. 표준편차(σ)가 퍼진 정도 결정
+
+
+공식:
+f(x) = (1/(σ√(2π))) × e^(-(x-μ)²/(2σ²))
+
+→ 복잡해 보이지만 외울 필요 없음
+→ NumPy가 계산해줌
+
+
+예시:
+사람 키, 시험 점수, 측정 오차
+→ 대부분 정규분포를 따름</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 68-95-99.7 규칙</h2>
+
+            <div class="chat">
+                <div class="q">정규분포의 특별한 점은?</div>
+                <div class="a">
+                    <p><span class="highlight">예측 가능한 패턴</span>이 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">68-95-99.7 규칙:
+
+68%: μ ± 1σ 범위
+95%: μ ± 2σ 범위
+99.7%: μ ± 3σ 범위
+
+
+예시:
+평균 = 170cm, 표준편차 = 10cm
+
+68% 사람: 160~180cm
+95% 사람: 150~190cm
+99.7% 사람: 140~200cm
+
+→ 200cm 넘으면 상위 0.15% (매우 드뭄)</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. AI에서 어떻게 쓰여?</h2>
+
+            <div class="chat">
+                <div class="q">AI에서는 어디에 쓰이는 거야?</div>
+                <div class="a">
+                    <p>정말 많은 곳에 써:</p>
+                </div>
+            </div>
+
+            <div class="code-block">1. 가중치 초기화
+
+가중치를 정규분포로 랜덤 초기화:
+W ~ N(0, 0.01)
+
+→ 평균 0, 표준편차 0.01
+→ 너무 크거나 작은 값 방지
+
+
+2. 노이즈 추가
+
+데이터 증강:
+x_noisy = x + ε, ε ~ N(0, σ²)
+
+→ 정규분포 노이즈 추가
+→ 모델을 더 견고하게
+
+
+3. 배치 정규화 가정
+
+BN은 데이터가 정규분포를 따른다고 가정
+→ 평균 0, 분산 1로 정규화
+
+
+4. VAE (Variational Autoencoder)
+
+잠재 공간을 정규분포로 모델링
+→ 생성 모델의 핵심
+
+
+5. 베이지안 딥러닝
+
+가중치를 확률 분포로 표현
+→ 불확실성 추정</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 표준 정규분포</h2>
+
+            <div class="chat">
+                <div class="q">표준 정규분포는 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">평균 0, 분산 1인 정규분포</span></p>
+                    <p>Z ~ N(0, 1)로 표기.</p>
+                </div>
+            </div>
+
+            <div class="code-block">정규화 (Normalization):
+
+원본: X ~ N(μ, σ²)
+
+표준화:
+Z = (X - μ) / σ
+
+→ Z ~ N(0, 1)
+
+
+왜 중요?
+1. 비교 가능
+   키와 몸무게를 같은 척도로 비교
+
+2. 표준 표 사용 가능
+   확률 계산이 쉬워짐
+
+3. AI 학습 안정화
+   모든 특징을 같은 스케일로</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 코드 예시</h2>
+
+            <div class="chat">
+                <div class="q">파이썬에서는 어떻게 써?</div>
+                <div class="a">
+                    <p>NumPy와 PyTorch 예시:</p>
+                </div>
+            </div>
+
+            <div class="code-block">import numpy as np
+import matplotlib.pyplot as plt
+
+# 정규분포 샘플링
+samples = np.random.normal(loc=0, scale=1, size=1000)
+# loc=평균, scale=표준편차
+
+# 히스토그램
+plt.hist(samples, bins=30)
+plt.show()
+
+# PyTorch에서 가중치 초기화
+import torch
+import torch.nn as nn
+
+class Model(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc = nn.Linear(10, 5)
+
+        # Xavier 초기화 (정규분포 기반)
+        nn.init.xavier_normal_(self.fc.weight)
+
+        # He 초기화 (정규분포 기반)
+        nn.init.kaiming_normal_(self.fc.weight)
+
+# 정규분포 확률 계산
+from scipy import stats
+
+# Z ~ N(0, 1)
+prob = stats.norm.cdf(1.96)  # P(Z ≤ 1.96)
+print(prob)  # 0.975 (97.5%)</div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>정규분포 = 종 모양</strong> - 자연에서 가장 흔함</li>
+                <li><strong>평균과 분산으로 결정</strong> - N(μ, σ²)</li>
+                <li><strong>68-95-99.7 규칙</strong> - 예측 가능한 패턴</li>
+                <li><strong>가중치 초기화에 사용</strong> - 학습 안정화</li>
+                <li><strong>표준화의 기준</strong> - 평균 0, 분산 1로</li>
+                <li><strong>AI의 핵심 가정</strong> - 많은 기법의 기반</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic11/">← 이전: 통계는 왜 배워야 해?</a>
+            <a href="../topic13/">다음: 소프트맥스가 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

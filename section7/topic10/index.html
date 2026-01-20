@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>알파고는 어떻게 이겼어? - Section 7</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF5722;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF5722;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #ffebe9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #ffccbc;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #d84315;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #FF5722 0%, #FF7043 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #ffccbc; }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #FF5722; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 7</a>
+            <span>/</span>
+            Topic 10
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 10</div>
+            <h1>알파고는 어떻게 이겼어?</h1>
+            <p>Q. 바둑은 경우의 수가 무한한데?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 바둑의 난이도</h2>
+
+            <div class="chat">
+                <div class="q">바둑이 왜 어려워?</div>
+                <div class="a">
+                    <p><span class="key-point">경우의 수가 엄청나게 많아.</span></p>
+                    <p>체스보다 <strong>10^100배 이상</strong> 복잡해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">게임 복잡도 비교:
+
+틱택토 (O, X):
+→ 가능한 판 상태: 약 5,000개
+→ 컴퓨터가 완벽 플레이 가능
+
+체스:
+→ 가능한 판 상태: 10^47개
+→ 1997년 Deep Blue가 인간 챔피언 이김
+
+바둑:
+→ 가능한 판 상태: 10^170개
+→ 우주 원자 수(10^80)보다 많음!
+→ 평균 한 수당 선택지: 250개 (체스는 35개)
+→ 평균 게임 길이: 150수 (체스는 80수)
+
+→ 체스보다 10^100배 복잡!</div>
+
+            <div class="chat">
+                <div class="q">그럼 알파고 전까지는 못 이겼어?</div>
+                <div class="a">
+                    <p><span class="highlight">2016년 이전까지 프로 기사를 이긴 AI가 없었어.</span></p>
+                    <p>바둑 AI는 "10년은 더 걸릴 것"이라고 예상했는데...</p>
+                    <p><strong>알파고가 세상을 놀라게 했지.</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 알파고의 구성 요소</h2>
+
+            <div class="chat">
+                <div class="q">알파고는 어떻게 만들어졌어?</div>
+                <div class="a">
+                    <p>크게 4가지 신경망과 1가지 탐색 알고리즘으로 구성돼.</p>
+                </div>
+            </div>
+
+            <div class="code-block">알파고 구조:
+
+1. Policy Network (정책 네트워크)
+   → "이 판에서 어디에 둘까?"
+   → 좋은 수를 추천
+
+2. Value Network (가치 네트워크)
+   → "이 판은 누가 유리한가?"
+   → 승률 예측 (-1 ~ +1)
+
+3. Rollout Policy (빠른 정책)
+   → 빠른 시뮬레이션용
+   → 정확도는 낮지만 빠름
+
+4. MCTS (몬테카를로 트리 탐색)
+   → 위 3개를 조합해서 최선의 수 선택</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">단일 기술이 아니라 여러 기술의 조합</span>이야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 학습 단계</h2>
+
+            <div class="chat">
+                <div class="q">알파고는 어떻게 학습했어?</div>
+                <div class="a">
+                    <p>3단계로 학습했어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">1단계: 지도학습 (Supervised Learning)
+
+데이터:
+→ 인간 프로 기사의 기보 16만 개
+→ 3천만 개의 판 상태
+
+학습:
+Policy Network 훈련
+입력: 바둑판 상태
+출력: 다음 수 확률 분포
+손실: "프로가 둔 수와 얼마나 비슷한가?"
+
+결과:
+→ 프로의 다음 수를 57% 예측
+→ 인간의 직관을 모방</div>
+
+            <div class="code-block">2단계: 강화학습 (Self-Play)
+
+자가 대국:
+→ 알파고끼리 수백만 번 대국
+→ 이긴 쪽 정책을 강화
+
+Policy Gradient:
+이긴 게임의 수들 → 확률 증가
+진 게임의 수들 → 확률 감소
+
+결과:
+→ 인간 기보의 한계를 넘어섬
+→ 새로운 정석 발견</div>
+
+            <div class="code-block">3단계: 가치 네트워크 학습
+
+Value Network 훈련:
+입력: 바둑판 상태
+출력: 승률 예측 (-1 ~ +1)
+
+학습 데이터:
+→ 자가 대국 3천만 판
+→ 각 판의 최종 승패 결과
+
+역할:
+→ "이 판은 흑이 60% 유리"
+→ 끝까지 두지 않고도 승패 예측</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="key-point">지도학습으로 시작 → 강화학습으로 초월</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 실제 대국 과정</h2>
+
+            <div class="chat">
+                <div class="q">알파고는 실제로 어떻게 수를 선택해?</div>
+                <div class="a">
+                    <p>MCTS(몬테카를로 트리 탐색)를 사용해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">알파고의 수 선택 과정:
+
+한 수를 두는데 약 1분 소요
+그동안 수만 번의 시뮬레이션
+
+1. 선택 (Selection)
+   → 유망한 경로를 따라 내려감
+
+2. 확장 (Expansion)
+   → Policy Network로 좋은 수 찾기
+
+3. 시뮬레이션 (Simulation)
+   → Rollout Policy로 끝까지 빠르게 플레이
+   → Value Network로 승률 예측
+
+4. 역전파 (Backpropagation)
+   → 결과를 위로 전달
+   → 각 수의 가치 업데이트
+
+5. 최종 선택
+   → 가장 많이 시뮬레이션된 수 선택</div>
+
+            <div class="code-block">예시:
+
+현재 판:
+선택 가능한 수 250개
+
+MCTS 실행:
+수 A: 10,000번 시뮬레이션, 승률 55%
+수 B: 15,000번 시뮬레이션, 승률 58%  ← 선택!
+수 C: 5,000번 시뮬레이션, 승률 52%
+...
+
+→ "수 B" 선택!
+
+알파고는 이런 계산을 1초에 수천 번 반복</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 이세돌 vs 알파고</h2>
+
+            <div class="chat">
+                <div class="q">역사적인 대결은 어땠어?</div>
+                <div class="a">
+                    <p>2016년 3월, 세기의 대결이 벌어졌어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">대결 결과:
+
+총 5국:
+1국: 알파고 승 (흑 불계)
+2국: 알파고 승 (흑 불계)
+3국: 알파고 승 (백 불계)
+4국: 이세돌 승! (백 불계)
+5국: 알파고 승 (흑 불계)
+
+최종 스코어: 4-1 (알파고 승리)
+
+
+충격적이었던 이유:
+1. 이세돌은 세계 최강 기사 중 하나
+2. 사전 예상: "이세돌 5-0 또는 4-1"
+3. 결과는 정반대
+4. 인간의 직관을 넘어서는 수들</div>
+
+            <div class="code-block">유명한 수:
+
+2국 37수 (알파고):
+→ 다섯째 줄에 어깨 끼임
+→ 해설자: "알파고 버그?"
+→ 실제로는 천재적인 수
+→ 게임 흐름을 바꿈
+
+4국 78수 (이세돌):
+→ "신의 한 수"
+→ 알파고가 예상 못한 수
+→ 알파고가 혼란에 빠짐
+→ 이세돌 승리!
+
+→ AI도 약점이 있음을 보여줌</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">알파고의 승리는 AI 역사의 이정표</span>야.</p>
+                    <p><strong>"불가능"하다고 여겨진 일이 현실이 된 순간</strong>이었지.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 알파고 제로와 그 이후</h2>
+
+            <div class="chat">
+                <div class="q">알파고 이후엔?</div>
+                <div class="a">
+                    <p>더 강력한 버전이 나왔어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">알파고 버전들:
+
+알파고 Fan (2015):
+→ 유럽 챔피언 이김
+
+알파고 Lee (2016):
+→ 이세돌 이김
+
+알파고 Master (2017):
+→ 온라인에서 프로 60연승
+
+알파고 Zero (2017):
+→ 인간 기보 없이 학습!
+→ 자가 대국만으로
+→ 3일 만에 알파고 Lee 넘어섬
+→ 40일 만에 모든 버전 압도</div>
+
+            <div class="code-block">알파고 Zero의 혁신:
+
+기존 알파고:
+1. 인간 기보로 학습
+2. 강화학습으로 개선
+
+알파고 Zero:
+1. 빈 바둑판에서 시작
+2. 규칙만 알려줌
+3. 자가 대국만으로 학습
+4. 인간보다 강해짐
+
+→ "인간의 지식 없이도 초인적 능력 달성"
+→ 더 일반적인 AI로 발전 가능</div>
+
+            <div class="code-block">AlphaZero (2018):
+
+알파고 Zero 기술을 일반화:
+→ 바둑
+→ 체스
+→ 장기(쇼기)
+
+모두 세계 최강 수준 달성!
+
+학습 시간:
+→ 체스: 4시간
+→ 장기: 2시간
+→ 바둑: 13시간
+
+→ 범용 게임 AI 탄생!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">알파고는 강화학습의 가능성을 보여준 랜드마크</span>야.</p>
+                    <p><strong>불가능해 보이던 문제도 올바른 접근으로 풀 수 있다</strong>는 걸 증명했지.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>바둑의 복잡도</strong> - 10^170 가지 상태, 체스의 10^100배</li>
+                <li><strong>3단계 학습</strong> - 지도학습 → 강화학습 → 가치 네트워크</li>
+                <li><strong>MCTS</strong> - 시뮬레이션으로 최선의 수 탐색</li>
+                <li><strong>역사적 승리</strong> - 2016년 이세돌 4-1 승리</li>
+                <li><strong>알파고 Zero</strong> - 인간 지식 없이도 초월적 능력 달성</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic09/">← 이전: DQN은 뭐가 다를까?</a>
+            <a href="../topic11/">다음: 몬테카를로 트리 탐색이 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>분류와 회귀는 뭐가 달라? - Section 3</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+
+        .breadcrumb {
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #2196F3;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #2196F3;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e3f2fd;
+        }
+
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before {
+            content: "Q. ";
+            color: #e65100;
+            font-weight: 700;
+        }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #bbdefb;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #0d47a1;
+        }
+
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #2196F3 0%, #42A5F5 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .summary-box ul {
+            list-style: none;
+        }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #bbdefb;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 3</a>
+            <span>/</span>
+            Topic 05
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 05</div>
+            <h1>분류와 회귀는 뭐가 달라?</h1>
+            <p>Q. 고양이/개 구분이랑 집값 예측이 달라?</p>
+        </header>
+
+        <!-- Part 1: 핵심 차이점 -->
+        <div class="conversation">
+            <h2>Part 1. 답이 "이름"이냐, "숫자"냐</h2>
+
+            <div class="chat">
+                <div class="q">분류(Classification)와 회귀(Regression)는 뭐가 다른 거야?</div>
+                <div class="a">
+                    <p><span class="key-point">예측하는 답의 종류가 달라.</span></p>
+                    <p>쉽게 말하면:</p>
+                </div>
+            </div>
+
+            <div class="code-block">분류 (Classification):
+→ 카테고리(이름)로 답하기
+→ "A냐 B냐?"
+
+예시:
+Q: 이 동물은?
+A: "고양이" 또는 "개"
+
+Q: 이 메일은?
+A: "스팸" 또는 "정상"
+
+
+회귀 (Regression):
+→ 숫자로 답하기
+→ "얼마나?"
+
+예시:
+Q: 이 집 가격은?
+A: "5억 2천만원"
+
+Q: 내일 기온은?
+A: "27.5도"</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="highlight">분류는 "종류를 구분", 회귀는 "값을 예측"</span>하는 거야.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: 비유로 이해하기 -->
+        <div class="conversation">
+            <h2>Part 2. 학교 시험으로 비유하면?</h2>
+
+            <div class="chat">
+                <div class="q">아직 헷갈려. 좀 더 쉽게 설명해줘</div>
+                <div class="a">
+                    <p>학교 시험 문제로 비유해볼게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">분류 = 객관식 문제
+
+Q: 한국의 수도는?
+① 서울   ② 부산   ③ 대구   ④ 인천
+
+→ 정해진 선택지 중에서 고르기
+→ 딱 떨어지는 답
+
+
+회귀 = 단답형/서술형 문제
+
+Q: 서울에서 부산까지 거리는?
+A: 325km (숫자로 답)
+
+Q: 이 삼각형의 넓이는?
+A: 42.7cm² (계산된 값)
+
+→ 연속된 값 중 하나
+→ 정확한 숫자</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">분류는 "선택", 회귀는 "계산"</span>이라고 생각하면 돼.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: 비교표 -->
+        <div class="conversation">
+            <h2>Part 3. 한눈에 비교하기</h2>
+
+            <div class="chat">
+                <div class="q">표로 정리해줄 수 있어?</div>
+                <div class="a">
+                    <p>물론이지. 차이점을 명확하게 보여줄게.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>구분</th>
+                    <th>분류 (Classification)</th>
+                    <th>회귀 (Regression)</th>
+                </tr>
+                <tr>
+                    <td><strong>출력 형태</strong></td>
+                    <td>카테고리 (이산적)</td>
+                    <td>숫자 (연속적)</td>
+                </tr>
+                <tr>
+                    <td><strong>예시 답</strong></td>
+                    <td>"고양이", "개", "새"</td>
+                    <td>5.2, 127.8, 3억</td>
+                </tr>
+                <tr>
+                    <td><strong>문제 유형</strong></td>
+                    <td>"어느 그룹인가?"</td>
+                    <td>"얼마인가?"</td>
+                </tr>
+                <tr>
+                    <td><strong>평가 방법</strong></td>
+                    <td>정확도, 정밀도, 재현율</td>
+                    <td>오차 (MAE, RMSE)</td>
+                </tr>
+                <tr>
+                    <td><strong>실생활 예시</strong></td>
+                    <td>스팸 필터, 얼굴 인식</td>
+                    <td>주가 예측, 날씨 예측</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="a">
+                    <p>차이가 명확하지?</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: 실전 예시 -->
+        <div class="conversation">
+            <h2>Part 4. 같은 데이터, 다른 문제</h2>
+
+            <div class="chat">
+                <div class="q">같은 데이터로도 분류와 회귀를 둘 다 할 수 있어?</div>
+                <div class="a">
+                    <p>그럼! 좋은 질문이야. 예시를 보여줄게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">집 데이터로 두 가지 문제 풀기:
+
+데이터: 평수, 위치, 층수, 방 개수...
+
+
+[분류 문제로 풀기]
+Q: 이 집이 비싼 편인가, 저렴한 편인가?
+A: "비싼 집" 또는 "저렴한 집"
+→ 2개 카테고리로 구분
+
+
+[회귀 문제로 풀기]
+Q: 이 집의 정확한 가격은?
+A: "5억 2,300만원"
+→ 구체적인 숫자 예측
+
+
+어떤 게 더 유용할까?
+→ 상황에 따라 다름!
+→ 대충 비싼지만 알고 싶으면 → 분류
+→ 정확한 가격이 필요하면 → 회귀</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">같은 데이터라도 "어떤 질문을 하느냐"에 따라 분류/회귀가 결정돼.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: 이진 분류 vs 다중 분류 -->
+        <div class="conversation">
+            <h2>Part 5. 분류에도 종류가 있어</h2>
+
+            <div class="chat">
+                <div class="q">분류는 다 똑같은 거야?</div>
+                <div class="a">
+                    <p>아니, 분류도 세분화할 수 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">분류의 종류:
+
+1. 이진 분류 (Binary Classification)
+→ 2개 중 하나 선택
+예시:
+- 스팸 vs 정상
+- 합격 vs 불합격
+- 양성 vs 음성
+
+
+2. 다중 분류 (Multi-class Classification)
+→ 3개 이상 중 하나 선택
+예시:
+- 고양이 vs 개 vs 새 vs 토끼
+- A학점 vs B학점 vs C학점 vs D학점 vs F학점
+- 액션 vs 로맨스 vs 코미디 vs 공포
+
+
+3. 다중 레이블 분류 (Multi-label Classification)
+→ 여러 개 동시 선택 가능
+예시:
+영화 장르: "액션 + 코미디 + 어드벤처"
+(한 영화가 여러 장르에 속할 수 있음)</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐지?</p>
+                    <p><span class="key-point">선택지가 몇 개냐, 하나만 고르냐 여러 개 고르냐에 따라 달라져.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 6: 어떤 걸 써야 할까? -->
+        <div class="conversation">
+            <h2>Part 6. 언제 분류, 언제 회귀를 써?</h2>
+
+            <div class="chat">
+                <div class="q">내 문제가 분류인지 회귀인지 어떻게 알아?</div>
+                <div class="a">
+                    <p>간단한 질문으로 판단할 수 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">판단 기준:
+
+질문: "예측할 값이 정해진 카테고리인가?"
+
+YES → 분류
+예시:
+- "이 환자는 당뇨병인가?" (예/아니오)
+- "이 꽃은 무슨 종인가?" (장미/튤립/해바라기)
+- "이 문장의 감정은?" (긍정/부정/중립)
+
+
+NO → 회귀
+예시:
+- "이 환자의 혈당 수치는?" (120mg/dL)
+- "이 꽃의 키는?" (32.5cm)
+- "이 문장의 긍정도는?" (0.87점)
+
+
+애매한 경우:
+나이 예측
+→ 분류: "10대/20대/30대..." (연령대)
+→ 회귀: "27세" (정확한 나이)
+
+→ 둘 다 가능! 목적에 맞게 선택</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">핵심은 "정답이 딱 떨어지는 카테고리냐, 연속된 숫자냐"야.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>분류 = 카테고리 구분</strong> - "고양이냐 개냐" 같은 이산적 답</li>
+                <li><strong>회귀 = 숫자 예측</strong> - "5억 2천만원" 같은 연속적 값</li>
+                <li><strong>분류 종류</strong> - 이진(2개), 다중(3개 이상), 다중 레이블(여러 개 동시)</li>
+                <li><strong>같은 데이터, 다른 문제</strong> - 어떤 질문을 하느냐에 따라 달라짐</li>
+                <li><strong>평가 방법도 다름</strong> - 분류는 정확도, 회귀는 오차로 평가</li>
+                <li><strong>선택 기준</strong> - 답이 카테고리면 분류, 숫자면 회귀</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic04/">← 이전: 비지도학습은 정답 없이 배워?</a>
+            <a href="../topic06/">다음: 훈련 데이터와 테스트 데이터는 왜 나눠? →</a>
+        </div>
+    </div>
+</body>
+</html>

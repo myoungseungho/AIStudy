@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상태, 행동, 보상이 뭐야? - Section 7</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+
+        .breadcrumb {
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF5722;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF5722;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #ffebe9;
+        }
+
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before {
+            content: "Q. ";
+            color: #e65100;
+            font-weight: 700;
+        }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #ffccbc;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #d84315;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #FF5722 0%, #FF7043 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .summary-box ul {
+            list-style: none;
+        }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #ffccbc;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #FF5722;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 7</a>
+            <span>/</span>
+            Topic 03
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 03</div>
+            <h1>상태, 행동, 보상이 뭐야?</h1>
+            <p>Q. 게임 AI는 점수를 최대화하려고 해?</p>
+        </header>
+
+        <!-- Part 1: 강화학습의 3요소 -->
+        <div class="conversation">
+            <h2>Part 1. 강화학습의 3요소</h2>
+
+            <div class="chat">
+                <div class="q">상태, 행동, 보상이 뭔데?</div>
+                <div class="a">
+                    <p>강화학습의 가장 기본적인 구성 요소야.</p>
+                    <p><span class="key-point">상태(State)</span> - 현재 상황</p>
+                    <p><span class="key-point">행동(Action)</span> - 에이전트가 할 수 있는 것</p>
+                    <p><span class="key-point">보상(Reward)</span> - 행동에 대한 피드백</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 운전을 배우는 과정
+
+상태 (State):
+- 현재 차선 위치
+- 앞차와의 거리
+- 신호등 색깔
+- 속도계 바늘 위치
+
+행동 (Action):
+- 핸들을 돌린다
+- 가속 페달을 밟는다
+- 브레이크를 밟는다
+- 기어를 바꾼다
+
+보상 (Reward):
+- 차선 잘 유지: +1점
+- 신호 지킴: +5점
+- 사고 발생: -1000점
+- 목적지 도착: +100점</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><strong>상태를 보고 → 행동을 선택하고 → 보상을 받는 거야.</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: 상태(State) 자세히 보기 -->
+        <div class="conversation">
+            <h2>Part 2. 상태(State)란?</h2>
+
+            <div class="chat">
+                <div class="q">상태가 정확히 뭐야?</div>
+                <div class="a">
+                    <p><span class="highlight">상태는 "지금 이 순간의 상황을 나타내는 정보"</span>야.</p>
+                    <p>에이전트가 의사결정을 내리는 데 필요한 모든 정보지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">게임별 상태 예시:
+
+팩맨:
+State = {
+    팩맨 위치: (x, y)
+    유령 4마리 위치: [(x1, y1), (x2, y2), ...]
+    남은 점 위치들
+    파워펠렛 상태
+    현재 점수
+    남은 목숨
+}
+
+체스:
+State = {
+    보드의 모든 말 위치
+    각 말의 종류 (킹, 퀸, 룩, ...)
+    누구 차례인지
+    캐슬링 가능 여부
+    앙파상 가능 여부
+}
+
+자율주행:
+State = {
+    차량 속도
+    GPS 위치
+    카메라 영상 (도로, 차선, 신호등)
+    라이다 센서 데이터
+    주변 차량 위치 및 속도
+}</div>
+
+            <div class="chat">
+                <div class="q">상태가 많으면 뭐가 문제야?</div>
+                <div class="a">
+                    <p><span class="warning">상태가 많을수록 학습이 어려워져.</span></p>
+                    <p>바둑판은 19x19 = 361개 위치에서 각각 흑/백/빈칸 = 3^361 가지 상태!</p>
+                    <p>이런 걸 <span class="highlight">"상태 공간이 크다"</span>고 표현해.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: 행동(Action) 자세히 보기 -->
+        <div class="conversation">
+            <h2>Part 3. 행동(Action)이란?</h2>
+
+            <div class="chat">
+                <div class="q">행동은 뭐야?</div>
+                <div class="a">
+                    <p><span class="highlight">행동은 에이전트가 환경에 취할 수 있는 선택지</span>야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">게임별 행동 공간:
+
+슈퍼마리오:
+Action = {왼쪽, 오른쪽, 점프, 달리기, 멈춤}
+→ 5가지 행동 (이산 행동 공간)
+
+바둑:
+Action = {19x19 = 361개 위치 중 하나에 돌 놓기}
+→ 361가지 행동
+
+자율주행:
+Action = {핸들 각도, 가속 페달 세기, 브레이크 세기}
+→ 연속적인 값 (연속 행동 공간)
+   핸들: -45도 ~ +45도 (무한한 값)
+   가속: 0% ~ 100% (무한한 값)
+
+로봇 팔:
+Action = {관절1 각도, 관절2 각도, ..., 그리퍼 열기/닫기}
+→ 다차원 연속 행동</div>
+
+            <div class="chat">
+                <div class="q">이산이랑 연속이 뭐가 달라?</div>
+                <div class="a">
+                    <p><span class="key-point">이산(Discrete)</span> - 선택지가 정해져 있음 (위/아래/좌/우)</p>
+                    <p><span class="key-point">연속(Continuous)</span> - 무한한 값 중 선택 (핸들 각도 15.7도)</p>
+                    <p><strong>연속 행동이 훨씬 어려워.</strong> 무한한 경우의 수니까.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: 보상(Reward) 자세히 보기 -->
+        <div class="conversation">
+            <h2>Part 4. 보상(Reward)이란?</h2>
+
+            <div class="chat">
+                <div class="q">보상이 뭐야? 점수랑 같은 거야?</div>
+                <div class="a">
+                    <p>비슷하지만 더 정교해.</p>
+                    <p><span class="highlight">보상은 "그 행동이 얼마나 좋았는지" 알려주는 신호</span>야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">보상 설계 예시:
+
+슈퍼마리오:
+- 코인 먹음: +1
+- 적 처치: +10
+- 깃발 도달: +100
+- 죽음: -100
+- 매 타임스텝: -0.01 (빨리 클리어하도록 유도)
+
+자율주행:
+- 차선 유지: +0.1 (매 순간)
+- 속도 유지: +0.05
+- 급브레이크: -1
+- 신호 위반: -50
+- 사고: -1000
+
+체스:
+- 중간 과정: 0 (보상 없음)
+- 게임 승리: +1
+- 게임 패배: -1
+- 무승부: 0
+
+→ 이런 걸 "희소 보상" 문제라고 함
+   (게임 끝나야 보상을 받음)</div>
+
+            <div class="chat">
+                <div class="q">보상을 어떻게 설계하느냐가 중요해?</div>
+                <div class="a">
+                    <p><span class="warning">엄청 중요해!</span></p>
+                    <p><strong>보상 설계가 잘못되면 AI가 이상하게 학습</strong>해.</p>
+                    <p>다음 토픽에서 자세히 다룰게.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: 세 요소의 상호작용 -->
+        <div class="conversation">
+            <h2>Part 5. 세 요소가 어떻게 연결돼?</h2>
+
+            <div class="chat">
+                <div class="q">상태, 행동, 보상이 어떻게 연결되는 거야?</div>
+                <div class="a">
+                    <p>순환 구조로 계속 반복돼.</p>
+                </div>
+            </div>
+
+            <div class="code-block">MDP (Markov Decision Process) 순환:
+
+시간 t=0:
+상태 S₀: 게임 시작 화면
+         ↓
+에이전트: "오른쪽으로 이동" 행동 A₀ 선택
+         ↓
+시간 t=1:
+상태 S₁: 캐릭터가 오른쪽으로 이동한 화면
+보상 R₁: 0 (아무 일 없음)
+         ↓
+에이전트: "점프" 행동 A₁ 선택
+         ↓
+시간 t=2:
+상태 S₂: 캐릭터가 점프해서 코인 획득
+보상 R₂: +10 (코인 획득!)
+         ↓
+에이전트: 다음 행동 선택...
+
+무한 반복</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="key-point">State → Action → Reward → Next State → ...</span></p>
+                    <p>이 순환을 <strong>에피소드(Episode)</strong>라고 불러.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 6: 목표는 뭐야? -->
+        <div class="conversation">
+            <h2>Part 6. 그래서 AI의 목표가 뭐야?</h2>
+
+            <div class="chat">
+                <div class="q">보상을 많이 받으면 되는 거야?</div>
+                <div class="a">
+                    <p><span class="highlight">정확히는 "누적 보상"을 최대화</span>하는 거야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">누적 보상 (Cumulative Reward):
+
+예시: 100스텝 게임
+
+전략 A:
+스텝 1~99: 각각 +1 = +99
+스텝 100: 죽음 -100
+→ 총합: -1
+
+전략 B:
+스텝 1~99: 조심히 플레이 각각 +0.5 = +49.5
+스텝 100: 깃발 도달 +100
+→ 총합: +149.5
+
+→ 전략 B가 더 나은 전략!
+
+
+수식으로 표현:
+Total Reward = R₁ + R₂ + R₃ + ... + Rₙ
+
+또는 할인된 보상:
+Total Reward = R₁ + γR₂ + γ²R₃ + ...
+(γ = 할인 계수, 0~1 사이 값)</div>
+
+            <div class="chat">
+                <div class="q">할인 계수는 왜 필요해?</div>
+                <div class="a">
+                    <p><span class="highlight">먼 미래의 보상은 가치를 낮게 평가</span>하는 거야.</p>
+                    <p>"지금 당장 10만원" vs "10년 후 10만원"</p>
+                    <p>당연히 지금 받는 게 더 가치 있잖아?</p>
+                    <p><strong>AI도 마찬가지로 가까운 미래를 더 중요하게 생각</strong>해.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>상태(State)</strong> - 현재 상황을 나타내는 정보</li>
+                <li><strong>행동(Action)</strong> - 에이전트가 선택할 수 있는 것 (이산/연속)</li>
+                <li><strong>보상(Reward)</strong> - 행동에 대한 피드백 (좋음/나쁨)</li>
+                <li><strong>MDP 순환</strong> - State → Action → Reward → Next State</li>
+                <li><strong>목표</strong> - 누적 보상(장기적 보상)을 최대화</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic02/">← 이전: 에이전트와 환경이 뭐야?</a>
+            <a href="../topic04/">다음: 보상을 어떻게 설계해? →</a>
+        </div>
+    </div>
+</body>
+</html>

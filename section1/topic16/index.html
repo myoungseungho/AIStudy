@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 개발자는 뭘 하는 사람이야? - Section 1</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fafafa; color: #333; line-height: 1.9; }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number { display: inline-block; background: #4CAF50; color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-bottom: 16px; }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation { background: white; border-radius: 16px; padding: 32px; margin: 32px 0; border: 1px solid #e0e0e0; }
+        .conversation h2 { font-size: 1.3rem; color: #4CAF50; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid #e8f5e9; }
+        .chat { margin-bottom: 20px; }
+        .q { background: #fff3e0; border-left: 4px solid #ff9800; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; font-weight: 500; }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight { background: #e3f2fd; padding: 2px 8px; border-radius: 4px; font-weight: 600; color: #1565c0; }
+        .key-point { background: #c8e6c9; padding: 2px 8px; border-radius: 4px; font-weight: 600; color: #2e7d32; }
+        .warning { background: #ffcdd2; padding: 2px 8px; border-radius: 4px; font-weight: 600; color: #c62828; }
+        .code-block { background: #263238; border-radius: 8px; padding: 16px 20px; margin: 16px 0; font-family: 'Consolas', monospace; font-size: 0.9rem; color: #eceff1; overflow-x: auto; line-height: 1.6; white-space: pre-wrap; }
+        .compare-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+        .compare-table th, .compare-table td { padding: 12px; border: 1px solid #e0e0e0; text-align: left; }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box { background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%); border-radius: 16px; padding: 32px; color: white; margin: 32px 0; }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #c8e6c9; }
+        .nav-links { display: flex; justify-content: space-between; margin-top: 60px; padding-top: 24px; border-top: 1px solid #e0e0e0; }
+        .nav-links a { color: #4CAF50; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 1</a>
+            <span>/</span>
+            Topic 16
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 16</div>
+            <h1>AI 개발자는 뭘 하는 사람이야?</h1>
+            <p>Q. 모델을 만드는 사람? 쓰는 사람?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. AI 개발자 종류</h2>
+
+            <div class="chat">
+                <div class="q">AI 개발자는 뭘 해? GPT 같은 거 만들어?</div>
+                <div class="a">
+                    <p><span class="key-point">"AI 개발자"는 여러 종류야.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">AI 개발자 스펙트럼:
+
+1. AI 연구자 (AI Researcher)
+   → GPT, BERT 같은 새 알고리즘 개발
+   → 논문 작성
+   → 예: OpenAI, Google Brain 연구원
+
+2. ML 엔지니어 (ML Engineer)
+   → 기존 모델 활용해서 서비스 만들기
+   → ChatGPT API로 챗봇 개발
+   → 모델 학습, 최적화
+
+3. AI 응용 개발자 (AI Application Developer)
+   → AI 기능 추가한 앱 개발
+   → "이 버튼 누르면 AI 추천"
+   → 일반 개발 + AI API 사용
+
+4. 데이터 과학자 (Data Scientist)
+   → 데이터 분석, 예측 모델
+   → "다음 달 매출 예측"
+   → 통계 + 머신러닝
+
+
+→ 다 다른 일을 해
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 실제로 뭘 해?</h2>
+
+            <div class="chat">
+                <div class="q">구체적으로 어떤 일을 하는데?</div>
+                <div class="a">
+                    <p>각자 다른 업무:</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>역할</th>
+                    <th>주요 업무</th>
+                    <th>하루 일과</th>
+                </tr>
+                <tr>
+                    <td><strong>AI 연구자</strong></td>
+                    <td>새 알고리즘 개발, 논문</td>
+                    <td>논문 읽기, 실험, 코딩, 토론</td>
+                </tr>
+                <tr>
+                    <td><strong>ML 엔지니어</strong></td>
+                    <td>모델 학습, 배포, 최적화</td>
+                    <td>데이터 준비, 학습, 성능 개선</td>
+                </tr>
+                <tr>
+                    <td><strong>AI 앱 개발자</strong></td>
+                    <td>AI 기능 통합</td>
+                    <td>API 연결, UI 개발, 테스트</td>
+                </tr>
+                <tr>
+                    <td><strong>데이터 과학자</strong></td>
+                    <td>데이터 분석, 인사이트 도출</td>
+                    <td>데이터 분석, 시각화, 보고서</td>
+                </tr>
+            </table>
+
+            <div class="code-block">ML 엔지니어의 하루:
+
+09:00 - 데이터 확인
+   → 어제 수집된 데이터 검증
+   → 라벨링 오류 수정
+
+11:00 - 모델 학습
+   → 새 데이터로 재학습
+   → 하이퍼파라미터 조정
+
+14:00 - 성능 평가
+   → 정확도 측정 (85% → 87% 향상!)
+   → A/B 테스트 준비
+
+16:00 - 배포
+   → 새 모델 서버에 올리기
+   → 모니터링 설정
+
+18:00 - 회의
+   → 다음 주 개선 계획 논의
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 필요한 스킬</h2>
+
+            <div class="chat">
+                <div class="q">AI 개발자가 되려면 뭘 배워야 해?</div>
+                <div class="a">
+                    <p><span class="highlight">역할마다 필요한 스킬이 달라.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">AI 연구자:
+
+필수:
+- 수학 (선형대수, 확률, 미적분)
+- 딥러닝 이론
+- Python (PyTorch, TensorFlow)
+- 논문 읽기/쓰기
+- 영어 (논문, 발표)
+
+학위:
+- 박사 선호 (석사 최소)
+
+
+ML 엔지니어:
+
+필수:
+- Python
+- 머신러닝 라이브러리 (scikit-learn, PyTorch)
+- 데이터 처리 (pandas, numpy)
+- 클라우드 (AWS, GCP)
+- Git
+
+선택:
+- 수학 (기초만)
+- 학위 무관 (실력 중심)
+
+
+AI 앱 개발자:
+
+필수:
+- 일반 프로그래밍 (Python, JavaScript)
+- API 사용법
+- 웹/앱 개발
+
+선택:
+- AI 이론 (깊이 몰라도 됨)
+- ChatGPT API 문서만 읽어도 충분
+
+
+데이터 과학자:
+
+필수:
+- 통계
+- Python (pandas, matplotlib)
+- SQL
+- 비즈니스 이해
+
+선택:
+- 딥러닝 (간단한 모델만)
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 나는 어디로?</h2>
+
+            <div class="chat">
+                <div class="q">나는 어떤 길로 가야 해?</div>
+                <div class="a">
+                    <p><span class="key-point">목표에 따라 다른 경로</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">경로별 가이드:
+
+GPT 같은 모델 만들고 싶다:
+→ AI 연구자
+→ 필요: 박사 학위, 수학, 논문
+→ 난이도: ★★★★★
+→ 채용: Google, OpenAI, Meta (극소수)
+
+
+AI 서비스 만들고 싶다:
+→ ML 엔지니어
+→ 필요: 코딩, 머신러닝 기초
+→ 난이도: ★★★★☆
+→ 채용: 스타트업, 중견기업 (많음)
+
+
+AI 기능 앱 만들고 싶다:
+→ AI 앱 개발자
+→ 필요: 웹/앱 개발, API 사용
+→ 난이도: ★★★☆☆
+→ 채용: 모든 IT 회사 (매우 많음)
+
+
+데이터로 인사이트 찾고 싶다:
+→ 데이터 과학자
+→ 필요: 통계, 비즈니스, SQL
+→ 난이도: ★★★☆☆
+→ 채용: 금융, 커머스, 제조 (많음)
+
+
+초보자 추천:
+→ AI 앱 개발자부터 시작
+→ ChatGPT API 활용한 간단한 프로젝트
+→ 점차 ML 엔지니어로 성장
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 실제 취업 시장</h2>
+
+            <div class="chat">
+                <div class="q">AI 개발자 취업 잘 돼?</div>
+                <div class="a">
+                    <p><span class="key-point">2024년 기준, 매우 좋아.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">취업 시장 현황:
+
+수요:
+- AI 관련 채용 공고 급증
+- ChatGPT 이후 폭발적 증가
+- 모든 회사가 "AI 도입" 원함
+
+연봉:
+- 신입 ML 엔지니어: 5000만~7000만
+- 경력 3년: 8000만~1억
+- AI 연구자 (박사): 1억~2억+
+- (2024년 한국 기준)
+
+미국:
+- 신입: $120k~$180k
+- 경력: $200k~$500k+
+
+
+필요 역량:
+
+포트폴리오 필수:
+- GitHub에 프로젝트
+- Kaggle 대회 참여
+- 개인 블로그 운영
+
+실무 경험:
+- 인턴, 부트캠프
+- 오픈소스 기여
+- 해커톤
+
+
+진입 장벽:
+- 예전: 매우 높음 (박사 필수)
+- 지금: 낮아짐 (독학 가능)
+- 하지만 경쟁 치열
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 미래 전망</h2>
+
+            <div class="chat">
+                <div class="q">AI가 AI 개발자를 대체하지 않을까?</div>
+                <div class="a">
+                    <p><span class="warning">역설적으로, AI가 발전할수록 AI 개발자 수요 증가.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">미래 전망:
+
+AI가 못 하는 것:
+
+1. 문제 정의
+   → "무엇을 만들지" 결정
+   → 비즈니스 이해 필요
+
+2. 데이터 준비
+   → "어떤 데이터를 수집할지"
+   → 도메인 지식 필요
+
+3. 윤리적 판단
+   → "편향 제거", "공정성"
+   → 사람의 가치 판단 필요
+
+4. 창의적 문제 해결
+   → 새로운 접근법
+   → AI는 패턴만 따름
+
+
+변화하는 역할:
+
+과거 (2020년 이전):
+→ 코딩 많이 함
+→ 알고리즘 직접 구현
+
+현재 (2024년):
+→ 라이브러리 활용
+→ 모델 선택, 조합
+
+미래 (2030년?):
+→ AI가 코딩 대신
+→ 사람은 전략, 판단
+→ "AI 매니저" 역할
+
+
+→ 일의 성격은 바뀌지만
+→ 수요는 오히려 증가
+</code>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>핵심:</strong></p>
+                    <p>AI 개발자 = AI를 만드는 사람 + AI를 관리하는 사람</p>
+                    <p>앞으로는 후자가 더 중요해질 거야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>다양한 역할</strong> - 연구자, ML 엔지니어, 앱 개발자, 데이터 과학자</li>
+                <li><strong>필요 스킬</strong> - 역할마다 다름, 수학부터 API 사용까지</li>
+                <li><strong>진입 방법</strong> - AI 앱 개발자부터 시작 추천</li>
+                <li><strong>취업 시장</strong> - 2024년 매우 좋음, 수요 폭발</li>
+                <li><strong>미래</strong> - AI가 발전해도 AI 개발자 수요는 증가</li>
+                <li><strong>역할 변화</strong> - 코딩 → 전략/판단으로 변화</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic15/">← 이전: 파라미터가 많으면 뭐가 좋은데?</a>
+            <a href="../">Section 1 완료! 목록으로 →</a>
+        </div>
+    </div>
+</body>
+</html>

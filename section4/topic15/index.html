@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPU는 왜 필요해? - Section 4</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #9C27B0;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #9C27B0;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f3e5f5;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #f3e5f5;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #6a1b9a;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #f3e5f5;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #9C27B0; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 4</a>
+            <span>/</span>
+            Topic 15
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 15</div>
+            <h1>GPU는 왜 필요해?</h1>
+            <p>Q. CPU로는 안 돼?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. GPU가 뭐야?</h2>
+
+            <div class="chat">
+                <div class="q">GPU(Graphics Processing Unit)가 뭔데?</div>
+                <div class="a">
+                    <p><span class="key-point">원래 그래픽 처리용 칩</span>이야.</p>
+                    <p>근데 딥러닝에 완벽하게 맞아떨어져서 필수가 됐어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">CPU vs GPU:
+
+CPU (Central Processing Unit):
+- 복잡한 연산을 빠르게 처리
+- 코어 수: 4~64개
+- 순차적 처리에 최적화
+- 범용적
+
+GPU (Graphics Processing Unit):
+- 단순한 연산을 대량으로 처리
+- 코어 수: 수천~수만 개
+- 병렬 처리에 최적화
+- 특수 목적
+
+
+비유:
+CPU = 천재 1명
+- 어려운 문제도 빠르게 풀음
+- 한 번에 하나씩만 처리
+
+GPU = 평범한 사람 1000명
+- 단순한 문제만 풀 수 있음
+- 동시에 1000개 처리</code>
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 왜 딥러닝에 GPU가 좋아?</h2>
+
+            <div class="chat">
+                <div class="q">딥러닝이랑 GPU가 무슨 관계야?</div>
+                <div class="a">
+                    <p><span class="highlight">딥러닝 = 행렬 연산 덩어리</span>야.</p>
+                    <p>그리고 행렬 연산은 병렬 처리가 완벽해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">딥러닝의 연산:
+
+순전파 예시:
+y = W × x + b
+
+W = 1000×1000 행렬
+x = 1000 벡터
+
+→ 100만 번의 곱셈과 덧셈!
+
+
+CPU 처리:
+for i in range(1000):
+    for j in range(1000):
+        result[i] += W[i][j] * x[j]
+
+→ 순차적으로 100만 번 반복
+
+
+GPU 처리:
+모든 계산을 동시에!
+- 코어 1: W[0][0] * x[0] 계산
+- 코어 2: W[0][1] * x[1] 계산
+- ...
+- 코어 1000000: W[999][999] * x[999] 계산
+
+→ 한 번에 끝!
+
+
+속도 차이:
+CPU: 1초
+GPU: 0.001초 (1000배 빠름!)</code>
+        </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 실제 속도 비교</h2>
+
+            <div class="chat">
+                <div class="q">실제로 얼마나 빨라?</div>
+                <div class="a">
+                    <p>비교해볼게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">실험: ResNet-50 학습 (ImageNet)
+
+CPU (Intel i9-12900K):
+- 1 epoch: 약 50시간
+- 100 epoch: 5000시간 = 208일
+→ 7개월!
+
+
+GPU (NVIDIA RTX 4090):
+- 1 epoch: 약 30분
+- 100 epoch: 50시간 = 2일
+→ 100배 빠름!
+
+
+GPU 8개 (NVIDIA A100 × 8):
+- 1 epoch: 약 5분
+- 100 epoch: 8시간
+→ 600배 빠름!
+
+
+결론:
+CPU: 실용적으로 불가능
+GPU: 필수</code>
+        </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>작업</th>
+                    <th>CPU</th>
+                    <th>GPU (RTX 4090)</th>
+                    <th>차이</th>
+                </tr>
+                <tr>
+                    <td>MNIST (간단)</td>
+                    <td>5분</td>
+                    <td>10초</td>
+                    <td>30배</td>
+                </tr>
+                <tr>
+                    <td>CIFAR-10 (중간)</td>
+                    <td>3시간</td>
+                    <td>2분</td>
+                    <td>90배</td>
+                </tr>
+                <tr>
+                    <td>ImageNet (복잡)</td>
+                    <td>208일</td>
+                    <td>2일</td>
+                    <td>100배</td>
+                </tr>
+                <tr>
+                    <td>GPT-3 (거대)</td>
+                    <td>불가능</td>
+                    <td>수백 GPU 필요</td>
+                    <td>-</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. GPU 없이 딥러닝 가능해?</h2>
+
+            <div class="chat">
+                <div class="q">GPU 없으면 딥러닝 못 해?</div>
+                <div class="a">
+                    <p><span class="warning">가능은 하지만...</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">CPU만 있을 때:
+
+가능한 것:
+✅ 작은 데이터셋 (MNIST)
+✅ 간단한 모델 (2-3층)
+✅ 학습 없이 추론만 (사전학습 모델 사용)
+✅ 프로토타입, 실험
+
+불가능한 것:
+❌ 대규모 데이터셋 (ImageNet)
+❌ 깊은 모델 (50층+)
+❌ 실시간 학습
+❌ 최신 모델 (GPT, DALL-E)
+
+
+대안:
+
+1. Google Colab (무료):
+   - 무료 GPU 제공
+   - 시간 제한 있음 (12시간)
+   - 학습용으로 충분
+
+2. Kaggle Notebooks (무료):
+   - 주당 30시간 GPU
+   - 데이터셋 풍부
+
+3. 클라우드 (유료):
+   - AWS, GCP, Azure
+   - 시간당 과금
+   - 본격 연구/개발용
+
+4. 경량 모델 사용:
+   - MobileNet, DistilBERT
+   - CPU로도 실행 가능
+   - 성능은 약간 떨어짐</code>
+        </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 어떤 GPU를 써야 해?</h2>
+
+            <div class="chat">
+                <div class="q">GPU도 종류가 많던데 뭘 써야 해?</div>
+                <div class="a">
+                    <p>용도와 예산에 따라 달라.</p>
+                </div>
+            </div>
+
+            <div class="code-block">개인 학습용:
+
+입문 (MNIST, 간단한 실험):
+- RTX 3060 (12GB)
+- 가격: 약 40만원
+- 충분함
+
+중급 (ImageNet, 본격 학습):
+- RTX 4070 Ti (12GB)
+- RTX 4080 (16GB)
+- 가격: 100~150만원
+- 대부분 작업 가능
+
+고급 (연구, 대회):
+- RTX 4090 (24GB)
+- 가격: 250만원
+- 거의 모든 작업 가능
+
+
+연구실/회사용:
+
+전문가용:
+- NVIDIA A100 (40GB/80GB)
+- 가격: 1500~3000만원
+- 최고 성능
+
+서버용:
+- NVIDIA H100 (80GB)
+- 가격: 5000만원+
+- GPT-4 같은 거대 모델 학습
+
+
+중요한 스펙:
+1. VRAM (메모리): 클수록 좋음
+   - 최소 8GB
+   - 권장 12GB+
+   - 이상적 24GB+
+
+2. CUDA 코어: 많을수록 빠름
+
+3. Tensor 코어: 딥러닝 특화 연산</code>
+        </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. GPU 활용 코드</h2>
+
+            <div class="code-block">PyTorch에서 GPU 사용:
+
+import torch
+
+# GPU 사용 가능한지 확인
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+    print(f"GPU 사용 가능: {torch.cuda.get_device_name(0)}")
+    print(f"GPU 메모리: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB")
+else:
+    device = torch.device("cpu")
+    print("CPU 사용")
+
+
+# 모델을 GPU로 이동
+model = MyModel()
+model = model.to(device)
+
+# 데이터를 GPU로 이동
+for data, target in train_loader:
+    data = data.to(device)
+    target = target.to(device)
+
+    # 학습
+    output = model(data)
+    loss = criterion(output, target)
+    loss.backward()
+    optimizer.step()
+
+
+# 메모리 관리
+torch.cuda.empty_cache()  # 캐시 비우기
+
+
+# 다중 GPU 사용
+if torch.cuda.device_count() > 1:
+    model = nn.DataParallel(model)
+    print(f"{torch.cuda.device_count()}개 GPU 사용")
+
+
+# 혼합 정밀도 (Mixed Precision)
+from torch.cuda.amp import autocast, GradScaler
+
+scaler = GradScaler()
+
+for data, target in train_loader:
+    with autocast():  # 자동으로 FP16 사용
+        output = model(data)
+        loss = criterion(output, target)
+
+    scaler.scale(loss).backward()
+    scaler.step(optimizer)
+    scaler.update()
+
+→ 메모리 절약, 속도 2배 향상!</code>
+        </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>GPU = 병렬 처리 특화</strong> - 수천 개 코어로 동시 계산</li>
+                <li><strong>딥러닝 = 행렬 연산</strong> - GPU와 완벽한 궁합</li>
+                <li><strong>속도 차이 엄청남</strong> - CPU 대비 수십~수백 배 빠름</li>
+                <li><strong>무료 대안 존재</strong> - Colab, Kaggle로 GPU 무료 사용 가능</li>
+                <li><strong>VRAM 중요</strong> - 메모리 크기가 모델 크기 결정</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic14/">← 이전: 에폭, 배치, 이터레이션이 뭐야?</a>
+            <a href="../">목록으로 →</a>
+        </div>
+    </div>
+</body>
+</html>

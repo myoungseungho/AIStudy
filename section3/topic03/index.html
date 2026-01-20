@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>레이블이 뭐야? - Section 3</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+
+        .breadcrumb {
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #2196F3;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #2196F3;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e3f2fd;
+        }
+
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before {
+            content: "Q. ";
+            color: #e65100;
+            font-weight: 700;
+        }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #bbdefb;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #0d47a1;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #2196F3 0%, #42A5F5 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .summary-box ul {
+            list-style: none;
+        }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #bbdefb;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 3</a>
+            <span>/</span>
+            Topic 03
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 03</div>
+            <h1>레이블이 뭐야?</h1>
+            <p>Q. 데이터에 정답을 달아준다는 게?</p>
+        </header>
+
+        <!-- Part 1: 레이블의 의미 -->
+        <div class="conversation">
+            <h2>Part 1. 레이블은 정답 스티커야</h2>
+
+            <div class="chat">
+                <div class="q">레이블(Label)이 뭐야? 왜 필요해?</div>
+                <div class="a">
+                    <p><span class="key-point">레이블 = 데이터에 붙이는 정답 표시</span></p>
+                    <p>옷 가게에서 옷에 가격표 붙이는 거 있지? 그거랑 똑같아.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 도서관 책 분류
+
+책 → 라벨(스티커) 붙이기
+[해리포터] → "판타지"
+[코스모스] → "과학"
+[전쟁과 평화] → "문학"
+
+→ 나중에 책 찾을 때 쉽게 구분 가능
+
+
+AI 학습도 똑같아:
+[고양이 사진] → "고양이"
+[개 사진] → "개"
+[스팸 메일] → "스팸"
+
+→ AI가 나중에 새로운 데이터를 분류할 수 있음</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="highlight">레이블은 "이 데이터가 뭔지" 알려주는 정답이야.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: 레이블의 종류 -->
+        <div class="conversation">
+            <h2>Part 2. 레이블에도 종류가 있어</h2>
+
+            <div class="chat">
+                <div class="q">레이블은 다 똑같은 거 아니야?</div>
+                <div class="a">
+                    <p>아니야. <strong>어떤 문제를 풀거냐</strong>에 따라 다르게 달아.</p>
+                </div>
+            </div>
+
+            <div class="code-block">1. 분류 레이블 (카테고리)
+
+이미지 분류:
+고양이 사진 → "고양이"
+개 사진 → "개"
+새 사진 → "새"
+
+감정 분석:
+"이 영화 최고!" → "긍정"
+"돈 아까워" → "부정"
+
+
+2. 회귀 레이블 (숫자)
+
+집값 예측:
+집 정보 (평수, 위치...) → "5억 2천만원"
+집 정보 (평수, 위치...) → "3억 8천만원"
+
+날씨 예측:
+날씨 데이터 → "27.5도"
+날씨 데이터 → "15.3도"
+
+
+3. 세밀한 레이블 (여러 정보)
+
+객체 탐지:
+이미지 → "고양이 (x:100, y:200, 크기:50x60)"
+이미지 → "사람 (x:300, y:100, 크기:80x120)"</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>보이지?</p>
+                    <p><span class="key-point">문제에 맞게 적절한 형태로 레이블을 달아야 해.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: 레이블링 과정 -->
+        <div class="conversation">
+            <h2>Part 3. 레이블은 누가 달아?</h2>
+
+            <div class="chat">
+                <div class="q">레이블은 컴퓨터가 자동으로 달아줘?</div>
+                <div class="a">
+                    <p><span class="warning">아니, 사람이 직접 달아야 해.</span></p>
+                    <p>그래서 엄청 힘들어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">실제 레이블링 작업:
+
+고양이/개 분류 AI 만들기
+
+1단계: 이미지 수집
+→ 고양이 사진 10,000장
+→ 개 사진 10,000장
+
+2단계: 레이블링 (사람이 직접!)
+사진1 보고 → "고양이" 클릭
+사진2 보고 → "개" 클릭
+사진3 보고 → "고양이" 클릭
+...
+(20,000번 반복)
+
+3단계: 검수
+→ 실수로 잘못 달은 레이블 수정
+→ 애매한 사진 다시 확인
+
+→ 시간, 돈, 인력 엄청 듦</div>
+
+            <div class="chat">
+                <div class="q">이거 사람이 다 해야 돼?</div>
+                <div class="a">
+                    <p>응. 그래서 실제 AI 프로젝트에서는:</p>
+                    <p>1. <strong>크라우드소싱</strong> - 여러 사람에게 나눠서 시킴</p>
+                    <p>2. <strong>전문가 고용</strong> - 의료 AI 같은 경우 전문의가 레이블링</p>
+                    <p>3. <strong>반자동화</strong> - AI가 대충 달고, 사람이 검수</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: 레이블 품질의 중요성 -->
+        <div class="conversation">
+            <h2>Part 4. 레이블이 틀리면 어떻게 돼?</h2>
+
+            <div class="chat">
+                <div class="q">레이블을 잘못 달면 뭐가 문제야?</div>
+                <div class="a">
+                    <p><span class="warning">AI가 잘못된 걸 배워.</span></p>
+                    <p>쉬운 예시로 보여줄게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">잘못된 레이블의 영향:
+
+데이터:
+고양이 사진 → "개" (잘못됨!)
+고양이 사진 → "개" (잘못됨!)
+개 사진 → "고양이" (잘못됨!)
+
+AI 학습 결과:
+→ 고양이를 개로 인식
+→ 개를 고양이로 인식
+→ 완전히 반대로 배움!
+
+
+현실 사례:
+
+의료 AI에서 레이블 실수
+→ 정상 X-ray를 "비정상"으로 레이블
+→ AI가 정상을 비정상으로 진단
+→ 잘못된 치료 가능성
+
+자율주행에서 레이블 실수
+→ 사람을 "장애물"로 레이블
+→ AI가 사람을 단순 장애물로 인식
+→ 사고 위험!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐지?</p>
+                    <p><span class="key-point">"쓰레기 데이터 넣으면, 쓰레기 결과 나온다"</span></p>
+                    <p>이걸 <strong>GIGO (Garbage In, Garbage Out)</strong>라고 해.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: 좋은 레이블 만들기 -->
+        <div class="conversation">
+            <h2>Part 5. 좋은 레이블은 어떻게 만들어?</h2>
+
+            <div class="chat">
+                <div class="q">그럼 레이블을 잘 만들려면 어떻게 해야 해?</div>
+                <div class="a">
+                    <p>몇 가지 원칙이 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">좋은 레이블링 원칙:
+
+1. 일관성
+→ 같은 기준으로 달기
+→ 사람마다 다르게 달면 안 됨
+
+예시:
+진돗개를 누구는 "개", 누구는 "늑대" ❌
+모두 "개"로 통일 ✓
+
+
+2. 정확성
+→ 애매하면 확실히 확인하고 달기
+→ 대충 찍어서 달면 안 됨
+
+
+3. 완전성
+→ 필요한 정보를 빠짐없이 달기
+
+이미지에 고양이 2마리 있으면
+→ 2마리 다 표시해야 함
+
+
+4. 명확한 가이드라인
+→ "이런 경우는 이렇게 달기" 규칙 정해두기
+
+예시:
+Q: 강아지가 멀리 있어서 흐릿하면?
+A: 50% 이상 보이면 "개", 아니면 "배경"</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">레이블 품질 = AI 성능</span>이야.</p>
+                    <p>아무리 좋은 알고리즘이어도, 레이블이 엉망이면 소용없어.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 6: 실전 레이블링 도구 -->
+        <div class="conversation">
+            <h2>Part 6. 실제로는 어떤 도구를 써?</h2>
+
+            <div class="chat">
+                <div class="q">레이블을 일일이 손으로 달아?</div>
+                <div class="a">
+                    <p>아니, <strong>레이블링 도구</strong>를 써.</p>
+                </div>
+            </div>
+
+            <div class="code-block">대표적인 레이블링 도구:
+
+이미지 레이블링:
+- Labelbox: 이미지에 박스 그리고 레이블 달기
+- CVAT: 동영상 프레임마다 레이블링
+- Roboflow: 객체 탐지용 레이블링
+
+텍스트 레이블링:
+- Prodigy: 텍스트 감정, 카테고리 레이블링
+- Amazon SageMaker: 아마존 제공 레이블링 서비스
+
+크라우드소싱 플랫폼:
+- Amazon MTurk: 여러 사람에게 레이블 작업 의뢰
+- Scale AI: 전문 레이블러들이 작업</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>현실에서는 이런 도구 + 사람 조합으로 레이블링해.</p>
+                    <p>100% 자동은 불가능하고, 사람의 품질 관리가 꼭 필요해.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>레이블 = 정답 표시</strong> - 데이터에 "이게 뭔지" 알려주는 스티커</li>
+                <li><strong>종류가 다양</strong> - 카테고리, 숫자, 위치 정보 등 문제에 맞게 달기</li>
+                <li><strong>사람이 직접 달아야 함</strong> - 자동화 불가능, 시간과 비용 많이 듦</li>
+                <li><strong>품질이 중요</strong> - 레이블이 틀리면 AI가 잘못 배움 (GIGO)</li>
+                <li><strong>일관성과 정확성</strong> - 같은 기준으로 정확하게 달아야 함</li>
+                <li><strong>전문 도구 사용</strong> - 레이블링을 돕는 다양한 도구 활용</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic02/">← 이전: 지도학습이 뭐야?</a>
+            <a href="../topic04/">다음: 비지도학습은 정답 없이 배워? →</a>
+        </div>
+    </div>
+</body>
+</html>

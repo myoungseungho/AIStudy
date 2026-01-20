@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 학습 - 완전 초보부터 학부 수준까지</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* 헤더 */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #111;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* 섹션 그리드 */
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #eee;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .section-card:hover {
+            border-color: var(--section-color);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+            transform: translateY(-4px);
+        }
+
+        .section-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #111;
+        }
+
+        .section-desc {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .section-count {
+            font-size: 0.85rem;
+            color: #999;
+            font-weight: 500;
+        }
+
+        .section-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        /* 섹션별 색상 */
+        .section-card[data-color="#4CAF50"] { --section-color: #4CAF50; }
+        .section-card[data-color="#FF9800"] { --section-color: #FF9800; }
+        .section-card[data-color="#2196F3"] { --section-color: #2196F3; }
+        .section-card[data-color="#9C27B0"] { --section-color: #9C27B0; }
+        .section-card[data-color="#00BCD4"] { --section-color: #00BCD4; }
+        .section-card[data-color="#E91E63"] { --section-color: #E91E63; }
+        .section-card[data-color="#FF5722"] { --section-color: #FF5722; }
+        .section-card[data-color="#795548"] { --section-color: #795548; }
+
+        .section-card[data-color="#4CAF50"] .section-badge { background: #E8F5E9; color: #2E7D32; }
+        .section-card[data-color="#FF9800"] .section-badge { background: #FFF3E0; color: #E65100; }
+        .section-card[data-color="#2196F3"] .section-badge { background: #E3F2FD; color: #1565C0; }
+        .section-card[data-color="#9C27B0"] .section-badge { background: #F3E5F5; color: #6A1B9A; }
+        .section-card[data-color="#00BCD4"] .section-badge { background: #E0F7FA; color: #00838F; }
+        .section-card[data-color="#E91E63"] .section-badge { background: #FCE4EC; color: #AD1457; }
+        .section-card[data-color="#FF5722"] .section-badge { background: #FBE9E7; color: #BF360C; }
+        .section-card[data-color="#795548"] .section-badge { background: #EFEBE9; color: #4E342E; }
+
+        /* 통계 */
+        .stats {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 40px;
+        }
+
+        .stats h2 {
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+            color: #111;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+        }
+
+        .stat-item {
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #7C3AED;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* 소개 */
+        .intro {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        .intro h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #111;
+        }
+
+        .intro p {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .intro ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .intro li {
+            padding: 8px 0;
+            padding-left: 28px;
+            position: relative;
+        }
+
+        .intro li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-icon">🤖</div>
+            <h1>인공지능(AI) 학습 커리큘럼</h1>
+            <p>완전 초보부터 학부 수준까지 - 스캐폴딩 방식으로 배우는 AI 원리</p>
+        </header>
+
+        <div class="stats">
+            <h2>📊 학습 통계</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">121</div>
+                    <div class="stat-label">총 주제 수</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">메인 섹션</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">레벨 2</div>
+                    <div class="stat-label">목표 수준 (학부 졸업)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="intro">
+            <h2>🎯 이 커리큘럼의 목표</h2>
+            <p>이 과정을 마치면 다음을 할 수 있게 됩니다:</p>
+            <ul>
+                <li>"ChatGPT는 어떻게 작동해?" 같은 질문에 원리부터 설명 가능</li>
+                <li>AI 뉴스와 기술 블로그를 읽고 완벽히 이해</li>
+                <li>간단한 CNN, RNN, Transformer 모델 직접 구현</li>
+                <li>프로젝트에 맞는 AI 기술 선택과 판단 능력</li>
+                <li>AI 논문 초록(Abstract)을 읽고 핵심 파악</li>
+            </ul>
+        </div>
+
+        <h2 style="margin-bottom: 32px; font-size: 1.8rem; color: #111;">📚 학습 섹션</h2>
+
+        <div class="section-grid">
+            <a href="./section1/" class="section-card" data-color="#4CAF50">
+                <div class="section-icon">🌱</div>
+                <h3 class="section-title">1. AI 기초 & 첫 만남</h3>
+                <p class="section-desc">"AI가 뭔지 아는 것 같은데 설명은 못하겠어"부터 시작</p>
+                <div class="section-count">16개 주제</div>
+                <div class="section-badge">초급</div>
+            </a>
+
+            <a href="./section2/" class="section-card" data-color="#FF9800">
+                <div class="section-icon">🔢</div>
+                <h3 class="section-title">2. AI를 위한 수학</h3>
+                <p class="section-desc">"수포자도 이해할 수 있는" AI 수학의 핵심</p>
+                <div class="section-count">15개 주제</div>
+                <div class="section-badge">초급-중급</div>
+            </a>
+
+            <a href="./section3/" class="section-card" data-color="#2196F3">
+                <div class="section-icon">🎯</div>
+                <h3 class="section-title">3. 머신러닝 기초</h3>
+                <p class="section-desc">"컴퓨터가 스스로 배운다"는 말의 진짜 의미</p>
+                <div class="section-count">15개 주제</div>
+                <div class="section-badge">중급</div>
+            </a>
+
+            <a href="./section4/" class="section-card" data-color="#9C27B0">
+                <div class="section-icon">🧠</div>
+                <h3 class="section-title">4. 딥러닝과 신경망</h3>
+                <p class="section-desc">"뇌를 흉내낸다"는 신경망의 비밀</p>
+                <div class="section-count">15개 주제</div>
+                <div class="section-badge">중급</div>
+            </a>
+
+            <a href="./section5/" class="section-card" data-color="#00BCD4">
+                <div class="section-icon">👁️</div>
+                <h3 class="section-title">5. 컴퓨터 비전</h3>
+                <p class="section-desc">"컴퓨터가 보는 법"을 배우다</p>
+                <div class="section-count">15개 주제</div>
+                <div class="section-badge">중급-고급</div>
+            </a>
+
+            <a href="./section6/" class="section-card" data-color="#E91E63">
+                <div class="section-icon">💬</div>
+                <h3 class="section-title">6. 자연어처리 (NLP)</h3>
+                <p class="section-desc">"컴퓨터가 언어를 이해한다"는 말의 진실</p>
+                <div class="section-count">15개 주제</div>
+                <div class="section-badge">중급-고급</div>
+            </a>
+
+            <a href="./section7/" class="section-card" data-color="#FF5722">
+                <div class="section-icon">🎮</div>
+                <h3 class="section-title">7. 강화학습</h3>
+                <p class="section-desc">"스스로 시행착오로 배운다" - 게임 AI의 원리</p>
+                <div class="section-count">15개 주제</div>
+                <div class="section-badge">고급</div>
+            </a>
+
+            <a href="./section8/" class="section-card" data-color="#795548">
+                <div class="section-icon">🚀</div>
+                <h3 class="section-title">8. AI 응용 & 윤리</h3>
+                <p class="section-desc">"AI를 어디에 어떻게 써야 할까?" - 실전과 책임</p>
+                <div class="section-count">15개 주제</div>
+                <div class="section-badge">실전</div>
+            </a>
+        </div>
+
+        <div class="intro">
+            <h2>📖 학습 방법</h2>
+            <p>각 주제는 <strong>스캐폴딩(Scaffolding) 방식</strong>으로 작성되어 있습니다:</p>
+            <ul>
+                <li>초보자가 자연스럽게 가질 만한 질문부터 시작</li>
+                <li>답을 바로 주지 않고, 생각을 유도하는 질문으로 안내</li>
+                <li>비유와 시각 자료로 추상적 개념을 구체화</li>
+                <li>단계별로 난이도를 높여가며 깊이 있게 이해</li>
+            </ul>
+            <p style="margin-top: 20px;"><strong>순서대로 학습하는 것을 권장합니다.</strong> 각 섹션은 이전 섹션의 개념을 기반으로 합니다.</p>
+        </div>
+    </div>
+</body>
+</html>

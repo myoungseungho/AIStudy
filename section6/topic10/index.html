@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>어텐션이 뭐야? - Section 6</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #E91E63;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #E91E63;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #fce4ec;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #fce4ec;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c2185b;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #E91E63 0%, #EC407A 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fce4ec;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #E91E63; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 6</a>
+            <span>/</span>
+            Topic 10
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 10</div>
+            <h1>어텐션이 뭐야?</h1>
+            <p>Q. 중요한 부분에 집중한다는 거야?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. Seq2Seq의 한계를 넘어</h2>
+
+            <div class="chat">
+                <div class="q">어텐션(Attention)이 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">중요한 부분에 집중하는 메커니즘</span>이야.</p>
+                    <p>사람이 글을 읽을 때처럼, <span class="highlight">필요한 부분만 더 자세히 본다</span>는 아이디어지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 시험 공부
+
+일반 공부 (Seq2Seq without Attention):
+교과서 전체를 한 번 읽고
+→ 머릿속에 요약본 하나만 기억
+→ 시험 볼 때 그 요약본만 참고
+→ 세부 내용은 잊어버림 😵
+
+어텐션 공부:
+교과서 전체를 읽되
+→ 중요한 부분에 형광펜 표시
+→ 시험 문제마다 필요한 부분 다시 찾아봄
+→ "이 문제는 3페이지 내용!" 집중 🎯
+→ 훨씬 정확한 답!
+</div>
+
+            <div class="chat">
+                <div class="q">Seq2Seq과 뭐가 달라?</div>
+            </div>
+
+            <div class="code-block">차이점:
+
+기존 Seq2Seq:
+입력: "I love you very much"
+→ Context Vector 하나: [0.5, 0.8, 0.3]
+→ 이 벡터로 모든 단어 번역
+
+출력 생성:
+"나는" 생성할 때: Context [0.5, 0.8, 0.3] 사용
+"너를" 생성할 때: Context [0.5, 0.8, 0.3] 사용
+"사랑해" 생성할 때: Context [0.5, 0.8, 0.3] 사용
+→ 항상 같은 정보만 사용!
+
+
+Attention 추가:
+입력: "I love you very much"
+→ 모든 단어의 hidden state 저장
+
+출력 생성:
+"나는" 생성할 때: "I"에 집중 (0.9) 👈
+"너를" 생성할 때: "you"에 집중 (0.8) 👈
+"사랑해" 생성할 때: "love"에 집중 (0.9) 👈
+→ 매번 다른 부분 참고!
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 어텐션 작동 원리</h2>
+
+            <div class="chat">
+                <div class="q">어텐션은 구체적으로 어떻게 작동해?</div>
+                <div class="a">
+                    <p>3단계로 나눌 수 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">1단계: 점수 계산 (Score)
+
+입력: "I love you"
+Encoder hidden states:
+h₁ = [0.1, 0.5] (I)
+h₂ = [0.3, 0.8] (love)
+h₃ = [0.2, 0.6] (you)
+
+Decoder 현재 상태:
+s = [0.4, 0.7] ("너를" 생성 중)
+
+각 입력 단어와 현재 상태의 유사도 계산:
+score(s, h₁) = s · h₁ = 0.4×0.1 + 0.7×0.5 = 0.39
+score(s, h₂) = s · h₂ = 0.4×0.3 + 0.7×0.8 = 0.68
+score(s, h₃) = s · h₃ = 0.4×0.2 + 0.7×0.6 = 0.50
+
+→ "love"가 가장 관련 높음!
+</div>
+
+            <div class="code-block">2단계: 가중치 계산 (Attention Weights)
+
+점수를 확률로 변환 (Softmax):
+scores = [0.39, 0.68, 0.50]
+
+softmax([0.39, 0.68, 0.50])
+= [0.20, 0.45, 0.35]
+
+해석:
+- "I"에 20% 집중
+- "love"에 45% 집중 👈 가장 높음!
+- "you"에 35% 집중
+
+→ 합이 100%
+→ 어디에 얼마나 집중할지 결정
+</div>
+
+            <div class="code-block">3단계: Context Vector 계산
+
+Attention weights로 가중 평균:
+
+Context = 0.20 × h₁ + 0.45 × h₂ + 0.35 × h₃
+        = 0.20 × [0.1, 0.5]
+        + 0.45 × [0.3, 0.8]
+        + 0.35 × [0.2, 0.6]
+        = [0.02, 0.10]
+        + [0.14, 0.36]
+        + [0.07, 0.21]
+        = [0.23, 0.67]
+
+→ "love"의 정보가 가장 많이 반영됨!
+→ 이 Context로 "너를" 생성
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>보이지? <span class="highlight">매번 다른 부분에 집중</span>하는 거야!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 어텐션의 위력</h2>
+
+            <div class="chat">
+                <div class="q">어텐션이 진짜 효과있어?</div>
+                <div class="a">
+                    <p>엄청나! 성능이 확 올라가.</p>
+                </div>
+            </div>
+
+            <div class="code-block">성능 비교 (기계 번역):
+
+짧은 문장 (10단어):
+Seq2Seq: BLEU 35
++ Attention: BLEU 42 (+7점!)
+
+중간 문장 (30단어):
+Seq2Seq: BLEU 25
++ Attention: BLEU 38 (+13점!)
+
+긴 문장 (50단어):
+Seq2Seq: BLEU 15
++ Attention: BLEU 35 (+20점!) 🚀
+
+→ 긴 문장일수록 효과 엄청남!
+
+
+번역 품질 예시:
+
+입력: "The agreement on the European Economic Area was signed in August 1992"
+
+Seq2Seq:
+"유럽 경제 지역이 8월에 서명되었다" ❌
+→ 주어 누락, 의미 불명확
+
++ Attention:
+"유럽 경제 지역에 관한 협정이 1992년 8월에 서명되었다" ✅
+→ 완벽한 번역!
+</div>
+
+            <div class="chat">
+                <div class="q">시각화하면 어떻게 보여?</div>
+            </div>
+
+            <div class="code-block">Attention Visualization:
+
+입력: "I love you"
+출력: "나는 너를 사랑해"
+
+Attention Map (숫자는 가중치):
+
+        I    love   you
+나는    0.8   0.1   0.1  ← "I"에 집중
+너를    0.1   0.2   0.7  ← "you"에 집중
+사랑해  0.1   0.7   0.2  ← "love"에 집중
+
+→ 대각선처럼 일대일 대응!
+→ 모델이 "번역 관계"를 학습했음
+
+
+긴 문장 예시:
+"The black cat sat on the mat"
+"검은 고양이가 매트 위에 앉았다"
+
+           The black cat sat on the mat
+검은         0.0  0.6  0.2 0.0 0.0 0.0 0.2
+고양이가     0.0  0.1  0.7 0.0 0.0 0.0 0.2
+매트         0.0  0.0  0.0 0.0 0.1 0.8 0.1
+위에         0.0  0.0  0.0 0.0 0.8 0.1 0.1
+앉았다       0.0  0.0  0.1 0.7 0.1 0.0 0.1
+
+→ 정확하게 대응되는 단어 찾음!
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 어텐션 종류</h2>
+
+            <div class="chat">
+                <div class="q">어텐션도 여러 종류가 있어?</div>
+            </div>
+
+            <div class="code-block">1. Dot-Product Attention
+가장 단순한 방법
+score(s, h) = s · h
+
+장점: 빠름
+단점: 벡터 크기에 민감
+
+
+2. Additive (Bahdanau) Attention
+신경망으로 점수 계산
+score(s, h) = v · tanh(W₁s + W₂h)
+
+장점: 성능 좋음
+단점: 느림
+
+
+3. Scaled Dot-Product
+Transformer에서 사용
+score(s, h) = (s · h) / √d
+
+장점: 안정적
+단점: 약간 복잡
+
+
+4. Multi-Head Attention
+여러 어텐션을 동시에
+→ 다양한 관점에서 집중
+→ Transformer의 핵심!
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 어텐션의 영향</h2>
+
+            <div class="chat">
+                <div class="q">어텐션이 왜 이렇게 중요해?</div>
+                <div class="a">
+                    <p>어텐션은 <span class="key-point">AI 역사의 전환점</span>이야!</p>
+                </div>
+            </div>
+
+            <div class="code-block">어텐션의 영향:
+
+2014년: Attention 발명
+→ 기계 번역 성능 대폭 상승
+
+2017년: "Attention is All You Need" 논문
+→ RNN 완전히 제거, Attention만 사용
+→ Transformer 탄생
+
+2018년: BERT, GPT 등장
+→ Transformer 기반
+→ NLP 대혁명
+
+2020년~: GPT-3, ChatGPT
+→ 모두 Transformer 사용
+→ 어텐션이 핵심 메커니즘
+
+
+결론:
+어텐션 없었으면 ChatGPT도 없었다!
+→ 현대 AI의 가장 중요한 발명
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>다음 토픽에서 어텐션만 사용하는 <span class="highlight">Transformer</span>를 배울 거야!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>어텐션</strong> - 입력의 중요한 부분에 선택적으로 집중하는 메커니즘</li>
+                <li><strong>작동 원리</strong> - 점수 계산 → 가중치 변환 → Context Vector 생성</li>
+                <li><strong>효과</strong> - 긴 시퀀스에서 성능 대폭 향상, 번역 품질 개선</li>
+                <li><strong>시각화</strong> - Attention Map으로 모델이 어디를 보는지 확인 가능</li>
+                <li><strong>영향</strong> - Transformer, BERT, GPT 등 현대 NLP의 핵심 기술</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic09/">← 이전: Seq2Seq가 뭐야?</a>
+            <a href="../topic11/">다음: 트랜스포머가 뭐길래 난리야? →</a>
+        </div>
+    </div>
+</body>
+</html>

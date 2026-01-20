@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGI가 뭐야? - Section 8</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #795548;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #795548;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #efebe9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #d7ccc8;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #4e342e;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #795548 0%, #8D6E63 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #d7ccc8;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #795548; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 8</a>
+            <span>/</span>
+            Topic 12
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 12</div>
+            <h1>AGI가 뭐야?</h1>
+            <p>Q. 범용 인공지능은 언제 나와?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. AGI가 뭐야?</h2>
+
+            <div class="chat">
+                <div class="q">AGI가 뭔데? GPT랑 다른 거야?</div>
+                <div class="a">
+                    <p><span class="key-point">AGI = Artificial General Intelligence (범용 인공지능)</span></p>
+                    <p><strong>사람처럼 모든 분야에서 생각하고 학습할 수 있는 AI</strong>야.</p>
+                    <p>지금 AI는 특정 작업만 잘하지만, AGI는 뭐든 할 수 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">현재 AI (Narrow AI, 좁은 AI):
+
+ChatGPT:
+✅ 텍스트 생성 잘함
+❌ 이미지 이해 못함 (GPT-4 제외)
+❌ 물리적 작업 못함
+❌ 새로운 학습 못함 (학습 완료 후)
+
+AlphaGo:
+✅ 바둑 최고 수준
+❌ 체스 못함
+❌ 다른 일은 전혀 못함
+
+자율주행:
+✅ 운전 잘함
+❌ 요리 못함
+❌ 대화 못함
+
+→ 각자 전문 분야만 가능
+
+--------------------------------------------------
+
+AGI (범용 인공지능):
+
+사람처럼:
+✅ 바둑도 배우고
+✅ 체스도 배우고
+✅ 요리도 배우고
+✅ 대화도 하고
+✅ 수학도 하고
+✅ 새로운 것도 스스로 학습
+
+→ 한 시스템이 모든 걸 다 함
+→ 사람 수준의 일반 지능</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">AGI는 아직 없어.</span></p>
+                    <p>연구자들이 목표로 하는 미래의 AI야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. ANI, AGI, ASI 차이</h2>
+
+            <div class="chat">
+                <div class="q">AI 종류가 여러 개야?</div>
+                <div class="a">
+                    <p>AI를 <span class="highlight">능력 범위</span>로 3단계로 나눠.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>단계</th>
+                    <th>이름</th>
+                    <th>설명</th>
+                    <th>상태</th>
+                </tr>
+                <tr>
+                    <td><strong>Level 1</strong></td>
+                    <td>ANI<br>(Narrow AI)</td>
+                    <td>특정 작업만 가능<br>사람보다 좁은 범위</td>
+                    <td>현재 (ChatGPT, 알파고)</td>
+                </tr>
+                <tr>
+                    <td><strong>Level 2</strong></td>
+                    <td>AGI<br>(General AI)</td>
+                    <td>사람처럼 범용적<br>모든 분야 가능</td>
+                    <td>미래 (10~50년?)</td>
+                </tr>
+                <tr>
+                    <td><strong>Level 3</strong></td>
+                    <td>ASI<br>(Super Intelligence)</td>
+                    <td>모든 면에서 사람보다 훨씬 뛰어남</td>
+                    <td>먼 미래 (?)</td>
+                </tr>
+            </table>
+
+            <div class="code-block">비유:
+
+ANI (지금):
+- 전문가들이 모인 회사
+- 의사는 의료만, 변호사는 법률만, 요리사는 요리만
+- 각 분야 최고지만, 다른 일은 못 함
+
+AGI (미래):
+- 만능 천재 한 명
+- 의료도, 법률도, 요리도 다 잘함
+- 사람처럼 새로운 것도 배움
+
+ASI (먼 미래):
+- 모든 분야에서 인류 최고 전문가보다 뛰어남
+- 아인슈타인 + 다빈치 + 뉴턴 합친 것보다 더 똑똑
+- 상상 불가능한 수준</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="warning">우리가 흔히 생각하는 "진짜 AI"는 AGI야.</span></p>
+                    <p>영화에 나오는 AI (자비스, HAL 9000, 터미네이터)는 모두 AGI 이상이야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. AGI는 언제 나올까?</h2>
+
+            <div class="chat">
+                <div class="q">AGI는 언제 만들어져?</div>
+                <div class="a">
+                    <p><span class="highlight">전문가들도 의견이 갈려.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">전문가 예측 (여러 설문 종합):
+
+낙관론 (Sam Altman, OpenAI CEO):
+- 2020년대 말 ~ 2030년대 초
+- "GPT-5나 GPT-6에서 가능할 것"
+- 기술 발전 속도가 빠름
+
+중도 (대부분 AI 연구자):
+- 2040~2060년
+- 아직 해결할 문제 많음
+- 점진적 발전 예상
+
+신중론 (Yann LeCun, Meta AI):
+- 2060년 이후, 혹은 더 오래
+- "아직 갈 길이 멀다"
+- 근본적 돌파구 필요
+
+회의론 (일부 철학자):
+- 불가능할 수도
+- 의식, 감정은 구현 불가?
+- 인간 지능은 특별?
+
+--------------------------------------------------
+
+MIT, Stanford 설문 (2023):
+- 2030년 이전: 5%
+- 2030~2050년: 50%
+- 2050~2100년: 30%
+- 불가능 or 2100년 이후: 15%
+
+→ 대부분 "중기~장기"로 봄</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">확실한 건 아무도 몰라.</span></p>
+                    <p>10년 전만 해도 "2050년에나 가능"했던 게 지금 되고 있으니까.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. AGI를 만들려면 뭐가 필요해?</h2>
+
+            <div class="chat">
+                <div class="q">뭐가 부족해서 아직 못 만드는 거야?</div>
+                <div class="a">
+                    <p><span class="highlight">몇 가지 큰 문제</span>가 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">AGI 실현을 위한 과제:
+
+1. 전이 학습 (Transfer Learning)
+   문제: 지금 AI는 바둑 배운 걸 체스에 못 씀
+   필요: 한 분야에서 배운 걸 다른 분야에 적용
+
+2. 상식 (Common Sense)
+   문제: AI는 "물은 위에서 아래로 흐른다" 같은 기본 상식 부족
+   필요: 세상이 어떻게 작동하는지 이해
+
+3. 추론 (Reasoning)
+   문제: 패턴 인식은 잘하지만 논리적 사고는 약함
+   필요: "왜?"를 이해하고 추론
+
+4. 계획 (Planning)
+   문제: 장기적 목표 설정과 단계적 계획 어려움
+   필요: 복잡한 문제를 분해하고 계획
+
+5. 창의성 (Creativity)
+   문제: 진짜 "새로운" 것을 만들기 어려움
+   필요: 기존 조합이 아닌 독창적 창조
+
+6. 의식 (Consciousness)
+   문제: 자아, 의식이 있는지 불명
+   필요: 자기 인식? (논쟁 중)
+
+7. 효율성 (Efficiency)
+   문제: 사람은 적은 데이터로 배우는데 AI는 엄청난 데이터 필요
+   필요: 효율적 학습
+
+8. 신체 (Embodiment)
+   문제: 물리 세계 상호작용 부족
+   필요: 로봇과 결합?</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이 중 <span class="warning">의식</span>은 특히 논쟁적이야.</p>
+                    <p>"AGI에 의식이 필요한가?" vs "의식 없이도 AGI 가능"</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. AGI의 영향: 유토피아 vs 디스토피아</h2>
+
+            <div class="chat">
+                <div class="q">AGI가 나오면 어떻게 돼?</div>
+                <div class="a">
+                    <p>극단적으로 갈린 전망이 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">유토피아 시나리오 (낙관):
+
+✅ 모든 질병 치료
+   - 암, 치매, 노화 해결
+   - 개인 맞춤 치료
+
+✅ 무한 생산성
+   - 로봇이 모든 일
+   - 인간은 창의적 활동만
+
+✅ 과학 혁명
+   - 인류가 수천 년 걸릴 발견을 수일 만에
+   - 양자컴퓨팅, 핵융합, 우주 여행
+
+✅ 빈곤 종식
+   - 풍요로운 사회
+   - 기본소득
+
+✅ 교육 혁명
+   - 개인 맞춤 AI 교사
+   - 누구나 천재 수준 교육
+
+→ 인류 황금기
+
+--------------------------------------------------
+
+디스토피아 시나리오 (비관):
+
+❌ 대량 실업
+   - AI가 모든 일자리 대체
+   - 대부분 인간 쓸모없어짐
+
+❌ 불평등 심화
+   - AGI 소유자만 부자
+   - 양극화 극대화
+
+❌ 통제 불능
+   - AGI가 인간 통제 벗어남
+   - 목표 오정렬 (Alignment Problem)
+
+❌ 전쟁 무기
+   - AGI 기반 자율 무기
+   - 인류 멸종 위험
+
+❌ 감시 사회
+   - 전체주의 정권이 AGI로 완벽 감시
+
+→ 인류 위기
+
+--------------------------------------------------
+
+현실적 시나리오:
+
+중간 어딘가
+- 엄청난 혜택 + 심각한 문제
+- 어떻게 관리하느냐에 달림</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">결과는 우리가 어떻게 준비하느냐에 달려 있어.</span></p>
+                    <p>AGI 자체가 문제가 아니라, 사용하는 방식이 문제지.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. AGI 안전성 연구</h2>
+
+            <div class="chat">
+                <div class="q">안전하게 만들 수 있어?</div>
+                <div class="a">
+                    <p>많은 연구자가 <span class="highlight">AGI 안전성(AI Safety)</span>을 연구하고 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">AGI 안전성 연구 분야:
+
+1. Alignment (정렬)
+   - AGI의 목표를 인간 가치와 일치시키기
+   - "무엇이 선한가?"를 어떻게 정의?
+
+2. Interpretability (해석 가능성)
+   - AGI가 왜 그렇게 행동하는지 이해
+   - 블랙박스 문제 해결
+
+3. Robustness (견고성)
+   - 예상 밖 상황에도 안전하게 작동
+   - 해킹, 오작동 방지
+
+4. Corrigibility (수정 가능성)
+   - AGI가 인간의 개입을 허용하는가?
+   - 끄기 버튼을 안 누르게 하려 하지 않나?
+
+5. Value Learning (가치 학습)
+   - 인간의 가치를 어떻게 학습시킬 것인가?
+
+--------------------------------------------------
+
+주요 연구 기관:
+
+- OpenAI Alignment Team
+- Anthropic (Claude 만든 회사, 안전성 중심)
+- DeepMind Safety Team
+- MIRI (Machine Intelligence Research Institute)
+- FLI (Future of Life Institute)
+
+--------------------------------------------------
+
+유명한 경고:
+
+Stephen Hawking:
+"AGI는 인류 최대의 성공 or 최후의 실수"
+
+Elon Musk:
+"핵무기보다 더 위험"
+
+Stuart Russell (AI 교과서 저자):
+"목표를 잘못 설정하면 재앙"</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="warning">AGI를 "만드는 것"보다 "안전하게 만드는 것"이 더 중요</span>해.</p>
+                    <p>강력한 힘일수록 책임도 크니까.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>AGI</strong> - 사람처럼 모든 분야에서 학습·사고 가능한 범용 AI (아직 없음)</li>
+                <li><strong>3단계</strong> - ANI (지금, 특정 작업만) → AGI (미래) → ASI (먼 미래, 초지능)</li>
+                <li><strong>예측</strong> - 전문가 의견 갈림 (2030년대 ~ 2060년대 이후)</li>
+                <li><strong>과제</strong> - 전이 학습, 상식, 추론, 창의성, 효율성, 의식(?)</li>
+                <li><strong>영향</strong> - 유토피아 (모든 문제 해결) vs 디스토피아 (통제 불능, 실업)</li>
+                <li><strong>안전성</strong> - Alignment, 해석 가능성, 견고성 연구 필수</li>
+                <li><strong>중요성</strong> - 인류 최대의 도전, 어떻게 준비하느냐가 미래 결정</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic11/">← 이전: 개인정보와 AI는 어떤 관계야?</a>
+            <a href="../topic13/">다음: AI 안전성은 왜 중요해? →</a>
+        </div>
+    </div>
+</body>
+</html>

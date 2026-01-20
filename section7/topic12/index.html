@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정책 경사법이 뭐야? - Section 7</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF5722;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF5722;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #ffebe9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #ffccbc;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #d84315;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #FF5722 0%, #FF7043 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #ffccbc; }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #FF5722; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 7</a>
+            <span>/</span>
+            Topic 12
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 12</div>
+            <h1>정책 경사법이 뭐야?</h1>
+            <p>Q. 정책을 직접 학습할 수 있어?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 정책 경사법이란?</h2>
+
+            <div class="chat">
+                <div class="q">정책 경사법(Policy Gradient)이 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">Q값을 거치지 않고 정책을 직접 학습하는 방법</span>이야.</p>
+                    <p>Q-러닝, DQN과는 다른 접근이지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">가치 기반 vs 정책 기반:
+
+가치 기반 (Q-Learning, DQN):
+1. Q값(가치) 학습
+2. Q값이 높은 행동 선택
+
+상태 → [Q함수] → Q값들 → 최대값 선택 → 행동
+
+
+정책 기반 (Policy Gradient):
+1. 정책을 직접 학습
+2. 정책이 행동 확률 출력
+
+상태 → [정책 네트워크] → 행동 확률 → 샘플링 → 행동</div>
+
+            <div class="chat">
+                <div class="q">왜 직접 학습해?</div>
+                <div class="a">
+                    <p>Q 함수를 거치면 <span class="highlight">연속 행동이나 확률적 정책</span>을 다루기 어려워.</p>
+                    <p>정책 경사법은 이 문제를 해결해.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 정책 경사법의 필요성</h2>
+
+            <div class="chat">
+                <div class="q">Q-러닝으로 안 되는 게 뭐야?</div>
+                <div class="a">
+                    <p>몇 가지 한계가 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Q-러닝의 한계:
+
+1. 연속 행동 불가
+   예: 로봇 관절 각도 (0~180도)
+   → 무한한 행동 공간
+   → max Q(s, a) 계산 불가능
+
+2. 확률적 정책 불가
+   예: 가위바위보
+   → 항상 같은 선택 = 예측 가능 = 나쁨
+   → 랜덤하게 선택해야 함
+   → Q-러닝은 결정적 정책만
+
+3. 고차원 행동 불가
+   예: 로봇 팔 (관절 7개)
+   → 7차원 행동 공간
+   → Q 테이블 폭발</div>
+
+            <div class="code-block">정책 경사법의 강점:
+
+1. 연속 행동 가능
+   policy(state) → 각도 75.3도 출력
+   → 연속적인 값 직접 출력
+
+2. 확률적 정책 가능
+   policy(state) → [가위:33%, 바위:33%, 보:34%]
+   → 확률 분포 출력, 샘플링
+
+3. 고차원 행동 가능
+   policy(state) → 7차원 벡터 출력
+   → 모든 관절 각도 동시에</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. REINFORCE 알고리즘</h2>
+
+            <div class="chat">
+                <div class="q">정책 경사법은 어떻게 작동해?</div>
+                <div class="a">
+                    <p>가장 기본적인 알고리즘은 <span class="highlight">REINFORCE</span>야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">REINFORCE 핵심 아이디어:
+
+"좋은 결과를 낸 행동의 확률을 높여라"
+
+에피소드 플레이:
+상태1 → 행동1 → 보상1
+상태2 → 행동2 → 보상2
+...
+→ 총 보상 G
+
+학습:
+if G > 0 (좋은 결과):
+    → 선택한 행동들의 확률 ↑
+
+if G < 0 (나쁜 결과):
+    → 선택한 행동들의 확률 ↓</div>
+
+            <div class="code-block">REINFORCE 알고리즘:
+
+# 에피소드 플레이
+episode = []
+state = env.reset()
+
+while not done:
+    # 정책에서 행동 샘플링
+    action = policy(state).sample()
+    next_state, reward, done = env.step(action)
+    episode.append((state, action, reward))
+    state = next_state
+
+# 누적 보상 계산
+G = 0
+for (state, action, reward) in reversed(episode):
+    G = reward + γ * G
+
+    # 정책 업데이트 (그래디언트 상승)
+    loss = -log(policy(state, action)) * G
+    policy.update(loss)</div>
+
+            <div class="chat">
+                <div class="q">왜 그래디언트 "상승"이야?</div>
+                <div class="a">
+                    <p><span class="highlight">보상을 최대화</span>하려고 하거든.</p>
+                    <p>손실을 최소화하는 게 아니라 <strong>보상을 최대화</strong>하는 거야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. Baseline과 Advantage</h2>
+
+            <div class="chat">
+                <div class="q">REINFORCE에 문제는 없어?</div>
+                <div class="a">
+                    <p><span class="warning">분산이 너무 커서 학습이 불안정</span>해.</p>
+                    <p>개선 방법이 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Baseline 추가:
+
+문제:
+G = 100 → "좋은 결과!"라고 판단
+하지만 평균이 200이면? → 실제로는 나쁜 결과
+
+해결:
+Baseline b(s) 도입 (보통 평균 보상)
+
+loss = -log π(a|s) × (G - b(s))
+
+G > b(s): 평균보다 좋음 → 확률 증가
+G < b(s): 평균보다 나쁨 → 확률 감소</div>
+
+            <div class="code-block">Advantage Function:
+
+더 나아가서:
+
+A(s, a) = Q(s, a) - V(s)
+
+"이 행동이 평균보다 얼마나 나은가?"
+
+loss = -log π(a|s) × A(s, a)
+
+장점:
+→ 분산 감소
+→ 학습 안정화
+→ 수렴 속도 향상</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 대표적인 정책 경사법 알고리즘</h2>
+
+            <div class="chat">
+                <div class="q">REINFORCE 말고 다른 것도 있어?</div>
+                <div class="a">
+                    <p>많이 발전했어. 대표적인 것들을 보자.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>알고리즘</th>
+                    <th>특징</th>
+                    <th>사용처</th>
+                </tr>
+                <tr>
+                    <td><strong>REINFORCE</strong></td>
+                    <td>가장 기본적, 단순함</td>
+                    <td>교육용</td>
+                </tr>
+                <tr>
+                    <td><strong>A2C/A3C</strong></td>
+                    <td>Actor-Critic, 병렬 학습</td>
+                    <td>아타리 게임</td>
+                </tr>
+                <tr>
+                    <td><strong>PPO</strong></td>
+                    <td>안정적, 신뢰 영역</td>
+                    <td>로봇, 게임 (가장 인기)</td>
+                </tr>
+                <tr>
+                    <td><strong>TRPO</strong></td>
+                    <td>이론적으로 보장, 복잡</td>
+                    <td>연구용</td>
+                </tr>
+            </table>
+
+            <div class="code-block">PPO (Proximal Policy Optimization):
+
+현재 최고 인기 알고리즘!
+
+핵심 아이디어:
+"정책을 너무 크게 바꾸지 마"
+
+loss = min(
+    ratio × A(s,a),
+    clip(ratio, 1-ε, 1+ε) × A(s,a)
+)
+
+ratio = π_new(a|s) / π_old(a|s)
+
+→ ratio가 [1-ε, 1+ε] 범위 벗어나면 clip
+→ 급격한 변화 방지
+→ 안정적 학습
+
+사용처:
+→ OpenAI Five (Dota 2)
+→ ChatGPT (RLHF)
+→ 로봇 제어</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 가치 기반 vs 정책 기반</h2>
+
+            <div class="chat">
+                <div class="q">둘 중 뭐가 더 나아?</div>
+                <div class="a">
+                    <p>상황에 따라 다르지만, <span class="highlight">요즘은 정책 기반이나 Actor-Critic(혼합)을 많이 써</span>.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>특징</th>
+                    <th>가치 기반 (DQN)</th>
+                    <th>정책 기반 (PG)</th>
+                </tr>
+                <tr>
+                    <td><strong>연속 행동</strong></td>
+                    <td>❌ 불가능</td>
+                    <td>✅ 가능</td>
+                </tr>
+                <tr>
+                    <td><strong>확률적 정책</strong></td>
+                    <td>❌ 어려움</td>
+                    <td>✅ 자연스러움</td>
+                </tr>
+                <tr>
+                    <td><strong>안정성</strong></td>
+                    <td>✅ 상대적으로 안정</td>
+                    <td>❌ 불안정 (개선 필요)</td>
+                </tr>
+                <tr>
+                    <td><strong>샘플 효율</strong></td>
+                    <td>✅ 높음 (replay)</td>
+                    <td>❌ 낮음 (on-policy)</td>
+                </tr>
+                <tr>
+                    <td><strong>수렴 보장</strong></td>
+                    <td>⚠️ 보장 안 됨</td>
+                    <td>✅ 지역 최적 보장</td>
+                </tr>
+            </table>
+
+            <div class="code-block">실전 사용:
+
+이산 행동, 게임:
+→ DQN 추천
+→ 예: 아타리 게임
+
+연속 행동, 로봇:
+→ PPO, SAC 추천
+→ 예: 로봇 제어
+
+복잡한 전략, 다중 에이전트:
+→ PPO, MAPPO 추천
+→ 예: Dota 2, StarCraft
+
+최근 트렌드:
+→ PPO가 가장 범용적
+→ "일단 PPO 써봐" 수준</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">정책 경사법은 강화학습의 또 다른 큰 분야</span>야.</p>
+                    <p>특히 <strong>복잡한 연속 제어 문제</strong>에 필수적이지.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>정책 경사법</strong> - 정책을 직접 학습, Q값 거치지 않음</li>
+                <li><strong>강점</strong> - 연속 행동, 확률적 정책, 고차원 행동 가능</li>
+                <li><strong>REINFORCE</strong> - 가장 기본적인 정책 경사법</li>
+                <li><strong>PPO</strong> - 현재 가장 인기 있는 알고리즘</li>
+                <li><strong>사용처</strong> - 로봇 제어, 게임 AI, RLHF</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic11/">← 이전: 몬테카를로 트리 탐색이 뭐야?</a>
+            <a href="../topic13/">다음: Actor-Critic이 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

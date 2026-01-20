@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>손실함수가 뭐길래 줄여야 해? - Section 2</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF9800;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF9800;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #fff3e0;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #fff3e0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #e65100;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #FF9800 0%, #FFB74D 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fff3e0;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #FF9800; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 2</a>
+            <span>/</span>
+            Topic 09
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 09</div>
+            <h1>손실함수가 뭐길래 줄여야 해?</h1>
+            <p>Q. 오차를 어떻게 숫자로 표현해?</p>
+        </header>
+
+        <!-- Part 1: 손실함수란 -->
+        <div class="conversation">
+            <h2>Part 1. 손실함수가 뭔데?</h2>
+
+            <div class="chat">
+                <div class="q">손실함수(Loss Function)가 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">손실함수 = AI가 얼마나 틀렸는지 측정하는 함수</span></p>
+                    <p>"오차", "비용", "손실" 다 같은 말이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">개념:
+
+예측: 5
+정답: 10
+
+오차 = |예측 - 정답| = |5 - 10| = 5
+
+→ 이 오차를 숫자로 표현한 게 손실함수
+
+
+목표:
+손실 = 0에 가깝게 만들기
+→ 예측이 정답에 가까워짐
+→ AI 성능 향상!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">AI 학습 = 손실함수를 최소화하는 과정</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: MSE -->
+        <div class="conversation">
+            <h2>Part 2. MSE: 회귀 문제</h2>
+
+            <div class="chat">
+                <div class="q">숫자를 예측하는 문제는?</div>
+                <div class="a">
+                    <p><span class="key-point">MSE (Mean Squared Error)</span>를 써.</p>
+                    <p>가장 기본적인 손실함수야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">MSE 공식:
+
+MSE = (1/n) × Σ(예측 - 정답)²
+
+예시:
+데이터 3개
+예측: [3, 5, 7]
+정답: [4, 5, 8]
+
+오차:
+(3-4)² = 1
+(5-5)² = 0
+(7-8)² = 1
+
+MSE = (1+0+1)/3 = 0.667
+
+
+왜 제곱?
+1. 음수/양수 오차 구분 없애기
+   (-2)² = 4, (2)² = 4 → 같은 크기로 취급
+
+2. 큰 오차에 더 큰 페널티
+   오차 1 → 손실 1
+   오차 10 → 손실 100
+   → 큰 실수를 더 강하게 교정
+
+3. 미분하기 쉬움
+   d(x²)/dx = 2x
+   → 경사하강법에 유리</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>사용처:</strong> 주택 가격 예측, 기온 예측 등 연속값</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: Cross Entropy -->
+        <div class="conversation">
+            <h2>Part 3. 교차 엔트로피: 분류 문제</h2>
+
+            <div class="chat">
+                <div class="q">고양이/개를 분류하는 문제는?</div>
+                <div class="a">
+                    <p><span class="key-point">Cross-Entropy Loss</span>를 써.</p>
+                </div>
+            </div>
+
+            <div class="code-block">이진 분류 (Binary Cross-Entropy):
+
+예측: 0.8 (고양이일 확률 80%)
+정답: 1 (실제로 고양이)
+
+Loss = -[y×log(p) + (1-y)×log(1-p)]
+     = -[1×log(0.8) + 0×log(0.2)]
+     = -log(0.8) ≈ 0.22
+
+
+예측이 틀렸다면:
+예측: 0.2 (고양이일 확률 20%)
+정답: 1 (실제로 고양이)
+
+Loss = -log(0.2) ≈ 1.61
+
+→ 틀리면 손실이 크게 증가!
+
+
+다중 분류 (Categorical Cross-Entropy):
+
+3개 클래스: [고양이, 개, 토끼]
+정답: [1, 0, 0] (고양이)
+예측: [0.7, 0.2, 0.1]
+
+Loss = -Σ(y_i × log(p_i))
+     = -(1×log(0.7) + 0×log(0.2) + 0×log(0.1))
+     = -log(0.7) ≈ 0.36</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>특징:</strong></p>
+                    <p>확률이 0.5일 때보다 0.1일 때 패널티가 훨씬 커.</p>
+                    <p>→ 확신 없는 예측을 강하게 교정</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: 손실함수 선택 -->
+        <div class="conversation">
+            <h2>Part 4. 어떤 걸 써야 해?</h2>
+
+            <div class="chat">
+                <div class="q">언제 뭘 쓰는 거야?</div>
+                <div class="a">
+                    <p>문제 유형에 따라 달라:</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>문제 유형</th>
+                    <th>손실함수</th>
+                    <th>예시</th>
+                </tr>
+                <tr>
+                    <td><strong>회귀</strong></td>
+                    <td>MSE, MAE</td>
+                    <td>집값 예측, 기온 예측</td>
+                </tr>
+                <tr>
+                    <td><strong>이진 분류</strong></td>
+                    <td>Binary Cross-Entropy</td>
+                    <td>스팸 메일 판별, 질병 진단</td>
+                </tr>
+                <tr>
+                    <td><strong>다중 분류</strong></td>
+                    <td>Categorical Cross-Entropy</td>
+                    <td>손글씨 인식, 이미지 분류</td>
+                </tr>
+                <tr>
+                    <td><strong>객체 탐지</strong></td>
+                    <td>복합 (MSE + CE)</td>
+                    <td>YOLO, Faster R-CNN</td>
+                </tr>
+            </table>
+
+            <div class="code-block">추가 손실함수:
+
+1. MAE (Mean Absolute Error)
+   = (1/n) × Σ|예측 - 정답|
+   → 이상치에 덜 민감
+
+2. Huber Loss
+   → MSE + MAE 혼합
+   → 둘의 장점만 취함
+
+3. Focal Loss
+   → 어려운 샘플에 집중
+   → 불균형 데이터에 좋음
+
+4. Hinge Loss
+   → SVM에서 사용
+   → 마진 최대화</div>
+        </div>
+
+        <!-- Part 5: 정규화 -->
+        <div class="conversation">
+            <h2>Part 5. 정규화 항은 뭐야?</h2>
+
+            <div class="chat">
+                <div class="q">손실함수에 뭔가 더 붙이던데?</div>
+                <div class="a">
+                    <p><span class="key-point">정규화(Regularization)</span>를 추가해.</p>
+                    <p>과적합을 방지하려고.</p>
+                </div>
+            </div>
+
+            <div class="code-block">정규화 추가:
+
+기본 손실:
+L = MSE
+
+L1 정규화 (Lasso):
+L = MSE + λ × Σ|w_i|
+→ 일부 가중치를 0으로 만듦
+→ 특징 선택 효과
+
+L2 정규화 (Ridge):
+L = MSE + λ × Σ(w_i)²
+→ 가중치를 작게 만듦
+→ 과적합 방지
+
+λ (람다) = 정규화 강도
+- λ = 0: 정규화 없음
+- λ 큼: 강한 제약</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>비유:</strong></p>
+                    <p>시험 공부할 때 너무 세부적으로 외우면 실전에서 못 풀잖아?</p>
+                    <p>정규화는 "적당히 일반화해서 배워"라고 알려주는 거야.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 6: 코드 -->
+        <div class="conversation">
+            <h2>Part 6. 파이썬 구현</h2>
+
+            <div class="chat">
+                <div class="q">어떻게 쓰는 거야?</div>
+                <div class="a">
+                    <p>PyTorch 예시:</p>
+                </div>
+            </div>
+
+            <div class="code-block">import torch
+import torch.nn as nn
+
+# MSE (회귀)
+criterion = nn.MSELoss()
+pred = torch.tensor([3.0, 5.0, 7.0])
+target = torch.tensor([4.0, 5.0, 8.0])
+loss = criterion(pred, target)
+print(loss.item())  # 0.6667
+
+# Binary Cross-Entropy (이진 분류)
+criterion = nn.BCELoss()
+pred = torch.tensor([0.8])
+target = torch.tensor([1.0])
+loss = criterion(pred, target)
+print(loss.item())  # 0.223
+
+# Cross-Entropy (다중 분류)
+criterion = nn.CrossEntropyLoss()
+pred = torch.tensor([[2.0, 1.0, 0.1]])  # 로짓
+target = torch.tensor([0])  # 정답 클래스
+loss = criterion(pred, target)
+print(loss.item())
+
+# 정규화 추가
+l2_lambda = 0.01
+l2_norm = sum(p.pow(2.0).sum() for p in model.parameters())
+loss = criterion(pred, target) + l2_lambda * l2_norm</div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>손실함수 = 오차 측정</strong> - AI가 얼마나 틀렸는지 숫자로</li>
+                <li><strong>MSE는 회귀용</strong> - 연속값 예측에 사용</li>
+                <li><strong>Cross-Entropy는 분류용</strong> - 확률 기반 분류에 최적</li>
+                <li><strong>문제에 맞게 선택</strong> - 회귀/분류에 따라 다름</li>
+                <li><strong>정규화 추가 가능</strong> - 과적합 방지</li>
+                <li><strong>손실 최소화가 목표</strong> - 경사하강법으로 줄임</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic08/">← 이전: 경사하강법이 뭐야?</a>
+            <a href="../topic10/">다음: 확률은 AI랑 무슨 관계야? →</a>
+        </div>
+    </div>
+</body>
+</html>

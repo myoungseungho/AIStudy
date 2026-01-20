@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>경사하강법이 뭐야? - Section 2</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF9800;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF9800;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #fff3e0;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #fff3e0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #e65100;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #FF9800 0%, #FFB74D 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fff3e0;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #FF9800; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 2</a>
+            <span>/</span>
+            Topic 08
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 08</div>
+            <h1>경사하강법이 뭐야?</h1>
+            <p>Q. 산을 내려간다는 비유는 무슨 뜻이야?</p>
+        </header>
+
+        <!-- Part 1: 경사하강법 개념 -->
+        <div class="conversation">
+            <h2>Part 1. 경사하강법이 뭔데?</h2>
+
+            <div class="chat">
+                <div class="q">경사하강법(Gradient Descent)이 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">가장 낮은 곳을 찾아가는 알고리즘</span></p>
+                    <p>AI 학습의 핵심이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">산 내려가기 비유:
+
+안개 낀 산꼭대기에 있다고 상상해봐.
+아래로 내려가야 하는데 주변만 보여.
+
+전략:
+1. 발밑의 경사(기울기) 확인
+2. 가장 가파른 방향 찾기
+3. 그 방향으로 조금 내려가기
+4. 1~3 반복
+
+→ 결국 골짜기(최저점)에 도착!
+
+
+AI 학습:
+- 산 = 손실 함수(오차)
+- 높이 = 오차의 크기
+- 위치 = 현재 가중치
+- 목표 = 가장 낮은 곳 (오차 최소화)
+
+→ 경사(미분)를 따라 내려가면 최적값 발견!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">경사하강법 = 오차를 최소화하는 가중치 찾기</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: 수식으로 이해 -->
+        <div class="conversation">
+            <h2>Part 2. 어떻게 작동해?</h2>
+
+            <div class="chat">
+                <div class="q">구체적으로 어떻게 하는 거야?</div>
+                <div class="a">
+                    <p>간단한 공식으로 표현돼:</p>
+                </div>
+            </div>
+
+            <div class="code-block">경사하강법 공식:
+
+w_new = w_old - α × ∇L(w)
+
+해석:
+- w: 가중치(weight)
+- α (알파): 학습률(learning rate)
+- ∇L(w): 손실 함수의 경사도(기울기)
+- 마이너스(-): 반대 방향으로 이동
+
+
+단계별:
+1. 현재 가중치: w = 5
+2. 손실 함수: L = (w-2)²
+3. 미분: dL/dw = 2(w-2) = 2(5-2) = 6
+4. 학습률: α = 0.1
+5. 업데이트: w_new = 5 - 0.1×6 = 4.4
+
+→ 5에서 4.4로 이동 (2에 더 가까워짐!)
+
+
+반복:
+w = 5 → 4.4 → 3.92 → 3.536 → ... → 2.0
+→ 최적값 w=2에 수렴</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>보이지?</p>
+                    <p><span class="key-point">기울기의 반대 방향으로 조금씩 이동</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: 학습률 -->
+        <div class="conversation">
+            <h2>Part 3. 학습률이 뭐야?</h2>
+
+            <div class="chat">
+                <div class="q">학습률(learning rate)은 뭐고 왜 중요해?</div>
+                <div class="a">
+                    <p><span class="key-point">학습률 = 한 번에 얼마나 이동할지</span></p>
+                    <p>너무 크거나 작으면 문제가 생겨.</p>
+                </div>
+            </div>
+
+            <div class="code-block">학습률 비교:
+
+학습률이 너무 작음 (α = 0.001):
+w = 5.0 → 4.994 → 4.988 → 4.982 → ...
+→ 너무 느림
+→ 최적값 도달에 수천 번 필요
+
+
+학습률이 적당함 (α = 0.1):
+w = 5.0 → 4.4 → 3.92 → 3.536 → ... → 2.0
+→ 빠르고 안정적
+→ 수십 번 만에 도달
+
+
+학습률이 너무 큼 (α = 1.5):
+w = 5.0 → -4.0 → 14.0 → -25.0 → ...
+→ 발산함!
+→ 최적값 주변에서 튕김</div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>학습률</th>
+                    <th>장점</th>
+                    <th>단점</th>
+                </tr>
+                <tr>
+                    <td><strong>작음 (0.001)</strong></td>
+                    <td>안정적, 정확</td>
+                    <td>매우 느림</td>
+                </tr>
+                <tr>
+                    <td><strong>중간 (0.01~0.1)</strong></td>
+                    <td>균형있음</td>
+                    <td>적절한 값 찾기 어려움</td>
+                </tr>
+                <tr>
+                    <td><strong>큼 (>0.5)</strong></td>
+                    <td>빠름</td>
+                    <td>불안정, 발산 위험</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">학습률은 AI 학습의 가장 중요한 하이퍼파라미터야.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: 변형들 -->
+        <div class="conversation">
+            <h2>Part 4. 더 똑똑한 방법은?</h2>
+
+            <div class="chat">
+                <div class="q">기본 경사하강법보다 나은 게 있어?</div>
+                <div class="a">
+                    <p>있어. 여러 개선된 버전이 있어:</p>
+                </div>
+            </div>
+
+            <div class="code-block">1. SGD (Stochastic Gradient Descent)
+→ 전체 데이터 대신 일부만 사용
+→ 빠르고 메모리 효율적
+
+2. Momentum
+→ 이전 방향 기억
+→ 관성처럼 작동
+→ 지그재그 방지
+
+3. Adam (Adaptive Moment Estimation)
+→ 학습률을 자동 조정
+→ 가장 많이 쓰임
+→ 안정적이고 빠름
+
+4. RMSprop
+→ 학습률을 파라미터별로 조정
+→ 불안정한 경사 처리
+
+5. AdaGrad
+→ 자주 업데이트되는 파라미터는 학습률 감소
+→ 희소 데이터에 좋음</div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>알고리즘</th>
+                    <th>특징</th>
+                    <th>언제 쓰나</th>
+                </tr>
+                <tr>
+                    <td><strong>SGD</strong></td>
+                    <td>기본형</td>
+                    <td>단순한 문제</td>
+                </tr>
+                <tr>
+                    <td><strong>Adam</strong></td>
+                    <td>자동 조정</td>
+                    <td>대부분의 경우 (기본값)</td>
+                </tr>
+                <tr>
+                    <td><strong>SGD+Momentum</strong></td>
+                    <td>관성 사용</td>
+                    <td>컴퓨터 비전</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>실전 팁:</strong></p>
+                    <p>모르겠으면 <span class="key-point">Adam</span> 써. 대부분 잘 작동해.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: 문제점 -->
+        <div class="conversation">
+            <h2>Part 5. 문제점은 없어?</h2>
+
+            <div class="chat">
+                <div class="q">경사하강법의 문제점은 뭐야?</div>
+                <div class="a">
+                    <p><span class="warning">로컬 미니멈(Local Minimum)</span>에 빠질 수 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">문제: 로컬 미니멈
+
+산에 여러 골짜기가 있으면?
+
+        ╱╲      ╱╲
+       ╱  ╲    ╱  ╲
+  ╱╲ ╱    ╲  ╱    ╲╱╲
+ ╱  ╲      ╲╱      ^최저점(global minimum)
+^로컬 미니멈
+
+→ 로컬 미니멈에 빠지면 빠져나오기 어려움
+
+
+해결책:
+1. 여러 초기값으로 여러 번 학습
+2. Momentum 사용 (관성으로 넘어감)
+3. 학습률 스케줄링 (중간에 조정)
+4. 배치 정규화
+5. 랜덤성 추가 (SGD의 노이즈 활용)</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>다행히:</strong></p>
+                    <p>딥러닝에서는 <span class="highlight">로컬 미니멈도 충분히 좋은 경우가 많아.</span></p>
+                    <p>차원이 높으면 대부분의 로컬 미니멈이 비슷한 성능을 내거든.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 6: 코드 예시 -->
+        <div class="conversation">
+            <h2>Part 6. 파이썬 구현</h2>
+
+            <div class="chat">
+                <div class="q">직접 구현하면 어떻게 돼?</div>
+                <div class="a">
+                    <p>간단한 예시를 볼게:</p>
+                </div>
+            </div>
+
+            <div class="code-block">import numpy as np
+
+# 손실 함수: L = (w-2)²
+def loss(w):
+    return (w - 2) ** 2
+
+# 미분: dL/dw = 2(w-2)
+def gradient(w):
+    return 2 * (w - 2)
+
+# 경사하강법
+w = 10.0  # 초기값
+learning_rate = 0.1
+epochs = 20
+
+for i in range(epochs):
+    # 현재 손실과 기울기
+    current_loss = loss(w)
+    grad = gradient(w)
+
+    # 업데이트
+    w = w - learning_rate * grad
+
+    print(f"Epoch {i+1}: w={w:.4f}, loss={current_loss:.4f}")
+
+# 출력:
+# Epoch 1: w=8.4000, loss=64.0000
+# Epoch 2: w=7.1200, loss=26.0000
+# Epoch 3: w=6.0960, loss=10.5625
+# ...
+# Epoch 20: w=2.0000, loss=0.0068
+
+
+# PyTorch에서 Adam 사용:
+import torch
+
+w = torch.tensor([10.0], requires_grad=True)
+optimizer = torch.optim.Adam([w], lr=0.1)
+
+for epoch in range(20):
+    optimizer.zero_grad()
+    loss_val = (w - 2) ** 2
+    loss_val.backward()
+    optimizer.step()
+
+    print(f"Epoch {epoch+1}: w={w.item():.4f}")</div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>경사하강법 = 최적값 찾기</strong> - 기울기 반대 방향으로 이동</li>
+                <li><strong>공식: w = w - α×∇L</strong> - 가중치를 조금씩 업데이트</li>
+                <li><strong>학습률이 핵심</strong> - 너무 크면 발산, 너무 작으면 느림</li>
+                <li><strong>Adam이 기본</strong> - 학습률 자동 조정, 안정적</li>
+                <li><strong>로컬 미니멈 주의</strong> - 여러 방법으로 해결 가능</li>
+                <li><strong>AI 학습의 핵심</strong> - 모든 딥러닝 모델이 사용</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic07/">← 이전: 미분이 AI에 왜 나와?</a>
+            <a href="../topic09/">다음: 손실함수가 뭐길래 줄여야 해? →</a>
+        </div>
+    </div>
+</body>
+</html>

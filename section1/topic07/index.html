@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI는 어떻게 '학습'해? - Section 1</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #4CAF50;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e8f5e9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #c8e6c9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #2e7d32;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #c8e6c9; }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #4CAF50; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 1</a>
+            <span>/</span>
+            Topic 07
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 07</div>
+            <h1>AI는 어떻게 '학습'해?</h1>
+            <p>Q. 컴퓨터한테 뭘 가르친다는 거야?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 사람의 학습 vs AI의 학습</h2>
+
+            <div class="chat">
+                <div class="q">AI가 "학습한다"는 게 무슨 뜻이야? 사람처럼 공부해?</div>
+                <div class="a">
+                    <p>비슷한 듯 다른 거야. 먼저 사람의 학습부터 볼게:</p>
+                </div>
+            </div>
+
+            <div class="code-block">사람이 "고양이"를 배우는 과정:
+
+1. 엄마가 고양이를 가리키며 "고양이"라고 말함
+2. 귀여운 동물을 보면 "고양이?"라고 물음
+3. 엄마가 "응, 맞아" 또는 "아니야, 강아지야"
+4. 여러 번 반복
+5. 고양이의 특징을 자연스럽게 이해
+   → 수염, 귀 모양, 울음소리 등
+
+
+AI가 "고양이"를 배우는 과정:
+
+1. 고양이 사진 10,000장 준비
+2. 각 사진에 "고양이" 라벨 붙임
+3. AI에게 보여주면서 "이게 고양이야"
+4. AI가 픽셀 패턴 분석
+   → "귀가 뾰족, 수염 있음, 이런 픽셀 배치 = 고양이"
+5. 새 사진 보여주면 "고양이 확률 95%"
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">핵심 차이: 사람은 "의미"를 이해, AI는 "패턴"만 인식</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 학습의 3가지 방식</h2>
+
+            <div class="chat">
+                <div class="q">AI는 한 가지 방법으로만 배워?</div>
+                <div class="a">
+                    <p><span class="highlight">크게 3가지 방식이 있어.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">1. 지도 학습 (Supervised Learning)
+→ 선생님이 정답을 알려주며 가르침
+
+예시: 스팸 메일 필터
+- 입력: 이메일 내용
+- 정답: "스팸" 또는 "정상"
+- 과정: 1만 개 이메일 + 정답 보여주기
+- 결과: 새 이메일 보면 스팸인지 판단
+
+
+2. 비지도 학습 (Unsupervised Learning)
+→ 정답 없이 혼자서 패턴 찾기
+
+예시: 고객 분류
+- 입력: 고객 구매 데이터
+- 정답: 없음
+- 과정: AI가 알아서 비슷한 고객끼리 그룹화
+- 결과: "이 그룹은 명품 선호, 저 그룹은 저렴한 거 선호"
+
+
+3. 강화 학습 (Reinforcement Learning)
+→ 보상을 받으며 시행착오로 배우기
+
+예시: 게임 AI
+- 입력: 게임 화면
+- 정답: 없음
+- 과정: 이기면 보상 +1, 지면 -1
+- 결과: 수만 번 플레이하며 승률 높이는 전략 학습
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 가중치 조정이 핵심</h2>
+
+            <div class="chat">
+                <div class="q">그래서 구체적으로 어떻게 배우는 건데?</div>
+                <div class="a">
+                    <p><span class="highlight">핵심은 "가중치(Weight)" 조정이야.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">초간단 예시: 학점 예측 AI
+
+입력:
+- 출석 점수
+- 과제 점수
+
+출력:
+- 학점 (A, B, C...)
+
+AI 내부:
+학점 = (출석 × W1) + (과제 × W2)
+
+처음:
+W1 = 0.5, W2 = 0.5 (랜덤)
+예측: 80점 (실제: 90점) ← 틀림!
+
+조정:
+"과제가 더 중요하네?"
+W1 = 0.3, W2 = 0.7
+
+다시 예측:
+88점 (실제: 90점) ← 거의 맞음!
+
+→ 이런 식으로 W1, W2를 계속 조정
+→ 수천 번 반복
+→ 최적의 가중치 찾음
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>"학습"의 정체:</strong></p>
+                    <p><span class="key-point">학습 = 가중치를 조금씩 조정하는 과정</span></p>
+                    <p>GPT-4는 가중치가 수천억 개야. 전부 이런 식으로 조정됨.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 오차를 줄여나가기</h2>
+
+            <div class="chat">
+                <div class="q">가중치를 어떻게 조정해? 랜덤으로?</div>
+                <div class="a">
+                    <p><span class="warning">랜덤 아니야!</span></p>
+                    <p><span class="highlight">오차(Error)를 계산해서 줄이는 방향으로 조정해.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">학습 과정 (단계별):
+
+1. 예측
+   AI: "이 이미지는 고양이야!"
+
+2. 정답 확인
+   실제: 강아지
+
+3. 오차 계산
+   오차 = |예측 - 정답| = 크다!
+
+4. 가중치 조정
+   "고양이 쪽으로 너무 치우쳤네, 반대로 조정하자"
+   → W1, W2, W3... 전부 조금씩 변경
+
+5. 다시 예측
+   AI: "이번엔 강아지 같은데?"
+
+6. 오차 계산
+   오차 = 작아짐!
+
+7. 반복
+   오차가 충분히 작아질 때까지 계속
+
+
+→ 이게 "학습"이야.
+→ 수학적으로는 "경사 하강법(Gradient Descent)"
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 데이터 많이 보여주기</h2>
+
+            <div class="chat">
+                <div class="q">한 번만 보여주면 안 돼?</div>
+                <div class="a">
+                    <p><span class="warning">안 돼!</span></p>
+                    <p><span class="key-point">같은 데이터를 수십~수백 번 반복해서 봐야 해.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">학습 과정 (실전):
+
+데이터: 고양이 사진 10,000장
+
+1회차 (Epoch 1):
+- 10,000장 전부 보여줌
+- 정확도: 60%
+
+2회차 (Epoch 2):
+- 같은 10,000장 다시 보여줌
+- 정확도: 75%
+
+3회차 (Epoch 3):
+- 또 같은 10,000장
+- 정확도: 85%
+
+...
+
+20회차 (Epoch 20):
+- 정확도: 95%
+- "충분히 배웠다" 판단, 중단
+
+
+→ Epoch = 전체 데이터를 한 바퀴 도는 것
+→ 보통 수십~수백 Epoch 반복
+</code>
+
+            <div class="chat">
+                <div class="q">왜 계속 봐야 해?</div>
+                <div class="a">
+                    <p>사람도 마찬가지야.</p>
+                    <p>수학 문제집을 한 번만 풀면 안 외워지잖아?</p>
+                    <p>여러 번 풀어야 공식이 몸에 배지.</p>
+                    <p>AI도 똑같아. <span class="highlight">반복이 학습의 핵심.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 과적합 문제</h2>
+
+            <div class="chat">
+                <div class="q">그럼 무한정 많이 보여주면 더 똑똑해지는 거야?</div>
+                <div class="a">
+                    <p><span class="warning">아니야, 너무 많이 보여주면 문제가 생겨.</span></p>
+                    <p><span class="highlight">과적합(Overfitting)</span>이라고 해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">과적합 예시:
+
+학생이 수학 문제집을 너무 많이 풀어서
+→ 문제와 답을 통째로 외움
+→ 새 문제는 못 풀음
+
+AI도 똑같아:
+
+훈련 데이터: "정확도 99%!"
+새 데이터: "정확도 60%..." ← 외워버림
+
+
+해결법:
+
+1. 검증 데이터 따로 준비
+   → 학습할 때 안 보여줌
+   → 나중에 테스트용으로 사용
+
+2. 조기 종료 (Early Stopping)
+   → 검증 데이터 정확도가 떨어지기 시작하면 중단
+
+3. 정규화 (Regularization)
+   → 가중치가 너무 커지지 않게 제한
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>핵심:</strong></p>
+                    <p><span class="key-point">학습은 "적당히"가 중요해.</span></p>
+                    <p>너무 적게 = 덜 배움</p>
+                    <p>너무 많이 = 외워버림</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>학습 = 패턴 인식</strong> - 데이터에서 패턴을 찾아내는 과정</li>
+                <li><strong>3가지 방식</strong> - 지도, 비지도, 강화 학습</li>
+                <li><strong>가중치 조정</strong> - 학습의 본질은 가중치를 최적화하는 것</li>
+                <li><strong>오차 줄이기</strong> - 예측과 정답의 차이를 계속 줄여나감</li>
+                <li><strong>반복이 핵심</strong> - 같은 데이터를 여러 번 봐야 학습됨</li>
+                <li><strong>과적합 주의</strong> - 너무 많이 학습하면 외워버림</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic06/">← 이전: 왜 요즘 갑자기 AI가 난리야?</a>
+            <a href="../topic08/">다음: 데이터가 왜 중요한 거야? →</a>
+        </div>
+    </div>
+</body>
+</html>

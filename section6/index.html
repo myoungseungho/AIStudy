@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section 6: 자연어처리 (NLP)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* 네비게이션 */
+        .breadcrumb {
+            margin-bottom: 40px;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb span {
+            color: #999;
+            margin: 0 8px;
+        }
+
+        /* 헤더 */
+        .header {
+            margin-bottom: 48px;
+        }
+
+        .header-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #111;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .section-badge {
+            display: inline-block;
+            background: #E91E63;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        /* 글 목록 */
+        .article-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .article-item {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #eee;
+            border-left: 4px solid #E91E63;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .article-item:hover {
+            border-color: #E91E63;
+            box-shadow: 0 4px 12px rgba(233, 30, 99, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .article-number {
+            font-size: 0.75rem;
+            color: #E91E63;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .article-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #111;
+        }
+
+        .article-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../">AI 공부</a>
+            <span>/</span>
+            Section 6
+        </nav>
+
+        <header class="header">
+            <div class="section-badge">Section 6</div>
+            <div class="header-icon">💬</div>
+            <h1>자연어처리 (NLP)</h1>
+            <p>컴퓨터가 인간의 언어를 이해하고 생성하는 방법</p>
+        </header>
+
+        <div class="article-list">
+            <a href="./topic01/" class="article-item">
+                <div class="article-number">TOPIC 01</div>
+                <h3 class="article-title">컴퓨터는 문장을 어떻게 이해해?</h3>
+                <p class="article-desc">Q. 단어를 숫자로 바꾼다고?</p>
+            </a>
+
+            <a href="./topic02/" class="article-item">
+                <div class="article-number">TOPIC 02</div>
+                <h3 class="article-title">토큰화가 뭐야?</h3>
+                <p class="article-desc">Q. 문장을 어떻게 쪼개?</p>
+            </a>
+
+            <a href="./topic03/" class="article-item">
+                <div class="article-number">TOPIC 03</div>
+                <h3 class="article-title">원-핫 인코딩은 뭐야?</h3>
+                <p class="article-desc">Q. 단어를 벡터로 만드는 가장 단순한 방법?</p>
+            </a>
+
+            <a href="./topic04/" class="article-item">
+                <div class="article-number">TOPIC 04</div>
+                <h3 class="article-title">단어 임베딩이 뭐야?</h3>
+                <p class="article-desc">Q. 비슷한 단어는 가까이 있다고?</p>
+            </a>
+
+            <a href="./topic05/" class="article-item">
+                <div class="article-number">TOPIC 05</div>
+                <h3 class="article-title">Word2Vec은 어떻게 학습해?</h3>
+                <p class="article-desc">Q. 주변 단어로 의미를 배운다는 게 뭐야?</p>
+            </a>
+
+            <a href="./topic06/" class="article-item">
+                <div class="article-number">TOPIC 06</div>
+                <h3 class="article-title">시퀀스 데이터는 뭐야?</h3>
+                <p class="article-desc">Q. 순서가 중요한 데이터라는 거야?</p>
+            </a>
+
+            <a href="./topic07/" class="article-item">
+                <div class="article-number">TOPIC 07</div>
+                <h3 class="article-title">RNN은 왜 필요해?</h3>
+                <p class="article-desc">Q. 이전 정보를 기억한다는 게 뭐야?</p>
+            </a>
+
+            <a href="./topic08/" class="article-item">
+                <div class="article-number">TOPIC 08</div>
+                <h3 class="article-title">LSTM은 뭐가 다를까?</h3>
+                <p class="article-desc">Q. 장기 기억을 어떻게 유지해?</p>
+            </a>
+
+            <a href="./topic09/" class="article-item">
+                <div class="article-number">TOPIC 09</div>
+                <h3 class="article-title">Seq2Seq가 뭐야?</h3>
+                <p class="article-desc">Q. 번역은 어떻게 하는 거야?</p>
+            </a>
+
+            <a href="./topic10/" class="article-item">
+                <div class="article-number">TOPIC 10</div>
+                <h3 class="article-title">어텐션이 뭐야?</h3>
+                <p class="article-desc">Q. 중요한 부분에 집중한다는 거야?</p>
+            </a>
+
+            <a href="./topic11/" class="article-item">
+                <div class="article-number">TOPIC 11</div>
+                <h3 class="article-title">트랜스포머가 뭐길래 난리야?</h3>
+                <p class="article-desc">Q. RNN 없이 어떻게 순서를 이해해?</p>
+            </a>
+
+            <a href="./topic12/" class="article-item">
+                <div class="article-number">TOPIC 12</div>
+                <h3 class="article-title">셀프 어텐션은 뭐야?</h3>
+                <p class="article-desc">Q. 자기 자신에게 어텐션을 준다고?</p>
+            </a>
+
+            <a href="./topic13/" class="article-item">
+                <div class="article-number">TOPIC 13</div>
+                <h3 class="article-title">BERT는 어떻게 학습해?</h3>
+                <p class="article-desc">Q. 빈칸 채우기로 언어를 배운다고?</p>
+            </a>
+
+            <a href="./topic14/" class="article-item">
+                <div class="article-number">TOPIC 14</div>
+                <h3 class="article-title">GPT는 BERT랑 뭐가 달라?</h3>
+                <p class="article-desc">Q. 다음 단어 예측만 하는데 왜 강해?</p>
+            </a>
+
+            <a href="./topic15/" class="article-item">
+                <div class="article-number">TOPIC 15</div>
+                <h3 class="article-title">LLM은 뭐야?</h3>
+                <p class="article-desc">Q. 거대 언어 모델이 왜 똑똑해 보여?</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

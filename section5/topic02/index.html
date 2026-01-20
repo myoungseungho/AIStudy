@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>픽셀과 RGB가 뭐야? - Section 5</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #00BCD4;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #00BCD4;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e0f7fa;
+        }
+
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #e0f7fa;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #00838f;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+
+        .summary-box {
+            background: linear-gradient(135deg, #00BCD4 0%, #26C6DA 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #b2ebf2;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #00BCD4; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 5</a>
+            <span>/</span>
+            Topic 02
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 02</div>
+            <h1>픽셀과 RGB가 뭐야?</h1>
+            <p>Q. 빨강 초록 파랑으로 모든 색을 만들어?</p>
+        </header>
+
+        <!-- Part 1: 픽셀이란? -->
+        <div class="conversation">
+            <h2>Part 1. 픽셀이 뭐길래?</h2>
+
+            <div class="chat">
+                <div class="q">픽셀이 정확히 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">Pixel = Picture Element</span></p>
+                    <p>"그림 요소"라는 뜻이야.</p>
+                    <p>이미지를 구성하는 <strong>가장 작은 단위</strong>지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유:
+레고 블록으로 그림을 만든다고 생각해봐.
+
+레고 블록 하나 = 픽셀 하나
+블록을 모아서 만든 그림 = 이미지
+
+블록이 많을수록 → 더 정교한 그림 가능
+픽셀이 많을수록 → 더 선명한 이미지</div>
+
+            <div class="chat">
+                <div class="q">그럼 픽셀 하나는 무슨 색이야?</div>
+                <div class="a">
+                    <p><span class="highlight">픽셀 하나는 한 가지 색만 가져.</span></p>
+                    <p>흑백 이미지면 → 회색 농도 하나</p>
+                    <p>컬러 이미지면 → 색상 하나</p>
+                    <p>그래서 이미지를 확대하면 네모난 점들이 보이는 거야.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: RGB 원리 -->
+        <div class="conversation">
+            <h2>Part 2. RGB는 어떻게 작동해?</h2>
+
+            <div class="chat">
+                <div class="q">빨강, 초록, 파랑으로 모든 색을 만든다는 게 말이 돼?</div>
+                <div class="a">
+                    <p><span class="key-point">완전히 말이 돼.</span></p>
+                    <p>이건 <strong>빛의 3원색</strong> 원리야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">빛의 3원색:
+R (Red) = 빨강
+G (Green) = 초록
+B (Blue) = 파랑
+
+이 세 가지 빛을 섞으면:
+→ 모든 색을 만들 수 있음
+
+물감의 3원색 (빨강, 파랑, 노랑)과는 다름!
+→ 빛은 섞을수록 밝아짐 (가산 혼합)
+→ 물감은 섞을수록 어두워짐 (감산 혼합)</div>
+
+            <div class="chat">
+                <div class="q">구체적으로 어떻게 섞는 건데?</div>
+                <div class="a">
+                    <p>각 색의 <strong>밝기를 0~255로 조절</strong>해서 섞어.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>색상</th>
+                    <th>R</th>
+                    <th>G</th>
+                    <th>B</th>
+                </tr>
+                <tr>
+                    <td><strong>빨강</strong></td>
+                    <td>255</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td><strong>초록</strong></td>
+                    <td>0</td>
+                    <td>255</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td><strong>파랑</strong></td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>255</td>
+                </tr>
+                <tr>
+                    <td><strong>노랑</strong></td>
+                    <td>255</td>
+                    <td>255</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td><strong>흰색</strong></td>
+                    <td>255</td>
+                    <td>255</td>
+                    <td>255</td>
+                </tr>
+                <tr>
+                    <td><strong>검은색</strong></td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td><strong>회색</strong></td>
+                    <td>128</td>
+                    <td>128</td>
+                    <td>128</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="highlight">RGB 각각 0~255 = 256단계</span></p>
+                    <p>그럼 총 몇 가지 색을 만들 수 있을까?</p>
+                    <p><strong>256 × 256 × 256 = 16,777,216가지 색</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: 컬러 이미지 저장 -->
+        <div class="conversation">
+            <h2>Part 3. 컬러 이미지는 어떻게 저장돼?</h2>
+
+            <div class="chat">
+                <div class="q">그럼 컬러 이미지는 픽셀 하나당 숫자 몇 개야?</div>
+                <div class="a">
+                    <p><span class="key-point">3개.</span></p>
+                    <p>R, G, B 각각 하나씩.</p>
+                </div>
+            </div>
+
+            <div class="code-block">흑백 이미지:
+픽셀 하나 = 숫자 1개 (0~255)
+예: [128] → 중간 회색
+
+
+컬러 이미지:
+픽셀 하나 = 숫자 3개 (R, G, B)
+예: [255, 0, 0] → 빨간색
+    [0, 255, 0] → 초록색
+    [255, 255, 0] → 노란색</div>
+
+            <div class="chat">
+                <div class="q">그럼 컬러 이미지가 흑백보다 3배 크다는 거네?</div>
+                <div class="a">
+                    <p><span class="highlight">정확해!</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">예시: 100×100 이미지
+
+흑백:
+→ 100 × 100 = 10,000개 숫자
+
+컬러:
+→ 100 × 100 × 3 = 30,000개 숫자
+→ 흑백의 3배 용량</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>그래서 컬러 사진이 흑백보다 파일 크기가 큰 거야.</p>
+                    <p>AI 학습할 때도 컬러 이미지는 계산량이 3배 더 필요하고.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: 실제 구조 -->
+        <div class="conversation">
+            <h2>Part 4. 실제로는 어떻게 생겼어?</h2>
+
+            <div class="chat">
+                <div class="q">컴퓨터가 보는 컬러 이미지를 보여줘</div>
+                <div class="a">
+                    <p>아주 작은 2×2 컬러 이미지를 만들어볼게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">시각적 표현:
+🟥 🟩
+🟦 🟨
+
+
+컴퓨터가 보는 것:
+
+R 채널:
+[[255,   0],
+ [  0, 255]]
+
+G 채널:
+[[  0, 255],
+ [  0, 255]]
+
+B 채널:
+[[  0,   0],
+ [255,   0]]
+
+
+또는 합쳐서:
+[
+  [[255, 0, 0], [0, 255, 0]],
+  [[0, 0, 255], [255, 255, 0]]
+]</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>보이지?</p>
+                    <p>픽셀 4개짜리 이미지인데 <strong>숫자 12개</strong>가 필요해.</p>
+                    <p>실제 사진(1920×1080)이면?</p>
+                    <p>→ 1920 × 1080 × 3 = <strong>6,220,800개의 숫자</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: 채널의 개념 -->
+        <div class="conversation">
+            <h2>Part 5. 채널이 뭐야?</h2>
+
+            <div class="chat">
+                <div class="q">RGB 채널이라는 말을 들었는데 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">채널 = 색상 평면</span></p>
+                    <p>컬러 이미지는 <strong>3개의 층</strong>으로 이루어져 있다고 생각하면 돼.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유:
+색종이를 3장 겹쳐놓은 것과 같아.
+
+1층: 빨간색 투명 필름 (R 채널)
+2층: 초록색 투명 필름 (G 채널)
+3층: 파란색 투명 필름 (B 채널)
+
+→ 3개를 겹치면 완성된 컬러 이미지</div>
+
+            <div class="chat">
+                <div class="q">그럼 흑백은 채널이 하나야?</div>
+                <div class="a">
+                    <p><span class="highlight">맞아!</span></p>
+                    <p>흑백(Grayscale) = 채널 1개</p>
+                    <p>컬러(RGB) = 채널 3개</p>
+                    <p>투명도 포함(RGBA) = 채널 4개</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>이미지 타입</th>
+                    <th>채널 수</th>
+                    <th>픽셀당 숫자</th>
+                </tr>
+                <tr>
+                    <td>흑백 (Grayscale)</td>
+                    <td>1</td>
+                    <td>1개</td>
+                </tr>
+                <tr>
+                    <td>컬러 (RGB)</td>
+                    <td>3</td>
+                    <td>3개</td>
+                </tr>
+                <tr>
+                    <td>투명도 포함 (RGBA)</td>
+                    <td>4</td>
+                    <td>4개 (R, G, B, Alpha)</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Part 6: AI는 어떻게 처리해? -->
+        <div class="conversation">
+            <h2>Part 6. AI는 RGB를 어떻게 처리해?</h2>
+
+            <div class="chat">
+                <div class="q">AI는 RGB를 각각 따로 봐? 같이 봐?</div>
+                <div class="a">
+                    <p><span class="highlight">둘 다야.</span></p>
+                    <p>CNN(합성곱 신경망)은 3개 채널을 <strong>동시에</strong> 처리해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">CNN이 RGB를 처리하는 방법:
+
+일반 신경망:
+→ RGB를 펼쳐서 긴 1차원 배열로 만듦
+→ 비효율적
+
+CNN:
+→ 3개 채널을 유지하면서 처리
+→ 공간 정보를 보존
+→ 각 채널의 패턴을 동시에 학습
+
+예: 3×3 필터로 RGB 이미지 처리
+→ 필터도 3×3×3 (높이×너비×채널)
+→ 3개 채널을 한 번에 합성곱</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p>AI는 <span class="key-point">"빨간 부분이 있고, 초록 부분이 있고..."</span>를 따로 보는 게 아니라,</p>
+                    <p><span class="key-point">"RGB 조합의 패턴"</span>을 통째로 학습해.</p>
+                    <p>그래서 "하늘은 파란색이 많다", "나무는 초록색이 많다" 같은 패턴을 배우는 거지.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>픽셀 = 이미지의 최소 단위</strong> - 하나의 픽셀은 하나의 색상</li>
+                <li><strong>RGB = 빛의 3원색</strong> - 빨강(R), 초록(G), 파랑(B)으로 모든 색 표현</li>
+                <li><strong>각 색상은 0~255</strong> - 256단계로 밝기 조절 (총 1,677만 색)</li>
+                <li><strong>컬러 픽셀 = 숫자 3개</strong> - [R, G, B] 형태로 저장</li>
+                <li><strong>채널 = 색상 평면</strong> - RGB는 3채널, 흑백은 1채널</li>
+                <li><strong>AI는 채널을 동시 처리</strong> - RGB 패턴을 통째로 학습</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic01/">← 이전: 컴퓨터는 이미지를 어떻게 봐?</a>
+            <a href="../topic03/">다음: 이미지는 몇 차원이야? →</a>
+        </div>
+    </div>
+</body>
+</html>

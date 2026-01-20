@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>트랜스포머가 뭐길래 난리야? - Section 6</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #E91E63;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #E91E63;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #fce4ec;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #fce4ec;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c2185b;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #E91E63 0%, #EC407A 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fce4ec;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #E91E63; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 6</a>
+            <span>/</span>
+            Topic 11
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 11</div>
+            <h1>트랜스포머가 뭐길래 난리야?</h1>
+            <p>Q. RNN 없이 어떻게 순서를 이해해?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. AI 역사의 전환점</h2>
+
+            <div class="chat">
+                <div class="q">트랜스포머(Transformer)가 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">RNN을 완전히 제거하고 Attention만 사용하는 모델</span>이야.</p>
+                    <p>2017년 구글이 발표한 논문 제목이 바로 <span class="highlight">"Attention is All You Need"</span>였어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">혁명적인 아이디어:
+
+기존 (RNN/LSTM 기반):
+순서대로 처리 → 느림 😔
+t=1 → t=2 → t=3 → t=4 → ...
+→ 병렬 처리 불가
+
+트랜스포머:
+전체를 동시에 처리 → 빠름! 🚀
+t=1, t=2, t=3, t=4 ... 모두 동시에!
+→ 병렬 처리 가능
+→ 학습 속도 10~100배 빠름
+
+
+핵심:
+RNN: "순서대로 읽어야 의미 파악"
+Transformer: "순서 정보를 따로 주입, 전체 동시 처리"
+</div>
+
+            <div class="chat">
+                <div class="q">그게 왜 중요한데?</div>
+            </div>
+
+            <div class="code-block">영향력:
+
+2017년: Transformer 발표
+
+2018년: BERT (구글)
+→ Transformer 기반
+→ NLP 11개 태스크에서 SOTA 달성
+
+2018년: GPT (OpenAI)
+→ Transformer 기반
+→ 텍스트 생성 혁명
+
+2019년: GPT-2
+→ 실제 사람 글 수준
+
+2020년: GPT-3 (1750억 파라미터)
+→ Few-shot learning 가능
+
+2022년: ChatGPT
+→ 10억 사용자 돌파
+
+→ 모두 Transformer 기반!
+→ Transformer 없었으면 불가능
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 트랜스포머 구조</h2>
+
+            <div class="chat">
+                <div class="q">트랜스포머는 어떻게 생겼어?</div>
+                <div class="a">
+                    <p>크게 두 부분으로 나뉘어: <span class="key-point">Encoder</span>와 <span class="key-point">Decoder</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">전체 구조:
+
+입력 → [Encoder] → [Decoder] → 출력
+
+Encoder (인코더):
+- 입력 문장 이해
+- Self-Attention 사용
+- 여러 층 쌓기 (보통 6~12층)
+
+Decoder (디코더):
+- 출력 문장 생성
+- Self-Attention + Cross-Attention
+- 역시 여러 층
+
+
+예시 (번역):
+"I love you"
+→ Encoder: 의미 파악
+→ Decoder: "나는 너를 사랑해" 생성
+</div>
+
+            <div class="chat">
+                <div class="q">Self-Attention이 뭐야?</div>
+                <div class="a">
+                    <p>다음 토픽에서 자세히 배울 건데, 간단히 말하면 <span class="highlight">문장 내 모든 단어끼리 관계를 파악</span>하는 거야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Self-Attention 예시:
+
+문장: "The animal didn't cross the street because it was too tired"
+
+"it"이 뭘 가리킬까?
+- "animal"?
+- "street"?
+
+Self-Attention 계산:
+"it" - "animal": 0.87 👈 높음!
+"it" - "street": 0.12
+
+→ "it" = "animal"을 가리킴
+→ 모델이 자동으로 파악!
+
+
+RNN:
+순서대로 읽다가 "it" 만남
+→ 뭘 가리키는지 애매
+
+Transformer:
+전체를 보고 관계 파악
+→ "it" = "animal" 명확히 인식
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 위치 정보는 어떻게?</h2>
+
+            <div class="chat">
+                <div class="q">RNN 없이 순서를 어떻게 알아?</div>
+                <div class="a">
+                    <p><span class="key-point">Positional Encoding</span>을 사용해.</p>
+                    <p>각 단어에 <span class="highlight">위치 정보를 숫자로 추가</span>하는 거야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">위치 인코딩:
+
+문장: "I love you"
+
+단어 임베딩만:
+"I":    [0.1, 0.5, 0.2, ...]
+"love": [0.3, 0.7, 0.1, ...]
+"you":  [0.2, 0.4, 0.6, ...]
+→ 순서 정보 없음
+
+
+위치 인코딩 추가:
+Position 0: [0.0, 1.0, 0.0, ...]
+Position 1: [0.84, 0.54, 0.12, ...]
+Position 2: [0.91, -0.42, 0.75, ...]
+
+최종 입력:
+"I" (pos=0):    [0.1, 0.5, 0.2] + [0.0, 1.0, 0.0]
+"love" (pos=1): [0.3, 0.7, 0.1] + [0.84, 0.54, 0.12]
+"you" (pos=2):  [0.2, 0.4, 0.6] + [0.91, -0.42, 0.75]
+
+→ 위치 정보가 벡터에 포함됨!
+→ 순서를 구분할 수 있음
+</div>
+
+            <div class="chat">
+                <div class="q">그게 진짜 작동해?</div>
+            </div>
+
+            <div class="code-block">효과 검증:
+
+테스트:
+"I love you" vs "You love I"
+
+위치 인코딩 없으면:
+→ 같은 단어들의 집합
+→ 구분 못 함
+
+위치 인코딩 있으면:
+"I"의 벡터: [위치0 정보 포함]
+"You"의 벡터: [위치2 정보 포함]
+→ 서로 다른 의미!
+→ 문장 구분 가능
+
+실험 결과:
+위치 인코딩 제거: BLEU 5 (망가짐)
+위치 인코딩 사용: BLEU 28 (정상)
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 트랜스포머의 장점</h2>
+
+            <div class="chat">
+                <div class="q">트랜스포머가 RNN보다 뭐가 좋아?</div>
+            </div>
+
+            <div class="code-block">장점 1: 병렬 처리 → 엄청 빠름!
+
+RNN/LSTM:
+100단어 문장 처리 시간: 10초
+→ 순차 처리 필수
+
+Transformer:
+100단어 문장 처리 시간: 0.5초
+→ GPU 병렬 처리
+→ 20배 빠름!
+
+
+장점 2: 장거리 의존성
+
+RNN/LSTM:
+"처음" ... (50단어) ... "끝"
+→ "처음"과 "끝" 연결 어려움
+
+Transformer:
+거리 상관없이 직접 연결
+→ 모든 단어 간 관계 계산
+→ 장거리 의존성 완벽 학습
+
+
+장점 3: 해석 가능성
+
+Attention Map으로 시각화 가능
+→ 모델이 어디를 보는지 확인
+→ 디버깅 쉬움
+
+
+장점 4: 확장성
+
+작은 모델: 6층, 512 차원
+→ 모바일에서도 실행
+
+거대 모델: 96층, 12288 차원
+→ GPT-3, ChatGPT 수준
+→ 층수만 늘리면 성능 향상
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 트랜스포머의 단점과 변형</h2>
+
+            <div class="chat">
+                <div class="q">단점은 없어?</div>
+            </div>
+
+            <div class="code-block">단점:
+
+1. 메모리 많이 씀
+   Self-Attention: O(n²) 복잡도
+   문장 길이 n=1000이면
+   → 100만 번 계산 필요
+
+2. 짧은 문장에서는 오히려 느릴 수도
+   RNN: 단순해서 빠름
+   Transformer: 복잡해서 느림
+   → 10단어 미만: RNN이 나을 수도
+
+3. 위치 정보가 약함
+   Positional Encoding은 "꼼수"
+   → RNN의 자연스러운 순서 이해보다 약함
+
+
+개선된 변형들:
+
+1. Transformer-XL
+   - 더 긴 문맥 처리
+
+2. Reformer
+   - 메모리 효율 개선
+   - O(n log n) 복잡도
+
+3. Linformer
+   - 선형 복잡도 O(n)
+   - 매우 긴 문장 가능
+
+4. Sparse Transformer
+   - 필요한 부분만 계산
+   - 메모리 절약
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>하지만 단점보다 장점이 압도적이라 <span class="key-point">현재 NLP의 표준</span>이 됐어!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>Transformer</strong> - RNN 없이 Attention만 사용하는 혁명적 구조</li>
+                <li><strong>핵심 장점</strong> - 병렬 처리 가능, 10~100배 빠른 학습</li>
+                <li><strong>Positional Encoding</strong> - 위치 정보를 벡터에 추가해 순서 파악</li>
+                <li><strong>영향</strong> - BERT, GPT, ChatGPT 등 모든 현대 LLM의 기반</li>
+                <li><strong>현재</strong> - NLP의 사실상 표준 아키텍처</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic10/">← 이전: 어텐션이 뭐야?</a>
+            <a href="../topic12/">다음: 셀프 어텐션은 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

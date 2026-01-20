@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>딥페이크는 어떻게 만들어져? - Section 8</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+
+        .breadcrumb {
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #795548;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #795548;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #efebe9;
+        }
+
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before {
+            content: "Q. ";
+            color: #e65100;
+            font-weight: 700;
+        }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #d7ccc8;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #4e342e;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #795548 0%, #8D6E63 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .summary-box ul {
+            list-style: none;
+        }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #d7ccc8;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #795548;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 8</a>
+            <span>/</span>
+            Topic 05
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 05</div>
+            <h1>딥페이크는 어떻게 만들어져?</h1>
+            <p>Q. 가짜 영상을 어떻게 구분해?</p>
+        </header>
+
+        <!-- Part 1: 딥페이크가 뭐야? -->
+        <div class="conversation">
+            <h2>Part 1. 딥페이크가 뭐야?</h2>
+
+            <div class="chat">
+                <div class="q">톰 크루즈 가짜 영상 봤는데 진짜 같더라. 어떻게 만드는 거야?</div>
+                <div class="a">
+                    <p><span class="key-point">딥페이크(Deepfake)</span>는 AI로 만든 가짜 영상/음성이야.</p>
+                    <p>"Deep Learning(딥러닝)" + "Fake(가짜)" = Deepfake</p>
+                    <p><strong>얼굴을 바꾸거나, 입 모양을 조작하거나, 목소리를 복제</strong>하는 기술이지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">딥페이크 종류:
+
+1. Face Swap (얼굴 바꾸기)
+   - 영화 A의 배우 얼굴을 → 배우 B로 교체
+   - 예: 톰 크루즈 딥페이크 영상
+
+2. Face Reenactment (표정 조작)
+   - 내 표정을 다른 사람 얼굴에 입힘
+   - 예: 오바마가 내가 원하는 말을 하게 만들기
+
+3. Voice Cloning (음성 복제)
+   - 3초 샘플로 목소리 복제
+   - 예: 유명인 목소리로 말하기
+
+4. Lip Sync (립싱크)
+   - 영상 속 입 모양을 다른 음성에 맞게 조작
+   - 예: 영화 더빙할 때 입 모양 맞추기
+
+5. Full Body (전신 생성)
+   - 존재하지 않는 사람 만들기
+   - 예: ThisPersonDoesNotExist.com</div>
+
+            <div class="chat">
+                <div class="q">이거 불법 아니야?</div>
+                <div class="a">
+                    <p><span class="warning">용도에 따라 달라.</span></p>
+                    <p><strong>합법적 사용:</strong> 영화 특수효과, 교육, 엔터테인먼트</p>
+                    <p><strong>불법적 사용:</strong> 허위 정보 유포, 사기, 음란물, 명예훼손</p>
+                    <p>많은 나라에서 악의적 딥페이크를 규제하고 있어.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: GAN - 기술 원리 -->
+        <div class="conversation">
+            <h2>Part 2. GAN: 딥페이크를 만드는 기술</h2>
+
+            <div class="chat">
+                <div class="q">어떻게 그렇게 진짜 같이 만들어?</div>
+                <div class="a">
+                    <p><span class="highlight">GAN(Generative Adversarial Network)</span>이라는 기술을 써.</p>
+                    <p>"생성적 적대 신경망"이라고 하는데, <strong>두 AI가 서로 경쟁</strong>하면서 발전해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">GAN의 구조:
+
+[Generator (생성자)]
+역할: 가짜 이미지 만들기
+"이렇게 만들면 진짜 같을까?"
+
+        ↓ 가짜 이미지 제출
+
+[Discriminator (판별자)]
+역할: 진짜 vs 가짜 구분
+"이건 가짜야! 눈 부분이 이상해"
+
+        ↓ 피드백
+
+[Generator가 개선]
+"아, 그럼 눈을 이렇게 고쳐야겠네"
+
+→ 이 과정을 수천~수만 번 반복
+→ 결국 판별자가 구분 못 할 정도로 완벽해짐</div>
+
+            <div class="chat">
+                <div class="q">왜 경쟁시켜?</div>
+                <div class="a">
+                    <p>비유를 들어줄게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 위조지폐범 vs 경찰
+
+위조지폐범 (Generator):
+"완벽한 가짜 돈을 만들어야지"
+
+경찰 (Discriminator):
+"이건 가짜야. 워터마크가 이상해"
+
+위조지폐범:
+"그럼 워터마크를 더 정교하게!"
+
+경찰:
+"이번엔 숫자 폰트가 이상해"
+
+위조지폐범:
+"폰트도 고쳤어!"
+
+→ 계속 경쟁하다 보면...
+→ 경찰도 구분 못 할 정도로 완벽한 위조지폐 완성
+
+GAN도 똑같아.
+두 AI가 서로 경쟁하면서 점점 완벽해지는 거지.</div>
+        </div>
+
+        <!-- Part 3: 딥페이크 만드는 과정 -->
+        <div class="conversation">
+            <h2>Part 3. 딥페이크는 어떻게 만들어?</h2>
+
+            <div class="chat">
+                <div class="q">실제로는 어떤 과정을 거쳐?</div>
+                <div class="a">
+                    <p><span class="key-point">데이터 수집 → 학습 → 생성</span> 3단계야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">딥페이크 제작 과정:
+
+1. 데이터 수집
+   - 대상 인물의 사진/영상 수백~수천 장
+   - 다양한 각도, 표정, 조명
+   - 많을수록 정확함
+
+2. 얼굴 추출 및 정렬
+   - AI가 얼굴 부분만 잘라냄
+   - 눈, 코, 입 위치 맞춤 (Face Alignment)
+
+3. 학습 (Training)
+   - Encoder: 얼굴을 추상적 특징으로 변환
+   - Decoder: 특징을 다시 얼굴로 복원
+   - 원본 A → 특징 → 얼굴 B로 복원
+
+4. 생성 (Generation)
+   - 원본 영상의 얼굴을 새 얼굴로 교체
+   - 프레임마다 처리 (초당 30프레임)
+
+5. 후처리 (Post-processing)
+   - 경계선 부드럽게 (Blending)
+   - 색감 조정 (Color Correction)
+   - 조명 맞추기
+
+→ 고성능 GPU로 수 시간~수일 소요</div>
+
+            <div class="chat">
+                <div class="q">개인도 만들 수 있어?</div>
+                <div class="a">
+                    <p>예전에는 전문가만 가능했는데, <span class="warning">지금은 누구나 가능</span>해.</p>
+                    <p><strong>무료 앱/소프트웨어:</strong></p>
+                    <p>- DeepFaceLab (오픈소스, 가장 인기)</p>
+                    <p>- Faceswap (오픈소스)</p>
+                    <p>- Reface (모바일 앱, 쉬움)</p>
+                    <p>- Deepfakes Web (웹 기반)</p>
+                    <p>기술 장벽이 낮아져서 <span class="key-point">악용 위험</span>이 커졌어.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: 딥페이크 탐지 -->
+        <div class="conversation">
+            <h2>Part 4. 가짜 영상을 어떻게 구분해?</h2>
+
+            <div class="chat">
+                <div class="q">진짜인지 가짜인지 어떻게 알아?</div>
+                <div class="a">
+                    <p><span class="highlight">AI로 만들면, AI로 탐지</span>해.</p>
+                    <p>하지만 점점 구분하기 어려워지고 있어.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>탐지 방법</th>
+                    <th>원리</th>
+                    <th>한계</th>
+                </tr>
+                <tr>
+                    <td><strong>눈 깜빡임</strong></td>
+                    <td>초기 딥페이크는 눈을 안 깜빡임</td>
+                    <td>이제는 구현됨</td>
+                </tr>
+                <tr>
+                    <td><strong>경계선</strong></td>
+                    <td>얼굴 주변 경계가 부자연스러움</td>
+                    <td>후처리로 개선 가능</td>
+                </tr>
+                <tr>
+                    <td><strong>조명 일관성</strong></td>
+                    <td>얼굴과 배경 조명이 안 맞음</td>
+                    <td>고급 모델은 조정함</td>
+                </tr>
+                <tr>
+                    <td><strong>립싱크</strong></td>
+                    <td>입 모양이 소리와 안 맞음</td>
+                    <td>Wav2Lip 등으로 해결</td>
+                </tr>
+                <tr>
+                    <td><strong>AI 탐지기</strong></td>
+                    <td>AI가 딥페이크 패턴 학습</td>
+                    <td>새로운 기법은 못 잡음</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이게 <strong>"AI 군비 경쟁"</strong>이야.</p>
+                    <p>생성 AI가 발전하면 → 탐지 AI도 발전하고</p>
+                    <p>탐지 AI가 발전하면 → 생성 AI가 또 발전하고...</p>
+                    <p><span class="warning">결국 사람 눈으로는 구분 불가능해질 거야.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">딥페이크 의심 신호 (사람이 확인):
+
+1. 부자연스러운 움직임
+   - 머리카락이 이상하게 움직임
+   - 귀, 목 부분이 왜곡됨
+
+2. 화질 차이
+   - 얼굴만 화질이 다름
+   - 프레임마다 품질 변화
+
+3. 배경 이상
+   - 배경이 흐릿하거나 왜곡
+   - 반사, 그림자가 이상함
+
+4. 맥락 확인
+   - "이 사람이 이런 말을 할 리가 없는데?"
+   - 출처 확인 (공식 채널인가?)
+
+5. 다른 소스와 비교
+   - 같은 사건을 다룬 다른 영상 확인
+   - 여러 매체 교차 검증
+
+하지만 이것도 시간문제야.
+곧 완벽한 딥페이크가 나올 거야.</div>
+        </div>
+
+        <!-- Part 5: 긍정적 활용 -->
+        <div class="conversation">
+            <h2>Part 5. 딥페이크의 긍정적 활용</h2>
+
+            <div class="chat">
+                <div class="q">나쁜 것만 있는 건 아니지?</div>
+                <div class="a">
+                    <p>맞아. <span class="highlight">좋은 용도도 많아.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">긍정적 활용 사례:
+
+1. 영화/엔터테인먼트
+   - 배우 안전 (위험한 장면 대역 얼굴 합성)
+   - 젊은 시절 재현 (아이리시맨)
+   - 사망한 배우 복원 (스타워즈 캐리 피셔)
+
+2. 교육
+   - 역사 인물이 직접 설명하는 영상
+   - "링컨이 직접 게티즈버그 연설"
+   - 언어 학습 (내 얼굴로 외국어 발음 교정)
+
+3. 의료
+   - 언어 장애 환자 음성 복원
+   - 암 수술 전 얼굴 시뮬레이션
+
+4. 접근성
+   - 청각 장애인용 수화 자동 생성
+   - 시각 장애인용 음성 묘사
+
+5. 비즈니스
+   - AI 아바타 (본인 얼굴로 24시간 영상 생성)
+   - 다국어 더빙 (입 모양까지 맞춤)
+   - 가상 인플루언서
+
+6. 예술
+   - 새로운 형태의 디지털 아트
+   - 인터랙티브 전시</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">기술 자체는 중립적이야.</span></p>
+                    <p>칼은 요리에도 쓰이고, 범죄에도 쓰이잖아?</p>
+                    <p>딥페이크도 마찬가지지.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 6: 악용 사례와 대응 -->
+        <div class="conversation">
+            <h2>Part 6. 딥페이크 악용과 대응책</h2>
+
+            <div class="chat">
+                <div class="q">어떻게 악용되고 있어?</div>
+                <div class="a">
+                    <p><span class="warning">심각한 문제들이 많아.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">딥페이크 악용 사례:
+
+1. 허위 정보 (Disinformation)
+   - 정치인 가짜 발언 영상
+   - 선거 개입
+   - 주식 조작 (CEO 가짜 발표)
+
+2. 사기 (Scam)
+   - 보이스 피싱 (부모님 목소리 복제)
+   - "긴급 송금해줘" 사기
+   - 실제 사례: CEO 목소리 복제로 22만 유로 송금
+
+3. 음란물 (Pornography)
+   - 유명인 얼굴 합성
+   - 지인 얼굴 합성 (디지털 성범죄)
+   - 딥페이크의 96%가 음란물
+
+4. 명예훼손
+   - 가짜 스캔들 영상
+   - 평판 훼손
+
+5. 기업 범죄
+   - 가짜 화상회의 (임원 사칭)
+   - 내부 정보 탈취</div>
+
+            <div class="chat">
+                <div class="q">어떻게 대응해야 해?</div>
+                <div class="a">
+                    <p><span class="highlight">기술적 + 법적 + 사회적 대응</span>이 필요해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">대응 방안:
+
+[기술적 대응]
+1. 워터마크 (Watermark)
+   - 원본 영상에 눈에 안 보이는 표시
+   - C2PA (Content Credentials) 표준
+
+2. 블록체인
+   - 원본 영상을 블록체인에 등록
+   - 변조 여부 확인
+
+3. AI 탐지기
+   - Microsoft Video Authenticator
+   - Google의 FaceForensics
+   - 실시간 탐지 기술
+
+[법적 대응]
+- 한국: 성폭력처벌법 (딥페이크 음란물 처벌)
+- 미국: 주별 딥페이크 규제법
+- EU: AI Act (딥페이크 표시 의무화)
+
+[사회적 대응]
+- 미디어 리터러시 교육
+- "의심하는 습관" 기르기
+- 출처 확인, 팩트체크
+- 플랫폼의 자율 규제
+
+[개인 방어]
+- 개인정보 노출 최소화
+- 얼굴 사진 무분별하게 올리지 않기
+- 의심스러운 영상/전화는 재확인
+- "돈 보내줘" 요청은 직접 통화로 확인</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">완벽한 해결책은 없어.</span></p>
+                    <p>기술은 계속 발전하니까.</p>
+                    <p>중요한 건 <strong>"의심하는 능력"</strong>이야.</p>
+                    <p>"이게 진짜일까?"라고 항상 한 번 더 생각하는 습관.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>딥페이크</strong> - AI로 만든 가짜 영상/음성 (얼굴 바꾸기, 목소리 복제)</li>
+                <li><strong>GAN 기술</strong> - 생성자와 판별자가 경쟁하며 점점 완벽해짐</li>
+                <li><strong>제작 과정</strong> - 데이터 수집 → 학습 → 생성 → 후처리</li>
+                <li><strong>탐지 어려움</strong> - AI 군비 경쟁, 곧 사람 눈으로 구분 불가능</li>
+                <li><strong>긍정적 활용</strong> - 영화, 교육, 의료, 접근성, 비즈니스, 예술</li>
+                <li><strong>악용 사례</strong> - 허위 정보, 사기, 음란물, 명예훼손</li>
+                <li><strong>대응</strong> - 워터마크, 블록체인, AI 탐지, 법적 규제, 미디어 리터러시</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic04/">← 이전: 의료 AI는 믿을 만해?</a>
+            <a href="../topic06/">다음: AI 편향은 왜 생겨? →</a>
+        </div>
+    </div>
+</body>
+</html>

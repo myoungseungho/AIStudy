@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>셀프 어텐션은 뭐야? - Section 6</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #E91E63;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #E91E63;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #fce4ec;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #fce4ec;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c2185b;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #E91E63 0%, #EC407A 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fce4ec;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #E91E63; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 6</a>
+            <span>/</span>
+            Topic 12
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 12</div>
+            <h1>셀프 어텐션은 뭐야?</h1>
+            <p>Q. 자기 자신에게 어텐션을 준다고?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. Self-Attention의 개념</h2>
+
+            <div class="chat">
+                <div class="q">Self-Attention이 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">문장 내 모든 단어끼리 관계를 계산</span>하는 거야.</p>
+                    <p>"자기 자신(Self)"을 보면서 어디에 집중(Attention)할지 결정하는 거지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 단체 사진 찍기
+
+일반 Attention (Seq2Seq):
+한국어 문장 → 영어 문장 보기
+"나는" 생성할 때 "I"를 봄
+
+Self-Attention:
+같은 문장 내에서 서로 보기
+"The animal didn't cross the street because it was too tired"
+
+"it"이 다른 단어들을 봄:
+- "The" 봄: 관련 없음 (0.02)
+- "animal" 봄: 강한 관련 (0.87) 👈
+- "didn't" 봄: 관련 없음 (0.03)
+- "street" 봄: 약간 관련 (0.15)
+- "tired" 봄: 관련 있음 (0.64)
+
+→ "it" = "animal"이고 "tired" 상태
+</div>
+
+            <div class="chat">
+                <div class="q">왜 필요한데?</div>
+            </div>
+
+            <div class="code-block">필요성:
+
+문장: "Bank"
+
+일반 임베딩:
+"bank" → [0.5, 0.3, 0.7]
+→ 항상 같은 벡터
+→ 문맥 무시
+
+
+Self-Attention 적용:
+
+"I went to the bank" (은행)
+"bank" - "I": 0.1
+"bank" - "went": 0.2
+"bank" - "to": 0.1
+→ 이동 + 장소 = 은행 🏦
+
+"The river bank" (강둑)
+"bank" - "river": 0.9  👈 높음!
+"bank" - "The": 0.1
+→ 강 + bank = 강둑 🏞️
+
+→ 같은 단어, 다른 의미 구분!
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. Query, Key, Value</h2>
+
+            <div class="chat">
+                <div class="q">Self-Attention은 어떻게 계산해?</div>
+                <div class="a">
+                    <p><span class="key-point">Query, Key, Value</span> 세 가지로 변환해서 계산해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">QKV 비유: 도서관 검색
+
+Query (쿼리): "AI 책 찾아줘"
+→ 내가 찾고 싶은 것
+
+Key (키): 각 책의 목차/키워드
+→ "머신러닝", "딥러닝", "AI" ...
+
+Value (값): 실제 책 내용
+→ 찾은 책의 본문
+
+
+Self-Attention도 같음:
+
+1. 각 단어를 Q, K, V로 변환
+2. Query로 Key 검색
+3. 관련 있는 Value 가져오기
+</div>
+
+            <div class="chat">
+                <div class="q">구체적인 과정은?</div>
+            </div>
+
+            <div class="code-block">Self-Attention 계산:
+
+문장: "I love you"
+
+1단계: QKV 생성
+"I" 임베딩: [0.1, 0.5, 0.2]
+→ Q: [0.1, 0.5, 0.2] × W_Q = [0.3, 0.7]
+→ K: [0.1, 0.5, 0.2] × W_K = [0.2, 0.8]
+→ V: [0.1, 0.5, 0.2] × W_V = [0.4, 0.6]
+
+"love" 임베딩: [0.3, 0.7, 0.1]
+→ Q: [0.5, 0.9]
+→ K: [0.4, 0.6]
+→ V: [0.6, 0.5]
+
+"you" 임베딩: [0.2, 0.4, 0.6]
+→ Q: [0.2, 0.5]
+→ K: [0.3, 0.7]
+→ V: [0.5, 0.8]
+
+
+2단계: Attention Score 계산
+"I"의 Query로 모든 Key 검색:
+
+Q_I · K_I = [0.3, 0.7] · [0.2, 0.8] = 0.62
+Q_I · K_love = [0.3, 0.7] · [0.4, 0.6] = 0.54
+Q_I · K_you = [0.3, 0.7] · [0.3, 0.7] = 0.58
+
+
+3단계: Softmax로 가중치
+Scores = [0.62, 0.54, 0.58]
+Weights = softmax([0.62, 0.54, 0.58])
+        = [0.36, 0.31, 0.33]
+
+
+4단계: Value 가중 평균
+새로운 "I" 표현:
+= 0.36 × V_I + 0.31 × V_love + 0.33 × V_you
+= 0.36 × [0.4, 0.6] + 0.31 × [0.6, 0.5] + 0.33 × [0.5, 0.8]
+= [0.50, 0.63]
+
+→ 이제 "I"는 문맥 정보 포함!
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. Multi-Head Attention</h2>
+
+            <div class="chat">
+                <div class="q">Multi-Head Attention은 뭐야?</div>
+                <div class="a">
+                    <p><span class="highlight">여러 개의 Attention을 동시에</span> 수행하는 거야.</p>
+                    <p>다양한 관점에서 문장을 이해하기 위해서지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Multi-Head 비유:
+
+문장을 여러 관점에서 분석:
+
+Head 1: 문법적 관계
+"The cat sat on the mat"
+→ 주어-동사-목적어 관계 파악
+
+Head 2: 의미적 관계
+→ "cat"과 "sat"의 의미 연결
+→ "on"과 "mat"의 위치 관계
+
+Head 3: 참조 관계
+"The animal ... it"
+→ "it"이 "animal" 가리킴
+
+Head 4: 거리 관계
+→ 가까운 단어들 간 관계
+
+...
+
+Head 8: 기타 패턴
+
+→ 8개 Head를 합쳐서 종합 이해!
+</div>
+
+            <div class="code-block">실제 작동:
+
+8-Head Attention:
+
+Head 1의 Attention:
+W_Q1, W_K1, W_V1로 QKV 생성
+→ Attention 계산
+
+Head 2의 Attention:
+W_Q2, W_K2, W_V2로 QKV 생성
+→ 다른 관점의 Attention
+
+...
+
+Head 8의 Attention:
+W_Q8, W_K8, W_V8로 QKV 생성
+→ 또 다른 관점
+
+
+합치기:
+[Head1, Head2, ..., Head8]
+→ Concat (이어붙이기)
+→ W_O로 변환
+→ 최종 출력
+
+
+왜 좋은가?
+- 다양한 관점 → 풍부한 이해
+- 하나의 Head가 실수해도 다른 Head가 보완
+- 실험 결과: 1-Head보다 8-Head가 10% 성능 향상
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. Masked Self-Attention</h2>
+
+            <div class="chat">
+                <div class="q">Masked Self-Attention은 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">미래를 보지 못하게 막는</span> Self-Attention이야.</p>
+                    <p>GPT 같은 생성 모델에서 사용해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">왜 필요한가?
+
+텍스트 생성:
+"나는 학교에" → 다음 단어는?
+
+❌ 잘못된 방법:
+"나는 학교에 간다"를 통째로 보고 학습
+→ 답을 미리 알고 문제 푸는 것
+→ 부정행위!
+
+✅ 올바른 방법:
+"나는" 볼 때: "나는"만 봄
+"학교에" 볼 때: "나는 학교에"만 봄
+"간다" 예측할 때: "나는 학교에"만 봄
+→ 미래는 보지 않음
+</div>
+
+            <div class="code-block">Masking 예시:
+
+문장: "I love you"
+
+일반 Self-Attention:
+       I   love  you
+I     ✓    ✓    ✓    (모두 봄)
+love  ✓    ✓    ✓    (모두 봄)
+you   ✓    ✓    ✓    (모두 봄)
+
+
+Masked Self-Attention:
+       I   love  you
+I     ✓    ✗    ✗    ("I"만 봄)
+love  ✓    ✓    ✗    ("I love"까지만)
+you   ✓    ✓    ✓    ("I love you" 전체)
+
+→ 미래 단어는 -∞ 처리
+→ Softmax 후 0이 됨
+
+
+왜 GPT는 이렇게 해?
+→ "다음 단어 맞추기" 학습
+→ 미래 보면 학습 안 됨
+→ Masking으로 공정하게 학습
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. Self-Attention의 한계와 개선</h2>
+
+            <div class="chat">
+                <div class="q">Self-Attention 문제점은?</div>
+            </div>
+
+            <div class="code-block">문제 1: 계산 복잡도 O(n²)
+
+문장 길이 n=100:
+→ 100 × 100 = 10,000 계산
+
+문장 길이 n=1000:
+→ 1000 × 1000 = 1,000,000 계산!
+→ 100배 증가
+
+문장 길이 n=10000:
+→ 100,000,000 계산
+→ 메모리 폭발 💥
+
+
+개선:
+- Sparse Attention: 일부만 계산
+- Linformer: 선형 O(n) 복잡도
+- Reformer: O(n log n) 복잡도
+
+
+문제 2: 위치 정보 부족
+
+Self-Attention은 위치 무시
+→ Positional Encoding 필수
+→ 하지만 완벽하지 않음
+
+개선:
+- Relative Positional Encoding
+- Rotary Position Embedding (RoPE)
+- ALiBi (Attention with Linear Biases)
+
+
+문제 3: 해석 어려움
+
+8개 Head가 뭘 보는지?
+→ 명확하지 않음
+→ 블랙박스
+
+개선:
+- Attention Visualization
+- BertViz 같은 도구
+- Head Pruning (불필요한 Head 제거)
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>하지만 이런 문제들에도 <span class="key-point">Self-Attention은 현재 최고의 방법</span>이야!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>Self-Attention</strong> - 문장 내 모든 단어 간 관계를 계산하는 메커니즘</li>
+                <li><strong>QKV</strong> - Query로 Key 검색, 관련된 Value 가져오기</li>
+                <li><strong>Multi-Head</strong> - 여러 관점에서 동시에 분석, 더 풍부한 이해</li>
+                <li><strong>Masked</strong> - 미래 단어 가리기, GPT 같은 생성 모델에 필수</li>
+                <li><strong>핵심 역할</strong> - Transformer의 핵심, 문맥 이해의 핵심</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic11/">← 이전: 트랜스포머가 뭐길래 난리야?</a>
+            <a href="../topic13/">다음: BERT는 어떻게 학습해? →</a>
+        </div>
+    </div>
+</body>
+</html>

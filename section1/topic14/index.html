@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>모델이 뭐야? - Section 1</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fafafa; color: #333; line-height: 1.9; }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number { display: inline-block; background: #4CAF50; color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-bottom: 16px; }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation { background: white; border-radius: 16px; padding: 32px; margin: 32px 0; border: 1px solid #e0e0e0; }
+        .conversation h2 { font-size: 1.3rem; color: #4CAF50; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid #e8f5e9; }
+        .chat { margin-bottom: 20px; }
+        .q { background: #fff3e0; border-left: 4px solid #ff9800; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; font-weight: 500; }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight { background: #e3f2fd; padding: 2px 8px; border-radius: 4px; font-weight: 600; color: #1565c0; }
+        .key-point { background: #c8e6c9; padding: 2px 8px; border-radius: 4px; font-weight: 600; color: #2e7d32; }
+        .warning { background: #ffcdd2; padding: 2px 8px; border-radius: 4px; font-weight: 600; color: #c62828; }
+        .code-block { background: #263238; border-radius: 8px; padding: 16px 20px; margin: 16px 0; font-family: 'Consolas', monospace; font-size: 0.9rem; color: #eceff1; overflow-x: auto; line-height: 1.6; white-space: pre-wrap; }
+        .summary-box { background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%); border-radius: 16px; padding: 32px; color: white; margin: 32px 0; }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #c8e6c9; }
+        .nav-links { display: flex; justify-content: space-between; margin-top: 60px; padding-top: 24px; border-top: 1px solid #e0e0e0; }
+        .nav-links a { color: #4CAF50; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 1</a>
+            <span>/</span>
+            Topic 14
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 14</div>
+            <h1>모델이 뭐야?</h1>
+            <p>Q. AI 파일은 어떻게 생겼어?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 모델 = 학습된 AI</h2>
+
+            <div class="chat">
+                <div class="q">"모델"이라는 말을 자주 듣는데, 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">모델 = 학습 완료된 AI 프로그램</span></p>
+                    <p>쉽게 말해, AI의 "뇌"를 파일로 저장한 거야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 게임 세이브 파일
+
+게임:
+→ 플레이하면서 레벨업, 아이템 획득
+→ 세이브 파일에 저장
+→ 다음에 로드하면 그대로 이어짐
+
+AI:
+→ 학습하면서 패턴 학습, 가중치 조정
+→ 모델 파일에 저장
+→ 다음에 로드하면 똑같이 작동
+
+
+실제 예시:
+
+GPT-3 모델:
+→ 학습 완료 후 파일로 저장
+→ 크기: 약 700GB
+→ 이 파일이 "GPT-3 모델"
+
+ChatGPT 사용:
+→ GPT-3 모델 로드
+→ 질문 입력 → 답변 출력
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 모델 파일 구성</h2>
+
+            <div class="chat">
+                <div class="q">모델 파일 안에 뭐가 들어있어?</div>
+                <div class="a">
+                    <p><span class="highlight">가중치(Weight)와 구조(Architecture) 정보</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">모델 파일 내용:
+
+1. 가중치 (Weights)
+   → 수치 값들 (0.342, -1.523, 0.891...)
+   → 수백만~수천억 개
+   → 이게 "학습된 지식"
+
+2. 구조 (Architecture)
+   → 층(Layer) 몇 개?
+   → 뉴런 몇 개?
+   → 어떻게 연결?
+
+3. 메타데이터
+   → 학습 날짜
+   → 정확도
+   → 버전 정보
+
+
+실제 파일 예시:
+
+model.pth (PyTorch)
+model.h5 (TensorFlow)
+model.onnx (범용)
+
+→ 그냥 숫자 덩어리야
+→ 사람이 읽을 수 없음
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 모델 크기</h2>
+
+            <div class="chat">
+                <div class="q">모델은 얼마나 커?</div>
+                <div class="a">
+                    <p>천차만별이야:</p>
+                </div>
+            </div>
+
+            <div class="code-block">모델 크기 비교:
+
+작은 모델:
+MobileNet (이미지 인식)
+→ 크기: 16 MB
+→ 스마트폰에서 실행 가능
+
+중간 모델:
+BERT-Base (텍스트 이해)
+→ 크기: 440 MB
+→ 일반 서버에서 실행
+
+큰 모델:
+GPT-3
+→ 크기: 700 GB
+→ 고성능 서버 필요
+
+초대형 모델:
+GPT-4 (추정)
+→ 크기: 수 TB?
+→ 여러 서버에 분산
+
+
+왜 이렇게 차이나?
+→ 파라미터 개수 차이
+→ 복잡한 작업 = 큰 모델 필요
+</code>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>트레이드오프:</strong></p>
+                    <p>큰 모델 = 똑똑함, 느림, 비쌈</p>
+                    <p>작은 모델 = 덜 똑똑함, 빠름, 저렴</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 모델 다운로드</h2>
+
+            <div class="chat">
+                <div class="q">모델을 다운받아서 쓸 수도 있어?</div>
+                <div class="a">
+                    <p><span class="key-point">있어! 오픈소스 모델 많아.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">오픈소스 모델 플랫폼:
+
+Hugging Face (🤗)
+→ 수십만 개 모델 공개
+→ GPT, BERT, Stable Diffusion...
+→ 무료 다운로드 가능
+
+예시:
+- llama-2-7b (Meta)
+- stable-diffusion-2.1
+- whisper (음성 인식)
+
+
+사용 방법:
+
+1. 모델 다운로드
+   → 웹사이트에서 클릭
+   → 또는 코드로 자동 다운
+
+2. 로컬에서 실행
+   → 내 컴퓨터/서버에서
+   → 인터넷 없어도 작동
+
+3. 커스터마이징
+   → Fine-tuning 가능
+   → 내 데이터로 재학습
+
+
+장점:
+→ 무료
+→ 프라이버시 (데이터 안 보냄)
+→ 커스터마이징 자유
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 모델 버전</h2>
+
+            <div class="chat">
+                <div class="q">GPT-3, GPT-4 이런 건 버전이야?</div>
+                <div class="a">
+                    <p><span class="highlight">맞아, 모델도 업데이트돼.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">모델 버전 역사:
+
+GPT 시리즈:
+- GPT-1 (2018): 1.17억 파라미터
+- GPT-2 (2019): 15억 파라미터
+- GPT-3 (2020): 1750억 파라미터
+- GPT-3.5 (2022): ChatGPT 기반
+- GPT-4 (2023): 파라미터 수 비공개
+
+
+업데이트 이유:
+
+1. 더 많은 데이터
+   → 최신 정보 학습
+
+2. 더 나은 알고리즘
+   → 효율 개선
+
+3. 더 큰 모델
+   → 파라미터 증가
+
+4. 버그 수정
+   → 편향, 오류 개선
+
+
+버전별 차이:
+GPT-3: 좋음
+GPT-4: 훨씬 좋음 (추론 능력 ↑, 환각 ↓)
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 모델 선택</h2>
+
+            <div class="chat">
+                <div class="q">그럼 어떤 모델을 써야 해?</div>
+                <div class="a">
+                    <p><span class="key-point">용도와 리소스에 맞게</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">모델 선택 기준:
+
+1. 작업 종류
+   → 텍스트: GPT, BERT, LLaMA
+   → 이미지: Stable Diffusion, DALL-E
+   → 음성: Whisper, Wav2Vec
+
+2. 정확도 vs 속도
+   → 정확도 중요: 큰 모델
+   → 속도 중요: 작은 모델
+
+3. 리소스
+   → 좋은 GPU 있음: 큰 모델
+   → 일반 PC: 작은 모델
+   → 스마트폰: 초소형 모델
+
+4. 비용
+   → 무료: 오픈소스 (LLaMA, Mistral)
+   → 유료: API (GPT-4, Claude)
+
+
+실전 추천:
+
+초보자:
+→ Hugging Face에서 작은 모델 다운
+→ ChatGPT API 사용
+
+중급자:
+→ LLaMA 2 로컬 실행
+→ Fine-tuning
+
+고급자:
+→ 직접 모델 학습
+→ 대규모 인프라 구축
+</code>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>모델</strong> - 학습 완료된 AI, 파일로 저장됨</li>
+                <li><strong>구성</strong> - 가중치(숫자 덩어리) + 구조 정보</li>
+                <li><strong>크기</strong> - 수 MB ~ 수 TB, 용도에 따라 천차만별</li>
+                <li><strong>오픈소스</strong> - Hugging Face 등에서 무료 다운 가능</li>
+                <li><strong>버전</strong> - GPT-3, GPT-4 같은 업데이트 존재</li>
+                <li><strong>선택</strong> - 용도, 리소스, 비용 고려해서 선택</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic13/">← 이전: 학습과 추론이 뭐야?</a>
+            <a href="../topic15/">다음: 파라미터가 많으면 뭐가 좋은데? →</a>
+        </div>
+    </div>
+</body>
+</html>

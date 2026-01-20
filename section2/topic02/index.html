@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>벡터가 뭐야? - Section 2</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF9800;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF9800;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #fff3e0;
+        }
+
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #fff3e0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #e65100;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #FF9800 0%, #FFB74D 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fff3e0;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #FF9800; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 2</a>
+            <span>/</span>
+            Topic 02
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 02</div>
+            <h1>벡터가 뭐야?</h1>
+            <p>Q. 숫자 여러 개를 묶어놓은 거?</p>
+        </header>
+
+        <!-- Part 1: 벡터의 정의 -->
+        <div class="conversation">
+            <h2>Part 1. 벡터가 뭔데?</h2>
+
+            <div class="chat">
+                <div class="q">벡터가 뭐야? 숫자 여러 개 묶어놓은 거 아니야?</div>
+                <div class="a">
+                    <p><span class="key-point">맞아. 그게 정확한 이해야.</span></p>
+                    <p>벡터는 <strong>"순서가 있는 숫자들의 집합"</strong>이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">벡터 예시:
+
+v = [3, 5, 2]
+
+→ 3개의 숫자를 순서대로 묶어놓은 것
+→ 첫 번째 값: 3
+→ 두 번째 값: 5
+→ 세 번째 값: 2
+
+
+다른 예시:
+a = [1.5, 2.3, 0.8, 4.1]  ← 4개짜리 벡터
+b = [10, 20]              ← 2개짜리 벡터
+c = [0, 0, 0, 0, 0]       ← 5개짜리 영벡터</div>
+
+            <div class="chat">
+                <div class="q">그럼 그냥 리스트랑 똑같은 거네?</div>
+                <div class="a">
+                    <p>프로그래밍 관점에서는 비슷해.</p>
+                    <p>하지만 <span class="highlight">수학적 의미가 달라.</span></p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>구분</th>
+                    <th>리스트</th>
+                    <th>벡터</th>
+                </tr>
+                <tr>
+                    <td><strong>의미</strong></td>
+                    <td>그냥 데이터 묶음</td>
+                    <td>공간 속 점 또는 방향</td>
+                </tr>
+                <tr>
+                    <td><strong>연산</strong></td>
+                    <td>append, remove 등</td>
+                    <td>덧셈, 곱셈, 내적 등</td>
+                </tr>
+                <tr>
+                    <td><strong>AI에서</strong></td>
+                    <td>데이터 저장</td>
+                    <td>특징 표현</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Part 2: 왜 벡터를 쓰나 -->
+        <div class="conversation">
+            <h2>Part 2. AI에서 왜 벡터를 쓰는데?</h2>
+
+            <div class="chat">
+                <div class="q">숫자 하나하나 따로 쓰면 안 돼? 왜 벡터로 묶어?</div>
+                <div class="a">
+                    <p><span class="key-point">여러 특징을 한 번에 표현하려고.</span></p>
+                    <p>예를 들어볼게:</p>
+                </div>
+            </div>
+
+            <div class="code-block">사과 특징 표현:
+
+개별 숫자로:
+색깔 = 0.8 (빨강 정도)
+크기 = 0.6 (중간 크기)
+당도 = 0.9 (매우 달음)
+→ 따로따로 관리해야 함
+
+
+벡터로:
+사과 = [0.8, 0.6, 0.9]
+→ 한 번에 관리 가능
+→ 계산도 한 번에!
+
+
+배 = [0.3, 0.7, 0.7]
+포도 = [0.5, 0.2, 0.8]
+
+→ 과일들을 쉽게 비교할 수 있음</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>보이지? <span class="highlight">벡터로 표현하면 여러 특징을 하나의 단위로 다룰 수 있어.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: 벡터 연산 -->
+        <div class="conversation">
+            <h2>Part 3. 벡터로 뭘 할 수 있어?</h2>
+
+            <div class="chat">
+                <div class="q">벡터로 어떤 계산을 하는데?</div>
+                <div class="a">
+                    <p>주로 이 3가지를 써:</p>
+                </div>
+            </div>
+
+            <div class="code-block">1. 벡터 덧셈
+
+a = [1, 2, 3]
+b = [4, 5, 6]
+
+a + b = [1+4, 2+5, 3+6] = [5, 7, 9]
+
+→ 같은 위치끼리 더함
+
+
+2. 스칼라 곱 (숫자 곱하기)
+
+a = [1, 2, 3]
+2 * a = [2*1, 2*2, 2*3] = [2, 4, 6]
+
+→ 모든 원소에 같은 숫자를 곱함
+
+
+3. 내적 (Dot Product) ⭐ 가장 중요
+
+a = [1, 2, 3]
+b = [4, 5, 6]
+
+a · b = 1*4 + 2*5 + 3*6 = 4 + 10 + 18 = 32
+
+→ 같은 위치끼리 곱한 후 전부 더함
+→ 결과는 숫자 하나!</div>
+
+            <div class="chat">
+                <div class="q">내적은 왜 중요한 거야?</div>
+                <div class="a">
+                    <p><span class="key-point">내적은 "유사도"를 측정하는 핵심 도구야.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">내적으로 유사도 측정:
+
+사과 = [0.8, 0.6, 0.9]
+토마토 = [0.9, 0.5, 0.3]
+
+사과 · 토마토 = 0.8*0.9 + 0.6*0.5 + 0.9*0.3
+              = 0.72 + 0.3 + 0.27
+              = 1.29
+
+
+사과 = [0.8, 0.6, 0.9]
+배 = [0.3, 0.7, 0.7]
+
+사과 · 배 = 0.8*0.3 + 0.6*0.7 + 0.9*0.7
+          = 0.24 + 0.42 + 0.63
+          = 1.29
+
+
+→ 내적 값이 클수록 비슷함
+→ AI가 "얼마나 비슷한지" 판단할 때 사용</div>
+        </div>
+
+        <!-- Part 4: 실제 AI 예시 -->
+        <div class="conversation">
+            <h2>Part 4. 실제로 어떻게 쓰여?</h2>
+
+            <div class="chat">
+                <div class="q">실제 AI에서는 어떻게 쓰이는 건데?</div>
+                <div class="a">
+                    <p>모든 게 벡터로 표현돼.</p>
+                </div>
+            </div>
+
+            <div class="code-block">이미지 벡터 변환:
+
+28x28 흑백 이미지 (MNIST 숫자)
+→ 28 x 28 = 784개의 픽셀
+→ 각 픽셀 값을 일렬로 늘어놓음
+
+[0.2, 0.8, 0.9, 0.1, ..., 0.3]  ← 784차원 벡터
+
+→ 이 벡터가 "숫자 3"을 나타냄
+
+
+단어 벡터 변환 (Word Embedding):
+
+"사과" = [0.2, 0.8, 0.1, ..., 0.5]  ← 300차원 벡터
+"배"   = [0.3, 0.7, 0.2, ..., 0.4]
+"자동차" = [0.9, 0.1, 0.8, ..., 0.2]
+
+→ 단어를 숫자로 표현
+→ 비슷한 단어는 벡터도 비슷함</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="highlight">AI는 모든 데이터를 벡터로 바꿔서 처리해.</span></p>
+                    <p>이미지도, 텍스트도, 음성도 전부 벡터야.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: 벡터의 크기 -->
+        <div class="conversation">
+            <h2>Part 5. 벡터의 길이는 뭐야?</h2>
+
+            <div class="chat">
+                <div class="q">벡터의 "크기"나 "길이"는 뭘 말하는 거야?</div>
+                <div class="a">
+                    <p>두 가지 의미가 있어:</p>
+                </div>
+            </div>
+
+            <div class="code-block">1. 차원 (Dimension)
+= 벡터에 숫자가 몇 개 들어있나
+
+v = [1, 2, 3]       → 3차원 벡터
+w = [5, 8, 2, 1, 9] → 5차원 벡터
+
+
+2. 크기/노름 (Magnitude/Norm)
+= 원점에서 얼마나 떨어져 있나
+
+v = [3, 4]
+|v| = √(3² + 4²) = √(9 + 16) = √25 = 5
+
+→ 피타고라스 정리 사용
+→ 벡터가 얼마나 "강한지" 나타냄</div>
+
+            <div class="chat">
+                <div class="q">AI에서는 어디에 쓰여?</div>
+                <div class="a">
+                    <p><strong>정규화(Normalization)</strong>에 많이 써.</p>
+                </div>
+            </div>
+
+            <div class="code-block">벡터 정규화:
+
+v = [3, 4]
+|v| = 5
+
+정규화된 v = [3/5, 4/5] = [0.6, 0.8]
+|정규화된 v| = 1
+
+→ 크기를 1로 만듦
+→ 방향은 유지, 크기만 조정
+→ AI에서 특징의 스케일을 맞출 때 사용</div>
+        </div>
+
+        <!-- Part 6: 파이썬 코드 -->
+        <div class="conversation">
+            <h2>Part 6. 파이썬에서는?</h2>
+
+            <div class="chat">
+                <div class="q">파이썬으로 벡터를 어떻게 쓰는데?</div>
+                <div class="a">
+                    <p>NumPy 라이브러리를 써.</p>
+                </div>
+            </div>
+
+            <div class="code-block">import numpy as np
+
+# 벡터 생성
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+
+# 벡터 덧셈
+print(a + b)  # [5 7 9]
+
+# 스칼라 곱
+print(2 * a)  # [2 4 6]
+
+# 내적
+print(np.dot(a, b))  # 32
+
+# 벡터 크기
+print(np.linalg.norm(a))  # 3.7416...
+
+# 정규화
+normalized = a / np.linalg.norm(a)
+print(normalized)  # [0.267 0.534 0.801]
+print(np.linalg.norm(normalized))  # 1.0</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>보이지? <span class="key-point">NumPy로 벡터 연산이 엄청 쉬워.</span></p>
+                    <p>AI 코딩할 때는 거의 항상 NumPy를 써.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>벡터는 순서가 있는 숫자들의 집합</strong> - [1, 2, 3] 형태</li>
+                <li><strong>여러 특징을 한 번에 표현</strong> - 사과 = [색, 크기, 당도]</li>
+                <li><strong>내적이 가장 중요</strong> - 유사도 측정의 핵심 도구</li>
+                <li><strong>모든 데이터가 벡터로 변환</strong> - 이미지, 텍스트, 음성 전부</li>
+                <li><strong>차원 vs 크기</strong> - 차원은 숫자 개수, 크기는 원점에서의 거리</li>
+                <li><strong>NumPy로 쉽게 구현</strong> - AI 코딩의 필수 라이브러리</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic01/">← 이전: AI에 수학이 왜 필요해?</a>
+            <a href="../topic03/">다음: 벡터로 단어를 표현한다고? →</a>
+        </div>
+    </div>
+</body>
+</html>

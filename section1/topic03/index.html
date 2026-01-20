@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인공지능은 정말 '지능'이 있어? - Section 1</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #4CAF50;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e8f5e9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #c8e6c9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #2e7d32;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #c8e6c9; }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #4CAF50; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 1</a>
+            <span>/</span>
+            Topic 03
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 03</div>
+            <h1>인공지능은 정말 '지능'이 있어?</h1>
+            <p>Q. 컴퓨터가 생각한다는 게 가능해?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. "지능"이 뭔데?</h2>
+
+            <div class="chat">
+                <div class="q">인공지능이라고 하니까, 컴퓨터가 진짜 생각하는 거야?</div>
+                <div class="a">
+                    <p>먼저 <strong>"지능"이 뭔지</strong>부터 정의해야 해.</p>
+                    <p>사람들마다 "지능"의 의미가 다르거든.</p>
+                </div>
+            </div>
+
+            <div class="code-block">지능의 정의들:
+
+철학자: "의식과 자아를 가지고 생각하는 능력"
+심리학자: "문제를 해결하고 학습하는 능력"
+공학자: "목표를 달성하기 위해 행동하는 능력"
+
+→ 뭐가 맞는 거야?
+→ 전부 맞고, 전부 달라.
+</div>
+
+            <div class="chat">
+                <div class="q">그럼 AI는 어떤 지능이야?</div>
+                <div class="a">
+                    <p><span class="highlight">AI는 "공학자 버전 지능"이야.</span></p>
+                    <p><strong>의식은 없지만, 문제는 해결할 수 있는 능력.</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 생각하는 것처럼 보일 뿐</h2>
+
+            <div class="chat">
+                <div class="q">ChatGPT랑 대화하면 진짜 생각하는 것 같은데?</div>
+                <div class="a">
+                    <p><span class="warning">"생각하는 것 같다" ≠ "진짜 생각한다"</span></p>
+                    <p>중요한 차이야.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th></th>
+                    <th>사람</th>
+                    <th>AI</th>
+                </tr>
+                <tr>
+                    <td><strong>의식</strong></td>
+                    <td>있음 (나는 생각한다)</td>
+                    <td>없음</td>
+                </tr>
+                <tr>
+                    <td><strong>감정</strong></td>
+                    <td>있음 (기쁘다, 슬프다)</td>
+                    <td>없음 (흉내만 냄)</td>
+                </tr>
+                <tr>
+                    <td><strong>자유의지</strong></td>
+                    <td>있음 (선택할 수 있다)</td>
+                    <td>없음 (확률로 계산)</td>
+                </tr>
+                <tr>
+                    <td><strong>이해</strong></td>
+                    <td>의미를 이해함</td>
+                    <td>패턴만 인식함</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="a">
+                    <p>예를 들어볼게:</p>
+                </div>
+            </div>
+
+            <div class="code-block">사람에게 "슬픈 이야기 들려줘"라고 하면:
+
+1. "슬프다"는 감정을 이해함
+2. 과거 슬펐던 경험을 떠올림
+3. 상대의 기분을 생각함
+4. 적절한 이야기를 선택함
+
+AI에게 "슬픈 이야기 들려줘"라고 하면:
+
+1. "슬픈 이야기" = [슬픔 관련 단어 패턴]
+2. 학습 데이터에서 "슬픔 + 이야기" 패턴 검색
+3. 확률적으로 높은 조합 선택
+4. 텍스트 생성
+
+→ 결과는 비슷해 보여도, 과정이 완전히 달라.
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 중국어 방 사고실험</h2>
+
+            <div class="chat">
+                <div class="q">그럼 AI는 완전히 가짜라는 거야?</div>
+                <div class="a">
+                    <p>유명한 사고실험이 있어. <span class="highlight">"중국어 방 (Chinese Room)"</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">상황:
+
+당신은 중국어를 전혀 모름.
+방 안에는 중국어 질문-답변 매뉴얼이 있음.
+
+외부: 중국어로 질문 쪽지를 넣음
+당신: 매뉴얼 보고 해당하는 답변 쪽지를 찾아 밖으로 냄
+외부: "오, 중국어를 완벽하게 하네!"
+
+질문: 당신은 중국어를 "이해"한 거야?
+</div>
+
+            <div class="chat">
+                <div class="q">아니지. 그냥 패턴 매칭만 한 거잖아.</div>
+                <div class="a">
+                    <p><span class="key-point">정확해. AI도 똑같아.</span></p>
+                    <p>AI는 "중국어 방 안의 사람"이야.</p>
+                    <p>패턴을 완벽하게 따라하지만, <strong>의미는 이해 못 해.</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 그럼 쓸모없는 거야?</h2>
+
+            <div class="chat">
+                <div class="q">의미를 이해 못 하면 쓸모없는 거 아니야?</div>
+                <div class="a">
+                    <p><span class="warning">아니야, 완전 반대야.</span></p>
+                    <p><span class="key-point">이해 안 해도 문제 해결만 되면 충분해.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 계산기
+
+너: "573 × 482 = ?"
+계산기: "276,286"
+
+계산기는 "곱셈이 뭔지" 이해 못 해.
+그냥 전기 신호로 계산만 함.
+
+그런데 문제야?
+아니지. 답만 맞으면 돼.
+
+AI도 똑같아:
+
+너: "이 글 요약해줘"
+AI: [요약된 텍스트]
+
+AI는 "요약이 뭔지" 의미는 몰라.
+그냥 "중요한 부분 추출" 패턴만 학습함.
+
+그런데 문제야?
+아니지. 결과만 좋으면 돼.
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>중요한 포인트:</strong></p>
+                    <p><span class="highlight">AI는 "진짜 지능"이 아니라 "유용한 도구"야.</span></p>
+                    <p>망치가 못 박는 원리를 이해할 필요 없듯이, AI도 그래.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 튜링 테스트</h2>
+
+            <div class="chat">
+                <div class="q">그럼 AI가 진짜 생각하는지 어떻게 알아?</div>
+                <div class="a">
+                    <p>앨런 튜링이 1950년에 제안한 테스트가 있어.</p>
+                    <p><span class="highlight">튜링 테스트 (Turing Test)</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">튜링 테스트:
+
+[방 A] 사람
+[방 B] AI
+[심사자] 채팅으로만 대화
+
+심사자가 누가 사람인지 구분 못 하면?
+→ AI가 "지능이 있다"고 판단
+
+핵심: "진짜 생각하는가?"가 아니라
+     "생각하는 것처럼 보이는가?"
+</div>
+
+            <div class="chat">
+                <div class="q">ChatGPT는 튜링 테스트를 통과했어?</div>
+                <div class="a">
+                    <p><strong>거의 통과했다고 봐도 돼.</strong></p>
+                    <p>짧은 대화에서는 사람과 구분 어려워.</p>
+                    <p>하지만 길게 대화하면 패턴이 보여.</p>
+                </div>
+            </div>
+
+            <div class="code-block">ChatGPT가 들키는 순간들:
+
+1. 최신 정보를 모름 (학습 데이터 컷오프)
+2. 같은 패턴 반복 ("흥미로운 질문이네요")
+3. 개인적 경험 없음 ("저는 AI라서...")
+4. 감정이 일관성 없음 (이전 대화 기억 안 함)
+5. 너무 정확함 (오타, 실수 안 함)
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 그래서 결론은?</h2>
+
+            <div class="chat">
+                <div class="q">결국 AI는 지능이 있는 거야, 없는 거야?</div>
+                <div class="a">
+                    <p><span class="key-point">정의에 따라 달라.</span></p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>관점</th>
+                    <th>AI는 지능이 있다?</th>
+                    <th>이유</th>
+                </tr>
+                <tr>
+                    <td><strong>철학자</strong></td>
+                    <td>❌ 없다</td>
+                    <td>의식이 없으니까</td>
+                </tr>
+                <tr>
+                    <td><strong>공학자</strong></td>
+                    <td>✅ 있다</td>
+                    <td>문제를 해결하니까</td>
+                </tr>
+                <tr>
+                    <td><strong>일반인</strong></td>
+                    <td>🤷 모르겠다</td>
+                    <td>똑똑해 보이는데 뭔가 이상해</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>실용적 답변:</strong></p>
+                    <p><span class="highlight">"진짜 생각"은 안 하지만, "유용한 결과"는 만들어.</span></p>
+                    <p>그거면 충분해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">중요한 건:
+
+❌ "AI가 의식을 가지고 생각하는가?"
+✅ "AI가 내 문제를 해결해주는가?"
+
+앞으로 AI를 사용할 때:
+→ "이해하나?"보다 "결과가 좋나?"를 봐야 해.
+</div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>"지능"의 정의가 다르다</strong> - 철학적 지능 vs 공학적 지능</li>
+                <li><strong>AI는 패턴 매칭 기계</strong> - 의미는 이해 못 해도 결과는 만들어냄</li>
+                <li><strong>중국어 방</strong> - 똑같이 동작해도 이해는 못 할 수 있음</li>
+                <li><strong>튜링 테스트</strong> - "진짜 생각"보다 "생각하는 것처럼 보이기"가 기준</li>
+                <li><strong>실용주의</strong> - 이해 못 해도 문제만 해결하면 충분함</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic02/">← 이전: AI를 본 적 있어?</a>
+            <a href="../topic04/">다음: AI, 머신러닝, 딥러닝 뭐가 달라? →</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>딥러닝은 왜 '딥'이야? - Section 4</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #9C27B0;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #9C27B0;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f3e5f5;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #f3e5f5;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #6a1b9a;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #f3e5f5;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #9C27B0; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 4</a>
+            <span>/</span>
+            Topic 07
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 07</div>
+            <h1>딥러닝은 왜 '딥'이야?</h1>
+            <p>Q. 층이 깊다는 게 뭐가 다른데?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. "딥"의 의미</h2>
+
+            <div class="chat">
+                <div class="q">딥러닝(Deep Learning)이 왜 "딥"이야?</div>
+                <div class="a">
+                    <p><span class="key-point">"깊다(Deep)"는 건 층이 많다는 뜻</span>이야.</p>
+                    <p>그게 다야. 단순하지?</p>
+                </div>
+            </div>
+
+            <div class="code-block">용어 정리:
+
+Shallow Learning (얕은 학습):
+- 층이 1~2개
+- 전통적인 머신러닝
+- 예: 단순 퍼셉트론, SVM
+
+Deep Learning (깊은 학습):
+- 층이 3개 이상 (보통 수십~수백 개)
+- 현대적인 신경망
+- 예: CNN, RNN, Transformer
+
+
+"얼마나 깊어야 딥러닝?"
+→ 명확한 기준은 없지만 보통:
+  - 3층 이상: 딥러닝이라고 부를 수 있음
+  - 10층 이상: 확실히 딥러닝
+  - 50층 이상: 매우 깊은(Very Deep) 네트워크</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>그냥 <strong>층이 많으면 딥러닝</strong>이야.</p>
+                    <p>철학적 의미는 없어. 문자 그대로 "깊다"는 거야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 왜 갑자기 딥러닝이 유행했어?</h2>
+
+            <div class="chat">
+                <div class="q">옛날부터 층을 쌓을 수 있었잖아? 왜 최근에 딥러닝이 뜬 거야?</div>
+                <div class="a">
+                    <p><span class="highlight">기술적 장벽이 있었어.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">딥러닝의 역사:
+
+1980년대:
+- 역전파 알고리즘 발명
+- 하지만 층을 깊게 쌓으면 학습 안 됨
+- 기울기 소실 문제
+→ 포기
+
+1990~2000년대:
+- "신경망은 별로다" 분위기
+- SVM, Random Forest 같은 다른 방법 유행
+→ AI 겨울
+
+2006년:
+- Geoffrey Hinton의 돌파구
+- 사전 학습(Pre-training) 기법
+- 층별로 학습하는 방법
+→ 딥러닝 재조명
+
+2012년:
+- AlexNet이 ImageNet 우승
+- GPU 사용으로 빠른 학습
+- ReLU로 기울기 소실 완화
+- 대량의 데이터 (ImageNet)
+→ 딥러닝 폭발적 성장!
+
+
+왜 2012년에 성공했나:
+1. GPU: 병렬 연산 가능
+2. 빅데이터: 수백만 장의 이미지
+3. ReLU: 기울기 소실 문제 완화
+4. Dropout: 과적합 방지
+5. 알고리즘 개선: 더 나은 최적화 기법</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 층이 깊으면 뭐가 좋은데?</h2>
+
+            <div class="chat">
+                <div class="q">층이 깊으면 정확히 뭐가 달라?</div>
+                <div class="a">
+                    <p>크게 3가지야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">장점 1: 계층적 표현 학습
+
+얕은 네트워크 (2층):
+입력 → [간단한 특징] → 출력
+- 제한적인 표현력
+- 복잡한 패턴 학습 어려움
+
+깊은 네트워크 (10층):
+입력 → [low-level] → [mid-level] → [high-level] → 출력
+- 점진적 추상화
+- 복잡한 패턴 학습 가능
+
+
+장점 2: 파라미터 효율성
+
+얕고 넓은 네트워크:
+- 1층, 10000개 뉴런
+- 파라미터 수: 엄청 많음
+- 일반화 어려움
+
+깊고 좁은 네트워크:
+- 10층, 각 100개 뉴런
+- 파라미터 수: 상대적으로 적음
+- 일반화 잘됨
+
+→ 같은 파라미터 수로 더 강력한 표현!
+
+
+장점 3: 조합론적 폭발
+
+층이 깊으면 표현 가능한 함수가 기하급수적으로 증가
+
+예시:
+- 2층: 100가지 특징 학습 가능
+- 4층: 10,000가지 (100²)
+- 8층: 100,000,000가지 (100⁴)
+
+→ 층이 깊을수록 표현력이 지수적으로 증가!</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 딥러닝의 핵심 통찰</h2>
+
+            <div class="chat">
+                <div class="q">결국 딥러닝의 핵심은 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">단순한 연산을 여러 번 반복하면 복잡한 지능이 나온다</span>는 거야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">핵심 아이디어:
+
+복잡성은 깊이에서 나온다
+
+각 층은 단순:
+- 행렬 곱셈
+- 덧셈
+- ReLU
+
+하지만 이걸 수십 번 반복하면:
+- 얼굴 인식
+- 자연어 이해
+- 그림 생성
+
+→ 단순함의 반복이 복잡함을 만듦
+
+
+비유:
+뇌도 비슷함:
+- 개별 뉴런은 단순 (발화/비발화)
+- 하지만 860억 개가 연결되면 의식이 생김
+
+딥러닝:
+- 개별 퍼셉트론은 단순
+- 하지만 수백만 개가 깊게 연결되면 지능적 행동</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 얕은 학습 vs 딥러닝</h2>
+
+            <div class="code-block">Shallow Learning (전통 ML):
+
+특징 추출:
+- 사람이 직접 특징 설계
+- 예: SIFT, HOG, MFCC
+- 전문 지식 필요
+
+학습:
+- 얕은 모델 (SVM, Random Forest)
+- 빠르고 해석 가능
+- 데이터 적어도 작동
+
+단점:
+- 특징 설계가 어려움
+- 복잡한 패턴 인식 한계
+- 사람의 창의성에 의존
+
+
+Deep Learning:
+
+특징 추출:
+- 자동으로 특징 학습
+- End-to-end 학습
+- 전문 지식 불필요
+
+학습:
+- 깊은 신경망
+- 느리지만 강력함
+- 대량의 데이터 필요
+
+장점:
+- 사람이 생각 못한 특징 발견
+- 매우 복잡한 패턴 학습
+- 범용적
+
+단점:
+- 해석 어려움 (블랙박스)
+- 많은 데이터와 계산 필요</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 딥러닝의 미래</h2>
+
+            <div class="code-block">현재 트렌드:
+
+1. 더 깊게
+   - GPT-3: 96층
+   - GPT-4: 더 깊음 (비공개)
+   - Gemini Ultra: 추정 100층+
+
+2. 더 효율적으로
+   - MobileNet: 모바일용 경량화
+   - EfficientNet: 효율 최적화
+   - LoRA: 파라미터 효율적 학습
+
+3. 새로운 구조
+   - Transformer: 자연어, 이미지, 비디오 통합
+   - Diffusion Model: 생성 AI
+   - Mamba: 새로운 sequence 모델
+
+
+미래 방향:
+- 더 깊고 효율적인 모델
+- 적은 데이터로 학습
+- 설명 가능한 딥러닝
+- 에너지 효율적인 학습</div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>"딥" = 층이 많다</strong> - Deep은 문자 그대로 깊다는 의미</li>
+                <li><strong>2012년 돌파구</strong> - GPU, 빅데이터, ReLU로 학습 가능해짐</li>
+                <li><strong>계층적 표현</strong> - 간단한 특징부터 복잡한 개념까지 단계적 학습</li>
+                <li><strong>파라미터 효율성</strong> - 깊게 쌓으면 적은 파라미터로 강력한 표현</li>
+                <li><strong>단순함의 반복</strong> - 단순한 연산을 반복하면 복잡한 지능 탄생</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic06/">← 이전: 층을 왜 여러 개 쌓아?</a>
+            <a href="../topic08/">다음: 역전파가 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

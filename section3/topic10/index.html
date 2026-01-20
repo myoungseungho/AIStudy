@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>특징(Feature)이 뭐야? - Section 3</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #2196F3;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #2196F3;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e3f2fd;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #bbdefb;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #0d47a1;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #2196F3 0%, #42A5F5 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #bbdefb;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 3</a>
+            <span>/</span>
+            Topic 10
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 10</div>
+            <h1>특징(Feature)이 뭐야?</h1>
+            <p>Q. 사진을 숫자로 어떻게 표현해?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. AI가 보는 데이터</h2>
+
+            <div class="chat">
+                <div class="q">특징(Feature)이 뭐야? AI한테 사진을 보여주면 어떻게 이해하는 거야?</div>
+                <div class="a">
+                    <p><span class="key-point">AI는 사진을 "숫자 덩어리"로 봐.</span></p>
+                    <p>그 숫자들을 우리는 "특징"이라고 불러.</p>
+                </div>
+            </div>
+
+            <div class="code-block">사람이 보는 것 vs AI가 보는 것:
+
+사람:
+🐱 고양이 사진
+→ "귀여운 고양이다!"
+→ 귀가 뾰족, 수염, 동그란 눈...
+
+
+AI:
+[0.8, 0.3, 0.9, 0.1, ...]
+→ 픽셀 값들의 배열
+→ 숫자로만 이해
+
+
+고양이 사진 (100x100 픽셀):
+→ 10,000개 숫자
+→ 각 픽셀이 RGB 3개 값
+→ 총 30,000개 숫자!
+
+→ 이 30,000개 숫자가 "특징"</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="highlight">특징 = AI가 데이터를 이해하기 위한 숫자 표현</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 여러 종류의 특징</h2>
+
+            <div class="chat">
+                <div class="q">모든 데이터를 숫자로 바꾼다고?</div>
+                <div class="a">
+                    <p>그래. 어떤 데이터든 숫자로 변환해야 AI가 이해해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">데이터별 특징 추출:
+
+1. 이미지
+원본: 고양이 사진
+특징: [빨강값, 초록값, 파랑값, ...] × 픽셀 수
+
+
+2. 텍스트
+원본: "오늘 날씨가 좋아"
+특징:
+- 단어 빈도: {"오늘": 1, "날씨": 1, "좋아": 1}
+- 숫자: [0, 1, 0, 0, 1, 0, 1, ...]
+
+
+3. 음성
+원본: 음성 파일
+특징:
+- 주파수: [440Hz, 880Hz, ...]
+- 음량: [0.5, 0.7, 0.3, ...]
+- 시간: [0.1초, 0.2초, ...]
+
+
+4. 표 데이터 (집 정보)
+원본:
+평수: 32평
+위치: 강남
+층수: 5층
+
+특징:
+[32, 1, 5]  (위치는 강남=1, 기타=0)</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">모든 데이터는 결국 "숫자 배열"로 변환돼.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 좋은 특징 vs 나쁜 특징</h2>
+
+            <div class="chat">
+                <div class="q">특징이면 다 똑같은 거 아니야?</div>
+                <div class="a">
+                    <p>아니, <strong>좋은 특징</strong>과 <strong>나쁜 특징</strong>이 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">고양이/개 구분 AI
+
+나쁜 특징:
+- 사진 파일 크기
+- 촬영 날짜
+- 파일 이름
+→ 고양이/개와 관계없는 정보
+
+
+애매한 특징:
+- 배경 색깔
+- 사진 밝기
+→ 때로 도움되지만 본질 아님
+
+
+좋은 특징:
+- 귀 모양 (뾰족/축 늘어짐)
+- 코 길이
+- 수염 유무
+→ 고양이/개를 구분하는 핵심!
+
+
+좋은 특징의 조건:
+1. 문제와 관련있음
+2. 구분력이 높음
+3. 측정 가능함</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">특징 선택이 AI 성능을 좌우해.</span></p>
+                    <p>쓸데없는 특징 넣으면 성능 오히려 나빠져.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 특징 벡터</h2>
+
+            <div class="chat">
+                <div class="q">특징들을 어떻게 정리해?</div>
+                <div class="a">
+                    <p><span class="key-point">특징 벡터(Feature Vector)</span>로 만들어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">특징 벡터 예시:
+
+집 데이터:
+
+집1:
+평수: 32평
+방: 3개
+화장실: 2개
+층수: 5층
+역 거리: 500m
+
+→ 특징 벡터: [32, 3, 2, 5, 0.5]
+
+
+집2:
+평수: 25평
+방: 2개
+화장실: 1개
+층수: 3층
+역 거리: 200m
+
+→ 특징 벡터: [25, 2, 1, 3, 0.2]
+
+
+AI 입장:
+"첫 번째 숫자가 크고, 다섯 번째 숫자가 작으면 비싸구나"
+→ 패턴 학습</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">특징 벡터 = 데이터를 AI가 이해할 수 있는 형태로 만든 것</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 특징 스케일링</h2>
+
+            <div class="chat">
+                <div class="q">숫자 크기가 다르면 문제 안 돼?</div>
+                <div class="a">
+                    <p>맞아! 그래서 <strong>스케일링(Scaling)</strong>을 해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">스케일링 전:
+
+평수: 32평 (10~50 범위)
+역 거리: 500m (100~2000 범위)
+층수: 5층 (1~20 범위)
+
+문제:
+→ 역 거리(500)가 평수(32)보다 훨씬 큼
+→ AI가 역 거리에만 집중
+→ 평수를 무시함
+
+
+스케일링 후 (0~1로 정규화):
+
+평수: (32-10)/(50-10) = 0.55
+역 거리: (500-100)/(2000-100) = 0.21
+층수: (5-1)/(20-1) = 0.21
+
+→ 모두 0~1 사이
+→ 공정하게 학습 가능
+
+
+다른 방법 (표준화):
+평균 0, 표준편차 1로 변환
+→ 통계적으로 공정</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">특징들의 스케일을 맞춰줘야 AI가 제대로 학습해.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 차원의 저주</h2>
+
+            <div class="chat">
+                <div class="q">특징이 많으면 좋은 거 아냐?</div>
+                <div class="a">
+                    <p>아니, <strong>너무 많으면 오히려 문제야.</strong></p>
+                    <p>이걸 <span class="highlight">차원의 저주(Curse of Dimensionality)</span>라고 해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">차원의 저주:
+
+데이터: 100개
+
+특징 3개:
+→ 충분히 학습 가능
+→ 패턴 찾기 쉬움
+
+
+특징 1000개:
+→ 데이터가 너무 "희박"함
+→ 100개 데이터로는 부족
+→ 과적합 쉬움
+
+
+비유:
+1차원 (선): 점 10개 → 빽빽
+2차원 (면): 점 10개 → 여유
+3차원 (공간): 점 10개 → 텅텅
+10차원: 점 10개 → 거의 빈 공간
+
+→ 차원이 높아질수록 데이터가 희박해짐
+→ 패턴 찾기 어려워짐
+
+
+해결책:
+1. 차원 축소 (PCA)
+2. 중요한 특징만 선택
+3. 더 많은 데이터 수집</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">특징은 "적당히" 많아야 해. 너무 많으면 독이 돼.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>특징 = 숫자 표현</strong> - AI가 데이터를 이해하기 위한 숫자 배열</li>
+                <li><strong>모든 데이터 변환</strong> - 이미지, 텍스트, 음성 모두 숫자로 변환</li>
+                <li><strong>좋은 특징 선택</strong> - 문제와 관련있고 구분력 높은 특징</li>
+                <li><strong>특징 벡터</strong> - 여러 특징을 하나의 배열로 정리</li>
+                <li><strong>스케일링 필수</strong> - 특징들의 크기를 맞춰야 공정한 학습</li>
+                <li><strong>차원의 저주</strong> - 특징이 너무 많으면 오히려 성능 저하</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic09/">← 이전: 검증 데이터는 왜 또 필요해?</a>
+            <a href="../topic11/">다음: 특징 공학은 왜 해? →</a>
+        </div>
+    </div>
+</body>
+</html>

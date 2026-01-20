@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지 생성 AI는 어떻게 그림을 그려? - Section 1</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #4CAF50;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e8f5e9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #c8e6c9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #2e7d32;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #c8e6c9; }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #4CAF50; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 1</a>
+            <span>/</span>
+            Topic 10
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 10</div>
+            <h1>이미지 생성 AI는 어떻게 그림을 그려?</h1>
+            <p>Q. 미드저니는 그림을 복사하는 거야?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 복사가 아니라 "그럴듯하게" 만들기</h2>
+
+            <div class="chat">
+                <div class="q">Midjourney, DALL-E는 기존 그림을 복사하는 거야?</div>
+                <div class="a">
+                    <p><span class="warning">아니야!</span></p>
+                    <p><span class="key-point">"그럴듯한" 이미지를 새로 만들어내는 거야.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 요리사
+
+복사하는 것:
+→ 사진 보고 똑같이 따라 그리기
+→ 포토샵 복붙
+
+AI가 하는 것:
+→ "빵 + 야채 + 고기 = 햄버거"라는 개념 학습
+→ 새로운 햄버거 사진 요청하면
+→ 학습한 개념 조합해서 새 이미지 생성
+
+→ 똑같은 햄버거는 아니지만
+→ 햄버거처럼 보이는 이미지
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 노이즈에서 시작해</h2>
+
+            <div class="chat">
+                <div class="q">구체적으로 어떻게 그림을 그려?</div>
+                <div class="a">
+                    <p><span class="highlight">디퓨전(Diffusion) 방식: 노이즈를 점점 제거</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">Stable Diffusion, Midjourney의 작동 원리:
+
+1단계: 랜덤 노이즈
+   → 완전히 지저분한 픽셀 (TV 잡음 같은)
+
+2단계: "고양이" 프롬프트 입력
+   → AI가 "고양이는 이런 패턴"이라고 학습한 걸 기억
+
+3단계: 노이즈 제거 시작
+   → 조금씩 고양이 형태로 변형
+   → Step 1/50: 여전히 노이즈
+   → Step 10/50: 뭔가 동물 같음
+   → Step 25/50: 귀가 보임
+   → Step 50/50: 선명한 고양이
+
+→ 마치 안개가 걷히듯 이미지가 드러남
+</code>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>왜 이렇게?</strong></p>
+                    <p>• 랜덤 시작 = 매번 다른 결과</p>
+                    <p>• 점진적 생성 = 중간에 조정 가능</p>
+                    <p>• 안정적 = 한 번에 만드는 것보다 품질 좋음</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 텍스트 → 이미지 연결</h2>
+
+            <div class="chat">
+                <div class="q">"빨간 사과"라고 입력하면 어떻게 빨간 사과가 나와?</div>
+                <div class="a">
+                    <p><span class="highlight">CLIP 모델이 텍스트와 이미지를 연결해.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">CLIP의 역할:
+
+학습 과정:
+1. 수백만 장의 이미지 + 설명 쌍
+   → (사과 사진, "빨간 사과")
+   → (고양이 사진, "귀여운 고양이")
+
+2. 텍스트와 이미지를 같은 공간에 매핑
+   → "빨간" = 빨간색 픽셀 패턴
+   → "사과" = 둥근 형태 + 꼭지
+   → 조합 학습
+
+
+생성 과정:
+너: "빨간 사과"
+
+CLIP:
+1. "빨간" 분석 → 빨간색 영역 강조
+2. "사과" 분석 → 둥근 형태 강조
+3. 노이즈 제거 과정에서 이 패턴 강화
+
+결과: 빨간색 둥근 사과 이미지
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 스타일 이해</h2>
+
+            <div class="chat">
+                <div class="q">"고흐 스타일로"라고 하면 어떻게 그 스타일로 그려?</div>
+                <div class="a">
+                    <p><span class="key-point">AI가 수많은 고흐 그림에서 "패턴"을 배웠어.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">스타일 학습:
+
+고흐 스타일 = ?
+
+AI가 학습한 패턴:
+- 굵고 뚜렷한 붓터치
+- 소용돌이치는 듯한 선
+- 강렬한 원색 대비
+- 두꺼운 질감
+
+"고흐 스타일로 고양이"
+→ 위 패턴을 고양이 생성에 적용
+→ 붓터치 효과 + 소용돌이 + 강렬한 색
+
+
+"사실적으로"
+→ 사진 같은 디테일
+→ 정확한 명암
+→ 부드러운 그라데이션
+
+→ 스타일도 결국 학습한 "패턴"이야
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 저작권 논란</h2>
+
+            <div class="chat">
+                <div class="q">그럼 기존 그림을 베끼는 거 아니야? 저작권은?</div>
+                <div class="a">
+                    <p><span class="warning">핫한 논란이야.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">찬성 측:
+
+"AI는 패턴을 학습하지, 복사하지 않는다"
+→ 사람도 고흐를 보고 배우잖아?
+→ AI도 마찬가지로 학습
+
+"새로운 창작물이다"
+→ 기존 그림을 붙여넣는 게 아님
+→ 완전히 새로운 픽셀 배치
+
+
+반대 측:
+
+"학습 데이터 출처가 문제"
+→ 작가 허락 없이 그림 수집
+→ 무단 사용
+
+"작가의 스타일 도용"
+→ "Greg Rutkowski 스타일로" 생성
+→ 작가 고유 스타일 무단 사용
+
+"일자리 위협"
+→ 일러스트레이터, 디자이너 대체
+
+
+현재 상황:
+→ 법적으로 아직 불명확
+→ 각국에서 법안 논의 중
+→ AI 회사들, 옵트아웃 옵션 제공 시작
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 한계와 미래</h2>
+
+            <div class="chat">
+                <div class="q">그럼 완벽해? 한계는 없어?</div>
+                <div class="a">
+                    <p><span class="warning">여전히 한계 많아.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">현재 한계:
+
+1. 손 그리기 어려움
+   → 손가락 6개, 이상한 각도
+   → 손은 복잡해서 패턴 학습 어려움
+
+2. 텍스트 표현 약함
+   → "HELLO" 써달라면 → "HELO" 같은 이상한 글자
+   → 텍스트는 패턴이 아니라 정확한 규칙
+
+3. 물리 법칙 무시
+   → 중력 무시한 물체
+   → 원근감 이상함
+
+4. 세밀한 요청 어려움
+   → "왼쪽 고양이는 검정, 오른쪽은 흰색"
+   → 정확한 위치 제어 약함
+
+
+개선 중:
+
+→ ControlNet (구도 제어)
+→ Inpainting (부분 수정)
+→ 멀티모달 (이미지+텍스트 동시 입력)
+
+→ 빠르게 발전 중
+</code>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>복사가 아님</strong> - 기존 그림을 복사하는 게 아니라 패턴 학습 후 새로 생성</li>
+                <li><strong>디퓨전</strong> - 노이즈에서 시작해 점점 선명한 이미지로</li>
+                <li><strong>텍스트 연결</strong> - CLIP이 "빨간 사과" 같은 설명을 이미지로 변환</li>
+                <li><strong>스타일 학습</strong> - 고흐, 사실적 같은 스타일도 패턴으로 학습</li>
+                <li><strong>저작권 논란</strong> - 학습 데이터 출처, 스타일 도용 문제 존재</li>
+                <li><strong>여전히 한계</strong> - 손, 텍스트, 물리 법칙은 아직 약함</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic09/">← 이전: ChatGPT는 어떻게 대답을 만들어?</a>
+            <a href="../topic11/">다음: AI는 창의적일 수 있어? →</a>
+        </div>
+    </div>
+</body>
+</html>

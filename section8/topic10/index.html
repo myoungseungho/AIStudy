@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 윤리는 왜 중요해? - Section 8</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #795548;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #795548;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #efebe9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #d7ccc8;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #4e342e;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #795548 0%, #8D6E63 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #d7ccc8;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #795548; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 8</a>
+            <span>/</span>
+            Topic 10
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 10</div>
+            <h1>AI 윤리는 왜 중요해?</h1>
+            <p>Q. 기술만 발전하면 안 돼?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. AI 윤리가 뭐야?</h2>
+
+            <div class="chat">
+                <div class="q">기술이 발전하면 좋은 거 아니야? 왜 윤리가 필요해?</div>
+                <div class="a">
+                    <p><span class="key-point">AI 윤리는 AI를 "올바르게" 개발하고 사용하는 원칙</span>이야.</p>
+                    <p>핵무기도 기술이지만, 사용하면 안 되잖아?</p>
+                    <p><strong>강력한 기술일수록 윤리가 중요</strong>해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">AI 윤리가 필요한 이유:
+
+1. 영향력이 크다
+   → AI는 수백만~수억 명에게 영향
+   → 작은 실수도 큰 피해
+
+2. 자동화된다
+   → 사람 개입 없이 결정
+   → 잘못되면 대규모 피해
+
+3. 투명하지 않다
+   → 블랙박스 문제
+   → 왜 그런 결정을 했는지 모름
+
+4. 편향될 수 있다
+   → 데이터 편향 반영
+   → 차별 증폭
+
+5. 되돌리기 어렵다
+   → 한번 확산되면 회수 불가
+   → 딥페이크, 잘못된 정보</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="warning">기술만 빠르게 발전하고 윤리가 뒤처지면 위험</span>해.</p>
+                    <p>이미 여러 사례에서 문제가 드러났어.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. AI 윤리 원칙</h2>
+
+            <div class="chat">
+                <div class="q">어떤 원칙이 있어?</div>
+                <div class="a">
+                    <p>많은 기관과 기업이 AI 윤리 원칙을 만들었어.</p>
+                    <p><span class="highlight">공통적으로 등장하는 핵심 원칙</span>들이 있지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">AI 윤리 5대 원칙:
+
+1. 공정성 (Fairness)
+   - 차별하지 않음
+   - 모든 사람을 동등하게 대우
+   - 예: 성별, 인종으로 차별 금지
+
+2. 투명성 (Transparency)
+   - AI 작동 방식 공개
+   - 결정 과정 설명 가능
+   - 예: 대출 거절 이유 공개
+
+3. 책임성 (Accountability)
+   - 잘못됐을 때 책임질 주체 명확
+   - 피해 구제 방법 마련
+   - 예: 자율주행 사고 시 누가 책임?
+
+4. 프라이버시 (Privacy)
+   - 개인정보 보호
+   - 데이터 수집·사용 동의
+   - 예: 얼굴 인식 데이터 보호
+
+5. 안전성 (Safety)
+   - 인간에게 해를 끼치지 않음
+   - 악용 방지
+   - 예: 무기화, 범죄 활용 금지
+
+--------------------------------------------------
+
+추가 원칙들:
+
+6. 유익성 (Beneficence)
+   - 인류에 도움이 되어야 함
+
+7. 자율성 (Autonomy)
+   - 인간의 자유 의지 존중
+   - AI가 강제하지 않음
+
+8. 지속가능성 (Sustainability)
+   - 환경에 미치는 영향 고려</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이 원칙들은 <span class="key-point">추상적</span>이야.</p>
+                    <p>실제 상황에 적용할 때 해석이 필요하고, 때로는 충돌하기도 해.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 윤리적 딜레마 사례</h2>
+
+            <div class="chat">
+                <div class="q">원칙들이 충돌하면 어떻게 해?</div>
+                <div class="a">
+                    <p><span class="highlight">정답이 없는 경우가 많아.</span></p>
+                    <p>유명한 딜레마들을 보여줄게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">1. 트롤리 딜레마 (자율주행)
+
+상황: 브레이크 고장, 5명이 앞에, 1명이 옆에
+선택: 직진(5명 사망) vs 좌회전(1명 사망)
+
+Q. AI는 어떻게 판단해야 해?
+- 공리주의: 5명보다 1명 희생이 나음
+- 의무론: 의도적으로 죽이는 건 안 됨
+- 법률: 운전자 보호가 우선?
+
+→ 정답 없음
+
+--------------------------------------------------
+
+2. 공정성 vs 정확도
+
+상황: 의료 AI가 특정 인종에서 정확도 낮음
+선택:
+A. 전체 정확도 높임 (일부 그룹 희생)
+B. 모든 그룹 동등 (전체 정확도 낮아짐)
+
+Q. 어느 게 더 윤리적?
+→ 의견 갈림
+
+--------------------------------------------------
+
+3. 프라이버시 vs 안전
+
+상황: 테러 예방을 위해 CCTV AI 얼굴 인식
+선택:
+A. 프라이버시 보호 (테러 위험 증가)
+B. 안전 우선 (감시 사회)
+
+Q. 어디까지 허용할 것인가?
+→ 문화마다, 나라마다 다름
+
+--------------------------------------------------
+
+4. 일자리 vs 효율
+
+상황: AI 자동화로 생산성 10배, 90% 해고
+선택:
+A. AI 도입 (경제 성장, 대량 실업)
+B. AI 제한 (고용 유지, 경쟁력 하락)
+
+Q. 기업의 책임은?
+→ 규제? 재교육? 기본소득?
+
+--------------------------------------------------
+
+5. 자유 vs 규제
+
+상황: 오픈소스 AI가 악용 가능
+선택:
+A. 공개 (발전 가속, 악용 위험)
+B. 제한 (안전, 혁신 둔화)
+
+Q. 어디까지 공개할 것인가?
+→ OpenAI의 GPT-4 일부 비공개 결정</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="warning">이런 딜레마엔 명확한 답이 없어.</span></p>
+                    <p>사회적 합의, 문화, 가치관에 따라 달라져.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 기업과 기관의 대응</h2>
+
+            <div class="chat">
+                <div class="q">실제로는 어떻게 대응하고 있어?</div>
+                <div class="a">
+                    <p>많은 기업과 기관이 AI 윤리 가이드라인을 만들었어.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>기관/기업</th>
+                    <th>원칙</th>
+                    <th>특징</th>
+                </tr>
+                <tr>
+                    <td><strong>Google</strong></td>
+                    <td>AI 원칙 7가지</td>
+                    <td>무기 개발 안 함 명시</td>
+                </tr>
+                <tr>
+                    <td><strong>Microsoft</strong></td>
+                    <td>Responsible AI</td>
+                    <td>공정성 도구 제공</td>
+                </tr>
+                <tr>
+                    <td><strong>OpenAI</strong></td>
+                    <td>Charter (헌장)</td>
+                    <td>AGI 안전성 최우선</td>
+                </tr>
+                <tr>
+                    <td><strong>EU</strong></td>
+                    <td>AI Act</td>
+                    <td>고위험 AI 규제 (법)</td>
+                </tr>
+                <tr>
+                    <td><strong>UN</strong></td>
+                    <td>UNESCO AI 권고</td>
+                    <td>국제 표준 제시</td>
+                </tr>
+                <tr>
+                    <td><strong>한국</strong></td>
+                    <td>AI 윤리기준</td>
+                    <td>3대 원칙, 10대 요건</td>
+                </tr>
+            </table>
+
+            <div class="code-block">Google AI 원칙 (2018):
+
+✅ DO (할 것):
+1. 사회에 유익
+2. 불공정한 편향 피하기
+3. 안전하게 만들기
+4. 사람에게 책임
+5. 프라이버시 존중
+6. 과학적 우수성
+7. 이 원칙에 맞게 사용
+
+❌ DON'T (안 할 것):
+1. 해를 끼치는 기술
+2. 무기 or 상해 목적
+3. 국제 규범 위반 감시
+4. 인권 침해 목적
+
+→ 직원 반발로 군사 프로젝트 취소한 적 있음
+
+--------------------------------------------------
+
+EU AI Act (2024 시행):
+
+[고위험 AI]
+- 의료, 교육, 채용, 법 집행
+→ 엄격한 규제 (투명성, 감사, 책임)
+
+[금지 AI]
+- 사회 신용 점수
+- 리얼타임 공공장소 얼굴 인식 (예외 있음)
+- 감정 인식 (특정 상황)
+
+위반 시 벌금: 최대 3천만 유로 or 매출 6%</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">원칙만으로는 부족해. 실행과 감시가 필요</span>해.</p>
+                    <p>윤리위원회, 감사, 법적 규제가 함께 가야 해.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 우리가 할 수 있는 것</h2>
+
+            <div class="chat">
+                <div class="q">나 같은 일반인은 뭘 할 수 있어?</div>
+                <div class="a">
+                    <p><span class="highlight">AI 윤리는 개발자만의 문제가 아니야.</span></p>
+                    <p>모두가 역할이 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">우리의 역할:
+
+[사용자로서]
+- AI 결정을 맹신하지 않기
+- 의심스러운 결정에 이의 제기
+- 프라이버시 설정 확인
+- 데이터 수집 동의 신중히
+
+[소비자로서]
+- 윤리적인 기업 선택
+- 비윤리적 AI 제품 거부
+- 문제 제기, 불매 운동
+
+[시민으로서]
+- AI 규제에 관심 갖기
+- 공청회, 설문 참여
+- 정책 결정에 목소리
+
+[학습자로서]
+- AI 윤리 배우기
+- 비판적 사고력 키우기
+- 토론, 논의 참여
+
+[미래 개발자라면]
+- 윤리 교육 받기
+- 다양성 존중
+- 사회적 영향 고민</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">작은 행동도 중요해.</span></p>
+                    <p>"나 혼자 뭘 바꾸겠어?"가 아니라,</p>
+                    <p>많은 사람이 함께하면 변화가 일어나.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 미래: AI 윤리는 어떻게 발전할까?</h2>
+
+            <div class="chat">
+                <div class="q">앞으로는 어떻게 될까?</div>
+                <div class="a">
+                    <p><span class="highlight">윤리는 계속 진화할 거야.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">AI 윤리의 미래:
+
+1. 법제화 확대
+   - 더 많은 나라에서 AI 법 제정
+   - 국제 표준 마련
+   - 강력한 처벌
+
+2. 윤리 자동 감사
+   - AI가 AI를 감사
+   - 실시간 편향 탐지
+   - 자동 경고 시스템
+
+3. 윤리 설계 (Ethics by Design)
+   - 처음부터 윤리 고려해서 설계
+   - 사후 대응이 아닌 사전 예방
+
+4. 다양성 확대
+   - AI 개발팀 다양화
+   - 다양한 관점 반영
+   - 글로벌 협력
+
+5. 교육 강화
+   - 모든 개발자에게 윤리 교육 필수
+   - 일반인 AI 리터러시 교육
+   - 학교 교육 과정 포함
+
+6. AGI 대비
+   - 범용 인공지능 출현 대비
+   - 통제, 안전성 연구
+   - 국제 협력 체계
+
+하지만...
+기술은 빠르게 발전하고
+윤리와 규제는 느리게 따라감
+→ 계속 격차 존재할 것</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="warning">AI 윤리는 "완성"이 없어.</span></p>
+                    <p>기술이 계속 발전하니까, 윤리도 계속 업데이트해야 해.</p>
+                    <p><strong>영원한 숙제</strong>이지만, 포기할 수는 없어.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>AI 윤리</strong> - AI를 올바르게 개발·사용하는 원칙 (기술만큼 중요)</li>
+                <li><strong>5대 원칙</strong> - 공정성, 투명성, 책임성, 프라이버시, 안전성</li>
+                <li><strong>윤리 딜레마</strong> - 트롤리 문제, 공정성 vs 정확도, 프라이버시 vs 안전 (정답 없음)</li>
+                <li><strong>기관 대응</strong> - Google, MS, OpenAI 원칙, EU AI Act 규제</li>
+                <li><strong>우리 역할</strong> - 맹신 금지, 이의 제기, 윤리적 소비, 정책 참여</li>
+                <li><strong>미래</strong> - 법제화, 자동 감사, 윤리 설계, 교육 강화</li>
+                <li><strong>중요성</strong> - 기술과 윤리가 함께 발전해야 안전한 미래</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic09/">← 이전: 설명 가능한 AI(XAI)가 뭐야?</a>
+            <a href="../topic11/">다음: 개인정보와 AI는 어떤 관계야? →</a>
+        </div>
+    </div>
+</body>
+</html>

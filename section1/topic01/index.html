@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT, Midjourney... 원리는 같아? - Section 1</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+
+        /* 네비게이션 */
+        .breadcrumb {
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+
+        /* 대화 스타일 */
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #4CAF50;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e8f5e9;
+        }
+
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before {
+            content: "Q. ";
+            color: #e65100;
+            font-weight: 700;
+        }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #c8e6c9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #2e7d32;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+
+        /* 코드 블록 */
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        /* 비교 테이블 */
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+
+        /* 핵심 정리 박스 */
+        .summary-box {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .summary-box ul {
+            list-style: none;
+        }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #c8e6c9;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 1</a>
+            <span>/</span>
+            Topic 01
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 01</div>
+            <h1>ChatGPT, Midjourney... 원리는 같아?</h1>
+            <p>Q. AI 종류가 이렇게 많은데 다 달라?</p>
+        </header>
+
+        <!-- Part 1: AI 종류가 왜 이렇게 많아? -->
+        <div class="conversation">
+            <h2>Part 1. AI 종류가 왜 이렇게 많아?</h2>
+
+            <div class="chat">
+                <div class="q">ChatGPT, Midjourney, Stable Diffusion, DALL-E... AI 종류가 너무 많은데 다 다른 거야?</div>
+                <div class="a">
+                    <p>좋은 질문이야. <span class="key-point">용도가 다르면 AI도 다르게 만들어.</span></p>
+                    <p>생각해봐. 글 쓰는 AI랑 그림 그리는 AI가 똑같은 방식으로 작동할 수 있을까?</p>
+                    <p><strong>당연히 아니지.</strong></p>
+                </div>
+            </div>
+
+            <div class="chat">
+                <div class="q">그럼 완전히 다른 거야?</div>
+                <div class="a">
+                    <p><span class="warning">완전히 다르지는 않아.</span></p>
+                    <p><span class="highlight">기본 원리는 비슷해.</span> 다만 <strong>"뭘 배우느냐"</strong>가 다른 거지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유:
+
+식당마다 요리가 다르잖아?
+- 한식당 = 한식 레시피 학습
+- 양식당 = 양식 레시피 학습
+- 중식당 = 중식 레시피 학습
+
+근데 다 "요리한다"는 기본 원리는 같아.
+재료 준비 → 손질 → 조리 → 완성
+
+AI도 마찬가지야.
+- ChatGPT = 텍스트 데이터 학습
+- Midjourney = 이미지 데이터 학습
+- 음성 AI = 음성 데이터 학습
+
+근데 다 "패턴 학습"이라는 기본 원리는 같음.
+</div>
+        </div>
+
+        <!-- Part 2: 입력과 출력 -->
+        <div class="conversation">
+            <h2>Part 2. 입력과 출력으로 구분하기</h2>
+
+            <div class="chat">
+                <div class="q">그럼 AI를 어떻게 구분하면 돼?</div>
+                <div class="a">
+                    <p>제일 쉬운 방법: <span class="key-point">뭘 넣고, 뭘 받는지</span> 보는 거야.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>AI 이름</th>
+                    <th>입력</th>
+                    <th>출력</th>
+                </tr>
+                <tr>
+                    <td><strong>ChatGPT</strong></td>
+                    <td>텍스트 (질문)</td>
+                    <td>텍스트 (답변)</td>
+                </tr>
+                <tr>
+                    <td><strong>Midjourney</strong></td>
+                    <td>텍스트 (설명)</td>
+                    <td>이미지</td>
+                </tr>
+                <tr>
+                    <td><strong>Whisper</strong></td>
+                    <td>음성</td>
+                    <td>텍스트</td>
+                </tr>
+                <tr>
+                    <td><strong>Sora</strong></td>
+                    <td>텍스트</td>
+                    <td>동영상</td>
+                </tr>
+                <tr>
+                    <td><strong>ElevenLabs</strong></td>
+                    <td>텍스트</td>
+                    <td>음성</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="a">
+                    <p>보이지? 입력과 출력의 조합이 다른 거야.</p>
+                    <p>근데 <span class="highlight">핵심 원리는 똑같아.</span></p>
+                    <p><strong>"대량의 데이터에서 패턴을 배워서, 새로운 결과를 만들어낸다"</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: 원리는 같다 -->
+        <div class="conversation">
+            <h2>Part 3. 그럼 원리는 뭐야?</h2>
+
+            <div class="chat">
+                <div class="q">패턴을 배운다는 게 뭔 뜻이야?</div>
+                <div class="a">
+                    <p>예를 들어볼게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">ChatGPT가 배우는 것:
+
+"안녕하세요" 다음에는 보통 인사말이 온다
+"질문이 있습니다" 다음에는 질문이 온다
+"감사합니다" 다음에는 마무리가 온다
+
+→ 수십억 개의 텍스트를 읽으면서 이런 패턴을 학습
+
+
+Midjourney가 배우는 것:
+
+"고양이"라는 단어 옆에는 이런 픽셀 배치가 자주 등장한다
+"노을"이라는 단어 옆에는 주황/빨강 픽셀이 많다
+"사실적"이라는 단어가 있으면 디테일이 더 많다
+
+→ 수백만 장의 이미지와 설명을 보면서 이런 패턴을 학습
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="key-point">모든 AI는 "패턴 인식 기계"야.</span></p>
+                    <p>다만 뭘 학습하느냐에 따라 할 수 있는 게 달라지는 거지.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: 왜 하나로 못 만들어? -->
+        <div class="conversation">
+            <h2>Part 4. 그럼 하나로 다 하는 AI는 없어?</h2>
+
+            <div class="chat">
+                <div class="q">글도 쓰고 그림도 그리는 만능 AI는 없어?</div>
+                <div class="a">
+                    <p>이제 나오기 시작했어. <span class="highlight">멀티모달(Multimodal) AI</span>라고 해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">예시:
+
+GPT-4V (Vision)
+→ 이미지를 보고 설명할 수 있음
+→ 텍스트 입력 + 이미지 입력 둘 다 가능
+
+Gemini (Google)
+→ 텍스트, 이미지, 음성, 동영상 전부 처리 가능
+
+Claude (Anthropic)
+→ 텍스트 + 이미지 이해 가능
+</div>
+
+            <div class="chat">
+                <div class="q">그럼 앞으로는 AI 하나면 다 되는 거네?</div>
+                <div class="a">
+                    <p><span class="warning">아직은 아니야.</span></p>
+                    <p><strong>이유:</strong></p>
+                    <p>1. 전문 AI가 여전히 더 잘함 (Midjourney vs GPT-4 이미지 생성)</p>
+                    <p>2. 만능 AI는 크기가 엄청 커서 비용이 많이 듦</p>
+                    <p>3. 특정 용도에 맞춘 AI가 여전히 필요함</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: 실전 예시 -->
+        <div class="conversation">
+            <h2>Part 5. 실생활에서 어떻게 써?</h2>
+
+            <div class="chat">
+                <div class="q">그래서 실제로는 어떻게 쓰는 건데?</div>
+                <div class="a">
+                    <p><span class="key-point">용도에 맞는 AI를 골라서 써.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">실전 사례:
+
+유튜브 영상 만들기
+1. ChatGPT → 스크립트 작성
+2. Midjourney → 썸네일 이미지 생성
+3. ElevenLabs → 음성 생성
+4. Runway ML → 동영상 효과 추가
+
+→ 각 단계마다 최적의 AI를 조합해서 사용
+
+
+블로그 글 쓰기
+1. ChatGPT → 글 초안 작성
+2. DALL-E → 삽입 이미지 생성
+3. Grammarly AI → 문법 검사
+4. Jasper → SEO 최적화
+
+→ 여러 AI를 파이프라인처럼 연결
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐지?</p>
+                    <p><span class="highlight">AI는 도구야. 망치도 있고, 드라이버도 있는 거지.</span></p>
+                    <p>하나로 다 하려고 하지 말고, 적재적소에 맞는 걸 쓰는 게 현명해.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>기본 원리는 같다</strong> - 모든 AI는 "패턴 학습 기계"</li>
+                <li><strong>용도가 다르다</strong> - 텍스트, 이미지, 음성 등 학습 데이터가 다름</li>
+                <li><strong>입력/출력으로 구분</strong> - 뭘 넣고 뭘 받는지 보면 AI를 이해할 수 있음</li>
+                <li><strong>멀티모달 AI</strong> - 여러 종류를 한 번에 처리하는 AI도 등장 중</li>
+                <li><strong>조합해서 쓴다</strong> - 실전에서는 여러 AI를 파이프라인처럼 연결</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../">← 목록으로</a>
+            <a href="../topic02/">다음: AI를 본 적 있어? →</a>
+        </div>
+    </div>
+</body>
+</html>

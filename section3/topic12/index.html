@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>선형 회귀가 뭐야? - Section 3</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #2196F3;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #2196F3;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e3f2fd;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #bbdefb;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #0d47a1;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #2196F3 0%, #42A5F5 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #bbdefb;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 3</a>
+            <span>/</span>
+            Topic 12
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 12</div>
+            <h1>선형 회귀가 뭐야?</h1>
+            <p>Q. 점들 사이에 선 긋는 게 AI야?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 선 하나로 예측하기</h2>
+
+            <div class="chat">
+                <div class="q">선형 회귀(Linear Regression)가 뭐야? 이름부터 어려워</div>
+                <div class="a">
+                    <p><span class="key-point">선형 회귀 = 점들 사이에 가장 잘 맞는 직선 긋기</span></p>
+                    <p>가장 간단한 머신러닝 알고리즘이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 그래프에 선 긋기
+
+중학교 수학:
+y = 2x + 1  (직선 방정식)
+
+x=1 → y=3
+x=2 → y=5
+x=3 → y=7
+
+
+선형 회귀도 똑같아:
+데이터 점들을 보고
+→ "이 점들을 가장 잘 설명하는 직선은?"
+→ 그 직선을 찾는 게 선형 회귀!
+
+
+예시: 공부 시간 vs 시험 점수
+공부 1시간 → 60점
+공부 2시간 → 70점
+공부 3시간 → 80점
+
+→ 직선: 점수 = 50 + 10×시간
+→ 공부 4시간 예측? → 90점!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="highlight">선형 회귀는 직선으로 패턴을 표현하는 거야.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 어떻게 직선을 찾아?</h2>
+
+            <div class="chat">
+                <div class="q">점이 완벽하게 직선 위에 안 있잖아. 어떻게 "최적의" 직선을 찾아?</div>
+                <div class="a">
+                    <p><span class="key-point">오차를 최소화하는 직선</span>을 찾아.</p>
+                </div>
+            </div>
+
+            <div class="code-block">최적 직선 찾기:
+
+데이터:
+(1시간, 65점)
+(2시간, 68점)
+(3시간, 75점)
+(4시간, 82점)
+
+
+후보 직선1: y = 50 + 10x
+예측: 60, 70, 80, 90
+오차: 5, 2, 5, 8
+총 오차: 20
+
+
+후보 직선2: y = 55 + 9x
+예측: 64, 73, 82, 91
+오차: 1, 5, 7, 9
+총 오차: 22
+
+
+→ 직선1이 더 좋네!
+
+이걸 수학적으로:
+- 모든 가능한 직선 시도
+- 각 직선의 오차 계산
+- 오차가 가장 작은 직선 선택
+
+→ 이게 선형 회귀!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">실제로는 "최소제곱법"이라는 수학으로 한 번에 계산해.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 수식으로 표현하면?</h2>
+
+            <div class="chat">
+                <div class="q">수식으로는 어떻게 생겼어?</div>
+                <div class="a">
+                    <p>간단해. 중학교 수학이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">선형 회귀 수식:
+
+y = wx + b
+
+y: 예측값 (종속변수)
+x: 입력값 (독립변수)
+w: 기울기 (weight, 가중치)
+b: y절편 (bias, 편향)
+
+
+예시:
+집값 = 1000 × 평수 + 500
+
+→ w = 1000 (평수 1 증가하면 집값 1000만원 증가)
+→ b = 500 (기본 가격 500만원)
+
+32평 집?
+→ 집값 = 1000 × 32 + 500 = 32,500만원
+
+
+여러 변수:
+집값 = 1000×평수 + 50×층수 - 10×건물나이 + 2000
+
+→ 다변수 선형 회귀 (Multiple Linear Regression)</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">핵심은 w(기울기)와 b(절편)를 학습하는 거야.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 학습 과정</h2>
+
+            <div class="chat">
+                <div class="q">AI가 어떻게 w와 b를 배워?</div>
+                <div class="a">
+                    <p>반복해서 조금씩 개선해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">선형 회귀 학습:
+
+초기: w=0, b=0
+직선: y = 0
+
+Step 1:
+예측: 모두 0
+실제: [65, 68, 75, 82]
+오차: 엄청 큼!
+→ w를 5로, b를 60으로 조정
+
+Step 2:
+예측: [65, 70, 75, 80]
+실제: [65, 68, 75, 82]
+오차: 좀 줄었네
+→ w를 5.5로, b를 59로 조정
+
+Step 3:
+예측: [64.5, 70, 75.5, 81]
+실제: [65, 68, 75, 82]
+오차: 더 줄었어
+→ w를 5.3으로, b를 59.5로 조정
+
+...
+
+Step 100:
+예측: [65.1, 67.9, 74.8, 82.2]
+실제: [65, 68, 75, 82]
+오차: 거의 0!
+→ 완성!
+
+최종: y = 5.3x + 59.5</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이 과정을 <strong>경사하강법(Gradient Descent)</strong>이라고 해.</p>
+                    <p>조금씩 조금씩 최적값을 찾아가는 거야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 선형 회귀의 한계</h2>
+
+            <div class="chat">
+                <div class="q">선형 회귀면 모든 문제 해결되는 거 아냐?</div>
+                <div class="a">
+                    <p>아니, <strong>큰 한계</strong>가 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">선형 회귀의 한계:
+
+1. 직선만 가능
+문제: 실제 데이터는 곡선인 경우 많음
+
+예: 집값 vs 평수
+→ 작을 때는 천천히 증가
+→ 클 때는 급격히 증가
+→ 직선으로는 표현 불가!
+
+
+2. 이상치에 약함
+데이터: [10, 20, 30, 40, 1000]
+→ 1000 하나 때문에 직선이 확 틀어짐
+
+
+3. 선형 관계만 포착
+비선형 관계는 못 찾음
+예: 온도와 아이스크림 판매
+→ 추우면 안 팔림
+→ 적당하면 많이 팔림
+→ 너무 더우면 안 팔림
+→ 직선 아님!
+
+
+해결책:
+- 다항 회귀 (곡선)
+- 비선형 모델 (의사결정나무 등)
+- 딥러닝 (복잡한 패턴)</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">선형 회귀는 간단하고 빠르지만, 복잡한 패턴은 못 잡아.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 실전에서 언제 써?</h2>
+
+            <div class="chat">
+                <div class="q">그럼 선형 회귀는 언제 쓰는 거야?</div>
+                <div class="a">
+                    <p>생각보다 많이 써. 간단한 게 장점이거든.</p>
+                </div>
+            </div>
+
+            <div class="code-block">선형 회귀 활용:
+
+1. 빠른 프로토타입
+→ 일단 선형 회귀로 시작
+→ 성능 보고 복잡한 모델로
+
+2. 해석 가능성
+→ w=1000 → "평수 1 증가하면 가격 1000 증가"
+→ 명확하게 설명 가능
+
+3. 베이스라인
+→ "최소한 이 정도는 나와야 해"
+→ 다른 모델 비교 기준
+
+4. 선형 관계 확인
+→ 변수 간 관계 파악
+→ 통계 분석
+
+
+실제 사례:
+- 광고 비용 vs 판매량
+- 경력 vs 연봉
+- 기온 vs 전력 소비
+- 공부 시간 vs 성적
+
+→ 비교적 단순한 관계면 충분!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">항상 복잡한 모델이 좋은 건 아니야. 간단하면서 효과적인 게 최고지.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>선형 회귀 = 직선 긋기</strong> - 데이터에 가장 잘 맞는 직선 찾기</li>
+                <li><strong>y = wx + b</strong> - 기울기(w)와 절편(b)을 학습</li>
+                <li><strong>오차 최소화</strong> - 예측과 실제의 차이를 최소화하는 방향</li>
+                <li><strong>경사하강법</strong> - 조금씩 w, b를 조정하며 최적값 찾기</li>
+                <li><strong>한계</strong> - 직선만 가능, 이상치에 약함, 비선형 관계 못 잡음</li>
+                <li><strong>장점</strong> - 간단, 빠름, 해석 쉬움, 프로토타입용으로 좋음</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic11/">← 이전: 특징 공학은 왜 해?</a>
+            <a href="../topic13/">다음: 로지스틱 회귀는 왜 '회귀'야? →</a>
+        </div>
+    </div>
+</body>
+</html>

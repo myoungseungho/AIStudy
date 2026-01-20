@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section 7: 강화학습</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* 네비게이션 */
+        .breadcrumb {
+            margin-bottom: 40px;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb span {
+            color: #999;
+            margin: 0 8px;
+        }
+
+        /* 헤더 */
+        .header {
+            margin-bottom: 48px;
+        }
+
+        .header-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #111;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .section-badge {
+            display: inline-block;
+            background: #FF5722;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        /* 글 목록 */
+        .article-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .article-item {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #eee;
+            border-left: 4px solid #FF5722;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .article-item:hover {
+            border-color: #FF5722;
+            box-shadow: 0 4px 12px rgba(255, 87, 34, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .article-number {
+            font-size: 0.75rem;
+            color: #FF5722;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .article-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #111;
+        }
+
+        .article-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../">AI 공부</a>
+            <span>/</span>
+            Section 7
+        </nav>
+
+        <header class="header">
+            <div class="section-badge">Section 7</div>
+            <div class="header-icon">🎮</div>
+            <h1>강화학습</h1>
+            <p>시행착오로 배우는 AI - 게임부터 로봇까지</p>
+        </header>
+
+        <div class="article-list">
+            <a href="./topic01/" class="article-item">
+                <div class="article-number">TOPIC 01</div>
+                <h3 class="article-title">강화학습은 뭐가 다를까?</h3>
+                <p class="article-desc">Q. 레이블 없이 어떻게 배워?</p>
+            </a>
+
+            <a href="./topic02/" class="article-item">
+                <div class="article-number">TOPIC 02</div>
+                <h3 class="article-title">에이전트와 환경이 뭐야?</h3>
+                <p class="article-desc">Q. 게임 캐릭터랑 게임 세계?</p>
+            </a>
+
+            <a href="./topic03/" class="article-item">
+                <div class="article-number">TOPIC 03</div>
+                <h3 class="article-title">상태, 행동, 보상이 뭐야?</h3>
+                <p class="article-desc">Q. 게임 AI는 점수를 최대화하려고 해?</p>
+            </a>
+
+            <a href="./topic04/" class="article-item">
+                <div class="article-number">TOPIC 04</div>
+                <h3 class="article-title">보상을 어떻게 설계해?</h3>
+                <p class="article-desc">Q. 잘못 주면 이상한 행동을 배울 수 있어?</p>
+            </a>
+
+            <a href="./topic05/" class="article-item">
+                <div class="article-number">TOPIC 05</div>
+                <h3 class="article-title">탐험과 활용이 뭐야?</h3>
+                <p class="article-desc">Q. 새로운 걸 시도 vs 아는 걸 반복?</p>
+            </a>
+
+            <a href="./topic06/" class="article-item">
+                <div class="article-number">TOPIC 06</div>
+                <h3 class="article-title">정책이 뭐야?</h3>
+                <p class="article-desc">Q. 상황마다 어떤 행동을 할지 정하는 규칙?</p>
+            </a>
+
+            <a href="./topic07/" class="article-item">
+                <div class="article-number">TOPIC 07</div>
+                <h3 class="article-title">가치 함수가 뭐야?</h3>
+                <p class="article-desc">Q. 이 상태가 얼마나 좋은지 점수를 매긴다고?</p>
+            </a>
+
+            <a href="./topic08/" class="article-item">
+                <div class="article-number">TOPIC 08</div>
+                <h3 class="article-title">Q-러닝이 뭐야?</h3>
+                <p class="article-desc">Q. 테이블로 학습한다는 거야?</p>
+            </a>
+
+            <a href="./topic09/" class="article-item">
+                <div class="article-number">TOPIC 09</div>
+                <h3 class="article-title">DQN은 뭐가 다를까?</h3>
+                <p class="article-desc">Q. Q-러닝에 딥러닝을 합쳤다고?</p>
+            </a>
+
+            <a href="./topic10/" class="article-item">
+                <div class="article-number">TOPIC 10</div>
+                <h3 class="article-title">알파고는 어떻게 이겼어?</h3>
+                <p class="article-desc">Q. 바둑은 경우의 수가 무한한데?</p>
+            </a>
+
+            <a href="./topic11/" class="article-item">
+                <div class="article-number">TOPIC 11</div>
+                <h3 class="article-title">몬테카를로 트리 탐색이 뭐야?</h3>
+                <p class="article-desc">Q. 미래를 시뮬레이션한다는 거야?</p>
+            </a>
+
+            <a href="./topic12/" class="article-item">
+                <div class="article-number">TOPIC 12</div>
+                <h3 class="article-title">정책 경사법이 뭐야?</h3>
+                <p class="article-desc">Q. 정책을 직접 학습할 수 있어?</p>
+            </a>
+
+            <a href="./topic13/" class="article-item">
+                <div class="article-number">TOPIC 13</div>
+                <h3 class="article-title">Actor-Critic이 뭐야?</h3>
+                <p class="article-desc">Q. 행동하는 애랑 평가하는 애를 나눈다고?</p>
+            </a>
+
+            <a href="./topic14/" class="article-item">
+                <div class="article-number">TOPIC 14</div>
+                <h3 class="article-title">OpenAI Five는 어떻게 학습했어?</h3>
+                <p class="article-desc">Q. 게임 AI는 며칠 학습하면 돼?</p>
+            </a>
+
+            <a href="./topic15/" class="article-item">
+                <div class="article-number">TOPIC 15</div>
+                <h3 class="article-title">로봇도 강화학습으로 배워?</h3>
+                <p class="article-desc">Q. 실제 세계에서도 시행착오 학습 가능해?</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

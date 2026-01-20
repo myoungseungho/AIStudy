@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI는 창의적일 수 있어? - Section 1</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fafafa; color: #333; line-height: 1.9; }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number { display: inline-block; background: #4CAF50; color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-bottom: 16px; }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation { background: white; border-radius: 16px; padding: 32px; margin: 32px 0; border: 1px solid #e0e0e0; }
+        .conversation h2 { font-size: 1.3rem; color: #4CAF50; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid #e8f5e9; }
+        .chat { margin-bottom: 20px; }
+        .q { background: #fff3e0; border-left: 4px solid #ff9800; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; font-weight: 500; }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight { background: #e3f2fd; padding: 2px 8px; border-radius: 4px; font-weight: 600; color: #1565c0; }
+        .key-point { background: #c8e6c9; padding: 2px 8px; border-radius: 4px; font-weight: 600; color: #2e7d32; }
+        .warning { background: #ffcdd2; padding: 2px 8px; border-radius: 4px; font-weight: 600; color: #c62828; }
+        .code-block { background: #263238; border-radius: 8px; padding: 16px 20px; margin: 16px 0; font-family: 'Consolas', monospace; font-size: 0.9rem; color: #eceff1; overflow-x: auto; line-height: 1.6; white-space: pre-wrap; }
+        .summary-box { background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%); border-radius: 16px; padding: 32px; color: white; margin: 32px 0; }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #c8e6c9; }
+        .nav-links { display: flex; justify-content: space-between; margin-top: 60px; padding-top: 24px; border-top: 1px solid #e0e0e0; }
+        .nav-links a { color: #4CAF50; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 1</a>
+            <span>/</span>
+            Topic 11
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 11</div>
+            <h1>AI는 창의적일 수 있어?</h1>
+            <p>Q. 진짜 새로운 걸 만들 수 있을까?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 창의성이 뭔데?</h2>
+
+            <div class="chat">
+                <div class="q">AI가 창의적이라는데, 진짜로 새로운 걸 만들어?</div>
+                <div class="a">
+                    <p>먼저 "창의성"이 뭔지부터 정의해야 해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">창의성의 정의들:
+
+철학자: "완전히 새로운 것을 무에서 창조"
+→ 이 기준이면 사람도 창의적이지 않아
+
+심리학자: "기존 것들의 새로운 조합"
+→ 비틀즈도 기존 악기, 기존 멜로디 조합
+
+AI 관점: "학습 데이터에 없던 새로운 조합"
+→ 이 기준이면 AI도 창의적
+
+
+예시:
+"우주에서 서핑하는 고양이"
+→ 우주 사진 본 적 있음
+→ 서핑 사진 본 적 있음
+→ 고양이 사진 본 적 있음
+→ 하지만 이 조합은 본 적 없음
+→ AI가 만들어냄
+
+→ 이게 창의성 아니야?
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 재조합 vs 창조</h2>
+
+            <div class="chat">
+                <div class="q">그건 그냥 복붙 아니야? 진짜 창조는 아니잖아.</div>
+                <div class="a">
+                    <p><span class="highlight">사람도 마찬가지야. 모든 창작은 재조합이야.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">사람의 창작 과정:
+
+아이폰 디자인:
+→ 기존 전화기 + 터치스크린 + 심플 디자인
+→ 전부 이미 존재하던 것
+→ 조합이 새로웠을 뿐
+
+해리포터:
+→ 마법 (기존) + 학교 (기존) + 영국 문화 (기존)
+→ 조합이 새로웠을 뿐
+
+→ 완전히 무에서 창조한 게 아니야
+
+
+AI도 똑같아:
+
+Midjourney로 "사이버펑크 도시"
+→ 사이버펑크 (80년대 SF) + 도시 (건축)
+→ 학습한 데이터 조합
+→ 하지만 결과는 새로움
+
+→ 과정은 비슷하지 않아?
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 의도가 없어</h2>
+
+            <div class="chat">
+                <div class="q">그래도 사람은 "의도"가 있잖아. AI는?</div>
+                <div class="a">
+                    <p><span class="warning">맞아, 이게 핵심 차이야.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">사람:
+
+"전쟁의 참혹함을 표현하고 싶다"
+→ 명확한 의도
+→ 피카소의 게르니카
+
+"사랑의 아픔을 노래하고 싶다"
+→ 감정 표현 욕구
+→ 발라드 작곡
+
+
+AI:
+
+"전쟁 참혹함"
+→ "전쟁" + "참혹" 키워드 분석
+→ 어두운 색상, 파괴된 건물 패턴
+→ 조합해서 이미지 생성
+→ 의도 없음, 패턴 조합만
+
+→ 결과는 감동적일 수 있어
+→ 하지만 "전달하려는 메시지" 없음
+</code>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>핵심:</strong></p>
+                    <p><span class="highlight">AI는 "창의적 결과"는 만들지만, "창의적 의도"는 없어.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 놀라운 결과들</h2>
+
+            <div class="chat">
+                <div class="q">그래도 AI가 만든 것 중에 정말 창의적인 거 없어?</div>
+                <div class="a">
+                    <p>있어! 사람도 생각 못 한 조합들:</p>
+                </div>
+            </div>
+
+            <div class="code-block">AI의 놀라운 창작:
+
+1. AlphaGo의 37수 (2016)
+   → 바둑 역사상 본 적 없는 수
+   → 프로기사들 "말이 안 되는데... 천재적이야"
+   → 이세돌도 놀람
+
+2. AI 작곡
+   → 새로운 코드 진행
+   → 사람이 안 쓰던 악기 조합
+
+3. 신약 개발
+   → 기존에 없던 분자 구조
+   → 인간이 평생 못 찾을 조합
+
+4. 게임 전략
+   → Dota 2, 스타크래프트
+   → 프로게이머도 몰랐던 전략 발견
+
+
+→ 패턴 재조합이지만
+→ 인간이 생각 못 한 조합
+→ 이것도 창의성 아니야?
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 도구 vs 창작자</h2>
+
+            <div class="chat">
+                <div class="q">그럼 AI가 창작자야, 도구야?</div>
+                <div class="a">
+                    <p><span class="key-point">현재는 "도구"에 가까워.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">도구 vs 창작자:
+
+포토샵:
+→ 도구
+→ 사람이 의도하고 사용
+→ 결과물 = 사람의 창작
+
+AI (현재):
+→ 고급 도구
+→ 프롬프트 = 사람의 의도
+→ 결과물 = 사람 + AI 협업
+
+
+미래 AI:
+→ 창작자?
+→ 스스로 주제 선정
+→ 스스로 표현 방식 결정
+→ 아직은 안 됨
+
+
+현재 합의:
+→ AI는 "창의적 도구"
+→ 최종 창작물의 저작권은 사람에게
+→ 하지만 논란 여전함
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 미래는?</h2>
+
+            <div class="chat">
+                <div class="q">앞으로 AI가 진짜 창의적이 될 수 있을까?</div>
+                <div class="a">
+                    <p>의견이 갈려:</p>
+                </div>
+            </div>
+
+            <div class="code-block">낙관론:
+
+"AGI (범용 인공지능) 달성하면 가능"
+→ 의식, 감정, 의도 갖춤
+→ 진정한 창의성 가능
+→ 예상 시기: 2030~2050년?
+
+
+회의론:
+
+"의식 없이는 진정한 창의성 불가"
+→ AI는 영원히 패턴 조합기
+→ 의도, 감정은 복제 불가능
+→ 도구 역할만 할 것
+
+
+실용주의:
+
+"창의성 정의가 중요해?"
+→ 결과만 좋으면 충분
+→ 도구든 창작자든 상관없음
+→ 인간-AI 협업이 최선
+
+
+현재 추세:
+→ AI는 점점 더 놀라운 결과 만듦
+→ 하지만 여전히 사람의 프롬프트 필요
+→ 협업 도구로 발전 중
+</code>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>재조합</strong> - AI의 창의성은 학습한 패턴의 새로운 조합</li>
+                <li><strong>의도 없음</strong> - 결과는 창의적이지만 의도나 감정은 없음</li>
+                <li><strong>놀라운 조합</strong> - 인간이 생각 못 한 조합도 만들어냄</li>
+                <li><strong>도구</strong> - 현재는 창작자보다 고급 도구에 가까움</li>
+                <li><strong>협업</strong> - 인간-AI 협업이 최선의 창작 방식</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic10/">← 이전: 이미지 생성 AI는 어떻게 그림을 그려?</a>
+            <a href="../topic12/">다음: AI도 실수해? →</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>확률은 AI랑 무슨 관계야? - Section 2</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF9800;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF9800;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #fff3e0;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #fff3e0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #e65100;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #FF9800 0%, #FFB74D 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fff3e0;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #FF9800; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 2</a>
+            <span>/</span>
+            Topic 10
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 10</div>
+            <h1>확률은 AI랑 무슨 관계야?</h1>
+            <p>Q. AI가 확률로 예측한다는 게 뭐야?</p>
+        </header>
+
+        <!-- Part 1: AI와 확률 -->
+        <div class="conversation">
+            <h2>Part 1. AI는 왜 확률로 예측해?</h2>
+
+            <div class="chat">
+                <div class="q">AI가 "85% 고양이"라고 하잖아. 왜 확률로 말해?</div>
+                <div class="a">
+                    <p><span class="key-point">AI는 100% 확신하지 못해. 인간처럼.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">확신의 정도:
+
+사람: "이거 고양이 같은데... 85% 확신함"
+AI: P(고양이) = 0.85
+
+→ 불확실성을 확률로 표현
+
+
+좋은 점:
+1. 얼마나 확신하는지 알 수 있음
+   - 99% → 거의 확실
+   - 51% → 애매함
+
+2. 여러 선택지의 가능성 비교
+   고양이: 70%
+   개: 25%
+   토끼: 5%
+
+3. 위험 관리 가능
+   의료 진단에서 60%만 확신? → 추가 검사 필요</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">AI는 본질적으로 확률적 모델</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: 확률 기초 -->
+        <div class="conversation">
+            <h2>Part 2. 확률 기초 복습</h2>
+
+            <div class="chat">
+                <div class="q">확률이 뭐였지?</div>
+                <div class="a">
+                    <p>간단히 복습해볼게:</p>
+                </div>
+            </div>
+
+            <div class="code-block">확률 (Probability):
+
+P(사건) = 원하는 경우의 수 / 전체 경우의 수
+
+주사위 예시:
+P(6 나옴) = 1/6 ≈ 0.167
+
+동전 예시:
+P(앞면) = 1/2 = 0.5
+
+
+규칙:
+1. 0 ≤ P(A) ≤ 1
+   → 확률은 0~1 사이
+
+2. P(전체) = 1
+   → 모든 경우의 합 = 1
+
+3. P(A or B) = P(A) + P(B) - P(A and B)
+   → 합의 법칙
+
+4. P(A and B) = P(A) × P(B|A)
+   → 곱의 법칙</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">AI도 이 규칙을 따라.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: 조건부 확률 -->
+        <div class="conversation">
+            <h2>Part 3. 조건부 확률</h2>
+
+            <div class="chat">
+                <div class="q">조건부 확률은 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">P(A|B) = "B가 일어났을 때 A가 일어날 확률"</span></p>
+                    <p>AI 학습의 핵심이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">예시:
+
+P(비|구름) = "구름 낀 날 비가 올 확률"
+            = 0.4 (40%)
+
+P(비) = "그냥 비가 올 확률" = 0.1 (10%)
+
+→ 구름이라는 조건이 있으면 확률이 달라짐!
+
+
+AI에서:
+P(고양이|이미지) = "이 이미지가 주어졌을 때 고양이일 확률"
+
+→ 이미지 특징을 보고 확률 계산
+→ 이게 AI의 예측!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>베이즈 정리 (Bayes' Theorem):</strong></p>
+                    <p>P(A|B) = P(B|A) × P(A) / P(B)</p>
+                    <p>→ 원인과 결과를 뒤집을 수 있음</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: 확률 분포 -->
+        <div class="conversation">
+            <h2>Part 4. 확률 분포는 뭐야?</h2>
+
+            <div class="chat">
+                <div class="q">확률 분포(Probability Distribution)는?</div>
+                <div class="a">
+                    <p><span class="key-point">모든 가능한 결과와 그 확률을 나타낸 것</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">이산 확률 분포:
+
+주사위:
+1: 1/6
+2: 1/6
+3: 1/6
+4: 1/6
+5: 1/6
+6: 1/6
+
+→ 합 = 1
+
+
+분류 문제:
+고양이: 0.7
+개: 0.2
+토끼: 0.1
+
+→ 합 = 1 (필수!)
+
+
+연속 확률 분포:
+정규분포, 균등분포 등
+→ 다음 토픽에서 자세히</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">AI의 출력 = 확률 분포</span></p>
+                    <p>Softmax 함수로 만들어. (13번 토픽에서 배울 거야)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: AI 예측 과정 -->
+        <div class="conversation">
+            <h2>Part 5. AI는 어떻게 확률을 계산해?</h2>
+
+            <div class="chat">
+                <div class="q">구체적으로 어떻게 확률을 만드는 거야?</div>
+                <div class="a">
+                    <p>과정을 볼게:</p>
+                </div>
+            </div>
+
+            <div class="code-block">이미지 분류 예시:
+
+1. 이미지 입력
+   [픽셀 데이터]
+
+2. 뉴럴 네트워크 통과
+   → 여러 층 거침
+   → 마지막 층 출력 (로짓): [2.1, 0.5, -0.3]
+
+3. Softmax 적용
+   e^2.1 / (e^2.1 + e^0.5 + e^-0.3) = 0.72
+   e^0.5 / (e^2.1 + e^0.5 + e^-0.3) = 0.15
+   e^-0.3 / (e^2.1 + e^0.5 + e^-0.3) = 0.07
+
+   결과: [0.72, 0.15, 0.07]  (합=0.94... 반올림 오차)
+
+4. 확률 해석
+   고양이: 72%
+   개: 15%
+   토끼: 7%
+
+5. 예측
+   가장 높은 확률 → "고양이"</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>핵심:</strong></p>
+                    <p>1. 뉴럴 네트워크가 점수 계산</p>
+                    <p>2. Softmax로 확률로 변환</p>
+                    <p>3. 가장 높은 확률 선택</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 6: 확률적 샘플링 -->
+        <div class="conversation">
+            <h2>Part 6. ChatGPT는 왜 매번 다른 답을 해?</h2>
+
+            <div class="chat">
+                <div class="q">같은 질문에 왜 대답이 달라져?</div>
+                <div class="a">
+                    <p><span class="key-point">확률적 샘플링</span>을 쓰기 때문이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">단어 예측:
+
+"나는 ___ 좋아해"
+
+확률 분포:
+"사과를": 40%
+"음악을": 30%
+"여행을": 20%
+"책을": 10%
+
+
+결정적 방법:
+항상 가장 높은 거 선택 → "사과를"
+→ 매번 같은 답
+
+
+확률적 방법:
+확률에 따라 랜덤 선택
+→ 40% 확률로 "사과를"
+→ 30% 확률로 "음악을"
+→ 매번 다를 수 있음!
+
+
+Temperature 파라미터:
+- 낮음 (0.1): 거의 결정적
+- 중간 (0.7): 균형
+- 높음 (1.5): 매우 창의적 (랜덤)</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">이 덕분에 AI가 창의적인 답을 만들 수 있어.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>AI는 확률로 예측</strong> - 불확실성을 수치화</li>
+                <li><strong>조건부 확률이 핵심</strong> - P(출력|입력)</li>
+                <li><strong>확률 분포 생성</strong> - 모든 선택지의 확률</li>
+                <li><strong>합은 항상 1</strong> - 확률의 기본 규칙</li>
+                <li><strong>Softmax로 변환</strong> - 점수를 확률로</li>
+                <li><strong>확률적 샘플링</strong> - 창의적 출력 가능</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic09/">← 이전: 손실함수가 뭐길래 줄여야 해?</a>
+            <a href="../topic11/">다음: 통계는 왜 배워야 해? →</a>
+        </div>
+    </div>
+</body>
+</html>

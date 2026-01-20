@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>원-핫 인코딩은 뭐야? - Section 6</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #E91E63;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #E91E63;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #fce4ec;
+        }
+
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #fce4ec;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c2185b;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+
+        .summary-box {
+            background: linear-gradient(135deg, #E91E63 0%, #EC407A 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fce4ec;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #E91E63; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 6</a>
+            <span>/</span>
+            Topic 03
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 03</div>
+            <h1>원-핫 인코딩은 뭐야?</h1>
+            <p>Q. 단어를 벡터로 만드는 가장 단순한 방법?</p>
+        </header>
+
+        <!-- Part 1: 원-핫 인코딩이 뭐야? -->
+        <div class="conversation">
+            <h2>Part 1. 가장 단순한 숫자 변환 방법</h2>
+
+            <div class="chat">
+                <div class="q">원-핫 인코딩(One-Hot Encoding)이 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">단어를 벡터로 바꾸는 가장 단순한 방법이야.</span></p>
+                    <p>하나만 1이고, 나머지는 전부 0인 벡터를 만드는 거지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유:
+
+학생 출석부를 생각해봐.
+
+1반: [1, 0, 0, 0]  ← 1반만 표시
+2반: [0, 1, 0, 0]  ← 2반만 표시
+3반: [0, 0, 1, 0]  ← 3반만 표시
+4반: [0, 0, 0, 1]  ← 4반만 표시
+
+→ 하나의 위치만 1 (Hot), 나머지는 0
+→ 이게 바로 "One-Hot"
+</div>
+
+            <div class="chat">
+                <div class="q">단어도 그렇게 표현해?</div>
+                <div class="a">
+                    <p>응. 예를 들어볼게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">단어 사전:
+["강아지", "고양이", "토끼", "햄스터"]
+
+원-핫 인코딩:
+"강아지" → [1, 0, 0, 0]
+"고양이" → [0, 1, 0, 0]
+"토끼"   → [0, 0, 1, 0]
+"햄스터" → [0, 0, 0, 1]
+
+문장: "나는 고양이를 좋아해"
+토큰화: ["나는", "고양이를", "좋아해"]
+
+"나는"     → [1, 0, 0, 0, 0, 0]
+"고양이를" → [0, 1, 0, 0, 0, 0]
+"좋아해"   → [0, 0, 1, 0, 0, 0]
+</div>
+        </div>
+
+        <!-- Part 2: 어떻게 만들어? -->
+        <div class="conversation">
+            <h2>Part 2. 원-핫 벡터 만드는 과정</h2>
+
+            <div class="chat">
+                <div class="q">구체적으로 어떻게 만들어?</div>
+                <div class="a">
+                    <p>3단계면 돼.</p>
+                </div>
+            </div>
+
+            <div class="code-block">1단계: 단어 사전 만들기
+
+전체 텍스트에서 등장하는 모든 단어 수집
+["나는", "학교에", "간다", "너는", "집에", "간다"]
+
+중복 제거하고 번호 부여:
+{
+  "나는": 0,
+  "학교에": 1,
+  "간다": 2,
+  "너는": 3,
+  "집에": 4
+}
+
+→ 총 5개 단어 = 벡터 크기는 5
+
+
+2단계: 0으로 채운 벡터 만들기
+
+벡터 크기 = 단어 개수 = 5
+초기 벡터: [0, 0, 0, 0, 0]
+
+
+3단계: 해당 단어 위치만 1로 바꾸기
+
+"학교에"의 인덱스 = 1
+→ [0, 1, 0, 0, 0]
+      ↑
+   1번 위치만 1
+</div>
+
+            <div class="chat">
+                <div class="q">실제 코드로 보면?</div>
+            </div>
+
+            <div class="code-block">Python 예시:
+
+# 1. 단어 사전 만들기
+words = ["나는", "학교에", "간다", "너는", "집에"]
+word_to_idx = {word: idx for idx, word in enumerate(words)}
+
+# 2. 원-핫 인코딩 함수
+def one_hot_encode(word, word_to_idx):
+    # 0으로 채운 벡터 생성
+    vector = [0] * len(word_to_idx)
+    # 해당 단어 위치만 1로
+    idx = word_to_idx[word]
+    vector[idx] = 1
+    return vector
+
+# 3. 사용
+print(one_hot_encode("학교에", word_to_idx))
+# [0, 1, 0, 0, 0]
+
+print(one_hot_encode("집에", word_to_idx))
+# [0, 0, 0, 0, 1]
+</div>
+        </div>
+
+        <!-- Part 3: 원-핫의 문제점 -->
+        <div class="conversation">
+            <h2>Part 3. 원-핫 인코딩의 치명적 문제</h2>
+
+            <div class="chat">
+                <div class="q">간단하고 좋은데 뭐가 문제야?</div>
+                <div class="a">
+                    <p><span class="warning">문제가 많아.</span> 실전에서 거의 안 써.</p>
+                </div>
+            </div>
+
+            <div class="chat">
+                <div class="q">문제 1. 벡터가 너무 커진다</div>
+            </div>
+
+            <div class="code-block">단어가 3개:
+"강아지" → [1, 0, 0]
+"고양이" → [0, 1, 0]
+"토끼"   → [0, 0, 1]
+→ 벡터 크기: 3
+
+
+단어가 1만 개:
+"강아지" → [1, 0, 0, 0, ..., 0]  (9,999개의 0)
+"고양이" → [0, 1, 0, 0, ..., 0]  (9,999개의 0)
+→ 벡터 크기: 10,000
+
+
+단어가 10만 개 (실제 언어):
+"강아지" → [1, 0, 0, ..., 0]  (99,999개의 0)
+→ 벡터 크기: 100,000
+→ 메모리 낭비 심각!
+</div>
+
+            <div class="chat">
+                <div class="q">문제 2. 단어 간 유사도를 표현 못 함</div>
+            </div>
+
+            <div class="code-block">원-핫 인코딩:
+"강아지" → [1, 0, 0, 0]
+"개"     → [0, 1, 0, 0]
+"고양이" → [0, 0, 1, 0]
+"자동차" → [0, 0, 0, 1]
+
+문제:
+- "강아지"와 "개"의 거리 = "강아지"와 "자동차"의 거리
+- 둘 다 벡터 내적이 0 (완전히 수직)
+- AI가 "강아지 ≈ 개"라는 걸 알 수 없음!
+
+유사도 계산:
+"강아지" · "개" = 1×0 + 0×1 + 0×0 + 0×0 = 0
+"강아지" · "자동차" = 1×0 + 0×0 + 0×0 + 0×1 = 0
+
+→ 모든 단어가 똑같이 멀어 보임
+</div>
+
+            <div class="chat">
+                <div class="q">문제 3. 의미를 담지 못함</div>
+            </div>
+
+            <div class="code-block">원-핫 인코딩은 그냥 '번호표'일 뿐:
+
+"왕" - "남자" + "여자" = "여왕"
+
+이런 연산이 불가능함:
+
+"왕"   → [1, 0, 0, 0]
+"남자" → [0, 1, 0, 0]
+"여자" → [0, 0, 1, 0]
+
+[1,0,0,0] - [0,1,0,0] + [0,0,1,0] = [1,-1,1,0]
+→ 이게 무슨 의미인지 알 수 없음
+→ "여왕" [0,0,0,1]과 전혀 연결 안 됨
+</div>
+        </div>
+
+        <!-- Part 4: 그럼 왜 배워? -->
+        <div class="conversation">
+            <h2>Part 4. 그럼 원-핫은 왜 배우는 거야?</h2>
+
+            <div class="chat">
+                <div class="q">문제가 이렇게 많은데 왜 알아야 해?</div>
+                <div class="a">
+                    <p>두 가지 이유가 있어.</p>
+                </div>
+            </div>
+
+            <div class="chat">
+                <div class="q">이유 1. 개념의 출발점</div>
+                <div class="a">
+                    <p><span class="key-point">모든 인코딩 방법의 시작점이야.</span></p>
+                    <p>원-핫을 이해해야 Word2Vec, BERT 같은 고급 방법도 이해할 수 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">발전 과정:
+
+원-핫 인코딩 (1990년대)
+→ 단어를 숫자로 바꿀 수 있다는 걸 증명
+→ 하지만 의미를 담지 못함
+
+Word2Vec (2013)
+→ 원-핫의 문제를 해결
+→ 의미를 담은 밀집 벡터 (Dense Vector) 생성
+
+BERT, GPT (2018~)
+→ 문맥까지 고려한 벡터 생성
+→ 같은 단어도 문맥에 따라 다른 벡터
+
+→ 모두 "단어를 숫자로 바꾼다"는 원-핫의 아이디어에서 시작
+</div>
+
+            <div class="chat">
+                <div class="q">이유 2. 여전히 쓰는 곳이 있다</div>
+            </div>
+
+            <div class="code-block">원-핫이 여전히 쓰이는 경우:
+
+1. 카테고리 분류
+   색상: ["빨강", "파랑", "초록"]
+   → [1,0,0], [0,1,0], [0,0,1]
+   → 색상 간에 유사도가 필요 없음
+
+2. 레이블 인코딩
+   분류 문제의 정답:
+   "고양이" → [1, 0, 0]
+   "강아지" → [0, 1, 0]
+   "토끼"   → [0, 0, 1]
+
+3. 신경망의 출력층
+   AI가 확률을 출력할 때:
+   [0.7, 0.2, 0.1] → "70% 확률로 고양이"
+   → 원-핫 형태로 변환: [1, 0, 0]
+
+→ 유사도가 필요 없는 곳에서는 여전히 유용
+</div>
+        </div>
+
+        <!-- Part 5: 다음 단계는? -->
+        <div class="conversation">
+            <h2>Part 5. 원-핫을 넘어서</h2>
+
+            <div class="chat">
+                <div class="q">그럼 원-핫 말고 뭘 써야 해?</div>
+                <div class="a">
+                    <p><span class="highlight">임베딩(Embedding)</span>을 써야 해.</p>
+                    <p>다음 토픽에서 자세히 배울 건데, 간단히 맛보기.</p>
+                </div>
+            </div>
+
+            <div class="code-block">원-핫 vs 임베딩:
+
+원-핫 (희소 벡터):
+"강아지" → [1, 0, 0, 0, 0, 0, ..., 0]  (10만 차원)
+"고양이" → [0, 1, 0, 0, 0, 0, ..., 0]  (10만 차원)
+→ 크기: 엄청 큼
+→ 유사도: 계산 불가
+
+
+임베딩 (밀집 벡터):
+"강아지" → [0.2, 0.8, 0.3, 0.9, 0.1]  (5차원)
+"고양이" → [0.3, 0.7, 0.4, 0.8, 0.2]  (5차원)
+→ 크기: 작음 (보통 100~1000차원)
+→ 유사도: 계산 가능!
+→ 의미: 담을 수 있음!
+
+유사도:
+"강아지" · "고양이" = 0.2×0.3 + 0.8×0.7 + ... = 0.89 (매우 유사)
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>다음 시간에는 이 <span class="key-point">임베딩</span>에 대해 배울 거야.</p>
+                    <p>원-핫의 모든 문제를 해결한 혁신적인 방법이지.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>원-핫 인코딩</strong> - 하나만 1, 나머지는 0인 벡터로 단어 표현</li>
+                <li><strong>장점</strong> - 간단하고 이해하기 쉬움, 카테고리 분류에 유용</li>
+                <li><strong>단점 1</strong> - 벡터 크기가 어휘 크기만큼 커짐 (메모리 낭비)</li>
+                <li><strong>단점 2</strong> - 단어 간 유사도를 전혀 표현하지 못함</li>
+                <li><strong>해결책</strong> - 임베딩(밀집 벡터)으로 의미를 담은 작은 벡터 생성</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic02/">← 이전: 토큰화가 뭐야?</a>
+            <a href="../topic04/">다음: 단어 임베딩이 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

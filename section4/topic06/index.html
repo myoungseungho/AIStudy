@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>층을 왜 여러 개 쌓아? - Section 4</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #9C27B0;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #9C27B0;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f3e5f5;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #f3e5f5;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #6a1b9a;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #f3e5f5;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #9C27B0; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 4</a>
+            <span>/</span>
+            Topic 06
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 06</div>
+            <h1>층을 왜 여러 개 쌓아?</h1>
+            <p>Q. 한 층으로 부족해?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 한 층으로는 부족해?</h2>
+
+            <div class="chat">
+                <div class="q">퍼셉트론 층 하나만 있으면 안 돼?</div>
+                <div class="a">
+                    <p><span class="warning">한 층으로는 할 수 있는 게 너무 제한적</span>이야.</p>
+                    <p>XOR 문제를 기억해? 층 하나로는 XOR을 절대 풀 수 없어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">단층 퍼셉트론의 한계:
+
+선형 분리 가능한 것만 가능:
+✅ AND 연산
+✅ OR 연산
+✅ 직선 하나로 나눌 수 있는 문제
+
+선형 분리 불가능한 것은 불가능:
+❌ XOR 연산
+❌ 곡선 경계가 필요한 문제
+❌ 복잡한 패턴
+
+
+비유:
+한 층 = 종이를 접지 않고 직선 하나로 자르기
+→ 두 영역으로만 나눌 수 있음
+
+여러 층 = 종이를 여러 번 접고 자르기
+→ 복잡한 모양으로 나눌 수 있음</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 층을 쌓으면 뭐가 달라져?</h2>
+
+            <div class="chat">
+                <div class="q">층을 쌓으면 정확히 뭐가 좋은 거야?</div>
+                <div class="a">
+                    <p><span class="key-point">계층적으로 특징을 학습</span>할 수 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">얼굴 인식 예시:
+
+1층 (입력에 가까운 층):
+- 간단한 특징 학습
+- 수평선, 수직선, 대각선
+- 색깔 변화, 밝기
+
+2층:
+- 조합된 특징
+- 눈썹 (선들의 조합)
+- 코 윤곽 (곡선)
+- 입 모양
+
+3층:
+- 더 복잡한 특징
+- 눈 전체
+- 코 전체
+- 입 전체
+
+4층 (출력에 가까운 층):
+- 고차원 특징
+- 얼굴 전체
+- 특정 사람의 얼굴
+
+
+→ 각 층이 점점 추상적인 개념을 학습!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="highlight">층마다 다른 수준의 특징을 학습</span>해.</p>
+                    <p>마치 레고를 조립하듯이, 작은 부품부터 큰 구조물까지!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 왜 계층적 학습이 효과적이야?</h2>
+
+            <div class="chat">
+                <div class="q">한 번에 복잡한 특징을 학습하면 안 돼?</div>
+                <div class="a">
+                    <p><span class="warning">비효율적이고 거의 불가능</span>해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비교:
+
+한 층으로 "얼굴" 직접 학습:
+- 필요한 파라미터 수: 엄청나게 많음
+- 학습 난이도: 매우 어려움
+- 일반화 능력: 낮음
+- 예시: 수백만 가지 얼굴 패턴을 전부 외워야 함
+
+
+여러 층으로 계층적 학습:
+- 필요한 파라미터 수: 상대적으로 적음
+- 학습 난이도: 각 층은 단순한 특징만 학습
+- 일반화 능력: 높음
+- 예시:
+  1층: 선 20가지
+  2층: 선 조합 100가지
+  3층: 부위 50가지
+  4층: 얼굴 조합
+  → 훨씬 효율적!
+
+
+실제 예:
+단어 학습:
+- 한 번에 "사랑"이라는 단어 학습 (어려움)
+- 계층적: ㅅ, ㅏ, ㄹ, ㅏ, ㅇ 배우고 → 조합 (쉬움)</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 층이 많으면 무조건 좋아?</h2>
+
+            <div class="chat">
+                <div class="q">그럼 층을 엄청 많이 쌓으면 최고야?</div>
+                <div class="a">
+                    <p><span class="warning">아니야. 적절한 개수가 중요</span>해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">층이 너무 적으면:
+- 표현력 부족
+- 복잡한 패턴 학습 불가
+- 성능 제한
+
+예: 층 1~2개
+→ 단순한 문제만 풀 수 있음
+
+
+층이 적절하면:
+- 계층적 특징 학습
+- 좋은 일반화 성능
+- 효율적인 학습
+
+예: 층 5~20개
+→ 대부분의 문제에 적절
+
+
+층이 너무 많으면:
+- 기울기 소실 문제
+- 과적합 위험
+- 학습 어려움
+- 계산 비용 증가
+
+예: 층 100개 이상 (특별한 기법 필요)
+→ ResNet 같은 특수 구조 필요
+
+
+적정 층 수 가이드:
+- 간단한 문제 (MNIST): 2~3층
+- 중간 복잡도 (CIFAR-10): 10~20층
+- 복잡한 문제 (ImageNet): 50~200층
+- 언어 모델 (GPT): 수십~수백 층</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 실제 예시</h2>
+
+            <div class="code-block">유명한 신경망 구조:
+
+LeNet-5 (1998):
+- 7층
+- 손글씨 숫자 인식
+- 초기 CNN
+
+AlexNet (2012):
+- 8층
+- ImageNet 우승
+- 딥러닝 붐 시작
+
+VGG-16 (2014):
+- 16층
+- 간단하고 효과적
+- 여전히 많이 사용
+
+ResNet-50 (2015):
+- 50층
+- Skip connection으로 깊게 쌓기 성공
+- 기울기 소실 문제 해결
+
+GPT-3 (2020):
+- 96층 (Transformer)
+- 1750억 파라미터
+- 엄청나게 깊음
+
+
+층 수의 발전:
+1998: 7층
+2012: 8층
+2014: 16층
+2015: 50~152층
+2020: 96층+
+
+→ 점점 깊어지는 추세!</div>
+
+            <div class="code-block">Python 예시:
+
+import torch.nn as nn
+
+# 얕은 네트워크 (2층)
+class ShallowNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(784, 10)
+
+    def forward(self, x):
+        return self.fc1(x)
+
+
+# 중간 깊이 네트워크 (4층)
+class MediumNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(784, 256)
+        self.fc2 = nn.Linear(256, 128)
+        self.fc3 = nn.Linear(128, 64)
+        self.fc4 = nn.Linear(64, 10)
+        self.relu = nn.ReLU()
+
+    def forward(self, x):
+        x = self.relu(self.fc1(x))
+        x = self.relu(self.fc2(x))
+        x = self.relu(self.fc3(x))
+        return self.fc4(x)
+
+
+# 깊은 네트워크 (8층)
+class DeepNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+        layers = []
+        sizes = [784, 512, 256, 128, 64, 32, 16, 10]
+        for i in range(len(sizes)-1):
+            layers.append(nn.Linear(sizes[i], sizes[i+1]))
+            if i < len(sizes)-2:  # 마지막 층 제외
+                layers.append(nn.ReLU())
+        self.network = nn.Sequential(*layers)
+
+    def forward(self, x):
+        return self.network(x)</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 핵심 개념</h2>
+
+            <div class="chat">
+                <div class="q">결론이 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">층을 쌓는 이유</span>를 정리하면:</p>
+                </div>
+            </div>
+
+            <div class="code-block">1. 표현력 증가
+   층이 많을수록 복잡한 함수 근사 가능
+
+2. 계층적 특징 학습
+   간단한 특징 → 복잡한 특징
+   효율적이고 효과적
+
+3. 파라미터 효율성
+   한 층에 많은 뉴런 < 여러 층에 적절한 뉴런
+
+4. 일반화 성능
+   계층적 학습이 과적합 방지에 도움
+
+5. 추상화 능력
+   각 층이 다른 수준의 추상화 담당
+
+
+하지만:
+- 너무 깊으면 학습 어려움
+- 적절한 깊이 선택 중요
+- 문제에 따라 최적 깊이 다름</div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>한 층의 한계</strong> - 선형 분리만 가능, 복잡한 패턴 불가</li>
+                <li><strong>계층적 학습</strong> - 간단한 특징부터 복잡한 특징까지 단계적 학습</li>
+                <li><strong>효율적 표현</strong> - 적은 파라미터로 복잡한 함수 근사</li>
+                <li><strong>적절한 깊이</strong> - 너무 얕으면 성능 부족, 너무 깊으면 학습 어려움</li>
+                <li><strong>문제별 최적화</strong> - 문제 복잡도에 따라 적절한 층 수 선택</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic05/">← 이전: ReLU가 뭐야?</a>
+            <a href="../topic07/">다음: 딥러닝은 왜 '딥'이야? →</a>
+        </div>
+    </div>
+</body>
+</html>

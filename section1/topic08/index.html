@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>데이터가 왜 중요한 거야? - Section 1</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #4CAF50;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e8f5e9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #c8e6c9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #2e7d32;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #c8e6c9; }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #4CAF50; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 1</a>
+            <span>/</span>
+            Topic 08
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 08</div>
+            <h1>데이터가 왜 중요한 거야?</h1>
+            <p>Q. 데이터 없으면 AI 못 만들어?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. AI는 데이터를 먹고 자라</h2>
+
+            <div class="chat">
+                <div class="q">데이터가 왜 중요한 거야? 알고리즘만 좋으면 되는 거 아니야?</div>
+                <div class="a">
+                    <p><span class="key-point">"데이터는 AI의 연료"야.</span></p>
+                    <p>아무리 좋은 엔진(알고리즘)이라도 연료(데이터) 없으면 못 달려.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 요리
+
+좋은 요리사 (알고리즘) + 형편없는 재료 (데이터) = 맛없는 음식
+평범한 요리사 + 신선한 재료 = 맛있는 음식
+
+→ 재료가 더 중요할 때도 많아
+
+
+AI도 똑같아:
+
+최신 알고리즘 + 100개 데이터 = 정확도 60%
+평범한 알고리즘 + 10,000개 데이터 = 정확도 90%
+
+→ "Garbage In, Garbage Out"
+→ 쓰레기 데이터 넣으면 쓰레기 결과 나옴
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 데이터 양이 중요해</h2>
+
+            <div class="chat">
+                <div class="q">데이터가 얼마나 필요해?</div>
+                <div class="a">
+                    <p><span class="highlight">많으면 많을수록 좋아.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">데이터 양에 따른 성능:
+
+고양이 인식 AI:
+
+100장: 정확도 50% (동전 던지기 수준)
+1,000장: 정확도 70%
+10,000장: 정확도 85%
+100,000장: 정확도 95%
+1,000,000장: 정확도 98%
+
+
+ChatGPT:
+→ 인터넷 전체 텍스트 학습
+→ 수조 개의 단어
+→ 수백 테라바이트
+
+→ 이 정도 데이터가 있어야 사람처럼 대화 가능
+</div>
+
+            <div class="chat">
+                <div class="q">왜 많아야 해?</div>
+                <div class="a">
+                    <p><strong>이유 1: 다양한 경우를 봐야 함</strong></p>
+                    <p>고양이도 여러 종류 있잖아? 페르시안, 샴, 코숏...</p>
+                    <p>전부 봐야 "고양이"를 제대로 이해함.</p>
+                    <p><strong>이유 2: 예외 상황 대비</strong></p>
+                    <p>앉은 고양이, 누운 고양이, 점프하는 고양이...</p>
+                    <p>다양한 포즈 전부 학습해야 인식 가능.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 데이터 품질이 더 중요해</h2>
+
+            <div class="chat">
+                <div class="q">그럼 무조건 많기만 하면 돼?</div>
+                <div class="a">
+                    <p><span class="warning">아니야!</span></p>
+                    <p><span class="key-point">품질이 더 중요해.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">나쁜 데이터 예시:
+
+고양이 인식 AI를 만드는데...
+
+문제 1: 잘못된 라벨
+→ 강아지 사진에 "고양이" 라벨
+→ AI가 혼란
+
+문제 2: 편향된 데이터
+→ 페르시안 고양이만 9,000장
+→ 샴 고양이 100장
+→ AI가 페르시안만 잘 인식
+
+문제 3: 저품질 이미지
+→ 흐릿한 사진, 너무 작은 사진
+→ AI가 패턴 못 찾음
+
+→ 10,000장 나쁜 데이터 < 1,000장 좋은 데이터
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>좋은 데이터 조건:</strong></p>
+                    <p>✅ 정확한 라벨 (고양이면 "고양이")</p>
+                    <p>✅ 다양성 (여러 종류, 각도, 상황)</p>
+                    <p>✅ 균형 (각 카테고리 비슷한 양)</p>
+                    <p>✅ 깨끗함 (노이즈 없음)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 데이터 편향 문제</h2>
+
+            <div class="chat">
+                <div class="q">편향이 뭐야?</div>
+                <div class="a">
+                    <p><span class="highlight">데이터가 특정 쪽으로 치우쳐 있는 거야.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">실제 사례:
+
+얼굴 인식 AI (2018년 문제)
+→ 백인 남성 데이터 90%
+→ 흑인 여성 데이터 5%
+
+결과:
+→ 백인 남성: 정확도 99%
+→ 흑인 여성: 정확도 65%
+
+→ 논란, 재학습 필요
+
+
+채용 AI (Amazon 사례)
+→ 과거 합격자 데이터로 학습
+→ 과거 합격자는 남성이 많았음
+
+결과:
+→ "여성"이라는 단어만 있어도 감점
+→ 폐기 결정
+
+→ 데이터 편향 = AI 편향
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>교훈:</strong></p>
+                    <p><span class="warning">AI는 데이터 속 편견을 그대로 학습해.</span></p>
+                    <p>데이터 수집할 때 다양성 확보가 필수!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 데이터 없으면 정말 못 만들어?</h2>
+
+            <div class="chat">
+                <div class="q">데이터가 아예 없으면 AI 못 만드는 거야?</div>
+                <div class="a">
+                    <p>몇 가지 방법이 있긴 해:</p>
+                </div>
+            </div>
+
+            <div class="code-block">데이터 부족 해결법:
+
+1. 전이 학습 (Transfer Learning)
+   → 다른 AI가 배운 지식 재활용
+   → 예: ImageNet으로 학습한 AI를 고양이 인식에 재사용
+   → 데이터 100배 적어도 됨
+
+2. 데이터 증강 (Data Augmentation)
+   → 기존 데이터를 변형해서 늘림
+   → 예: 고양이 사진 회전, 밝기 조정, 확대/축소
+   → 1,000장 → 10,000장 효과
+
+3. 합성 데이터 (Synthetic Data)
+   → 가짜 데이터 만들기
+   → 예: 3D 모델링으로 가상 고양이 생성
+   → 무한정 만들 수 있음
+
+4. Few-Shot Learning
+   → 적은 데이터로 학습하는 알고리즘
+   → 예: 3~5장만 봐도 학습 가능
+   → 최신 연구 분야
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>하지만:</strong></p>
+                    <p><span class="highlight">진짜 데이터가 최고야.</span></p>
+                    <p>위 방법들은 어디까지나 "차선책"이야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 데이터가 돈이 된 시대</h2>
+
+            <div class="chat">
+                <div class="q">그래서 요즘 데이터가 귀하다는 거야?</div>
+                <div class="a">
+                    <p><span class="key-point">"데이터는 21세기의 석유"</span></p>
+                    <p>실제로 돈 주고 사기도 해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">데이터의 가치:
+
+구글, 페이스북이 무료인 이유?
+→ 너의 데이터를 수집하기 위해
+→ 검색어, 클릭, 좋아요, 댓글
+→ 이걸로 광고 AI 학습
+→ 광고 정확도 ↑ → 수익 ↑
+
+
+자율주행 회사들의 경쟁:
+→ 주행 데이터 확보 경쟁
+→ 테슬라: 수백만 대 차량에서 데이터 수집
+→ 경쟁사: 돈 주고 데이터 구매
+
+
+OpenAI가 ChatGPT 무료로 푼 이유:
+→ 사용자 대화 데이터 수집
+→ 피드백으로 모델 개선
+→ GPT-4, GPT-5 학습에 활용
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>결론:</strong></p>
+                    <p><span class="highlight">좋은 데이터 = AI 회사의 경쟁력</span></p>
+                    <p>알고리즘은 논문으로 공개되지만, 데이터는 비밀이야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>연료</strong> - 데이터는 AI의 연료, 없으면 학습 불가</li>
+                <li><strong>양</strong> - 많을수록 성능 향상, 보통 수만~수백만 개 필요</li>
+                <li><strong>품질</strong> - 양보다 품질이 더 중요, 정확하고 다양해야 함</li>
+                <li><strong>편향</strong> - 데이터 편향 = AI 편향, 다양성 필수</li>
+                <li><strong>경쟁력</strong> - 좋은 데이터 = AI 회사의 핵심 자산</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic07/">← 이전: AI는 어떻게 '학습'해?</a>
+            <a href="../topic09/">다음: ChatGPT는 어떻게 대답을 만들어? →</a>
+        </div>
+    </div>
+</body>
+</html>

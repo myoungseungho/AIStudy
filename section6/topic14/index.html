@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPT는 BERT랑 뭐가 달라? - Section 6</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #E91E63;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #E91E63;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #fce4ec;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #fce4ec;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c2185b;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #E91E63 0%, #EC407A 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fce4ec;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #E91E63; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 6</a>
+            <span>/</span>
+            Topic 14
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 14</div>
+            <h1>GPT는 BERT랑 뭐가 달라?</h1>
+            <p>Q. 다음 단어 예측만 하는데 왜 강해?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. GPT의 핵심 차이</h2>
+
+            <div class="chat">
+                <div class="q">GPT(Generative Pre-trained Transformer)가 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">텍스트 생성에 특화된 모델</span>이야.</p>
+                    <p>BERT는 이해에 강하고, GPT는 <span class="highlight">생성에 강해</span>.</p>
+                </div>
+            </div>
+
+            <div class="code-block">핵심 차이:
+
+BERT (Bidirectional):
+"The cat [MASK] on the mat"
+← 양방향으로 봄 →
+→ 빈칸 채우기 전문
+→ 이해 능력 강함
+
+GPT (Unidirectional):
+"The cat sat" → 다음은?
+→ 왼쪽에서 오른쪽으로만 →
+→ 다음 단어 예측 전문
+→ 생성 능력 강함
+
+
+비유:
+BERT = 시험지 빈칸 채우기
+→ "한국의 수도는 ___이다" → "서울"
+
+GPT = 글쓰기 AI
+→ "옛날에 한 마을에" → "살던 소년이 있었다..."
+</div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>구분</th>
+                    <th>BERT</th>
+                    <th>GPT</th>
+                </tr>
+                <tr>
+                    <td><strong>방향</strong></td>
+                    <td>양방향 (Bidirectional)</td>
+                    <td>단방향 (Unidirectional)</td>
+                </tr>
+                <tr>
+                    <td><strong>학습 방법</strong></td>
+                    <td>MLM (빈칸 채우기)</td>
+                    <td>다음 단어 예측</td>
+                </tr>
+                <tr>
+                    <td><strong>강점</strong></td>
+                    <td>문맥 이해, 분류</td>
+                    <td>텍스트 생성</td>
+                </tr>
+                <tr>
+                    <td><strong>구조</strong></td>
+                    <td>Encoder만 사용</td>
+                    <td>Decoder만 사용</td>
+                </tr>
+                <tr>
+                    <td><strong>활용</strong></td>
+                    <td>검색, 분류, QA</td>
+                    <td>챗봇, 글쓰기, 번역</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. GPT의 학습 방법</h2>
+
+            <div class="chat">
+                <div class="q">다음 단어 예측이 뭐야?</div>
+                <div class="a">
+                    <p><span class="highlight">Auto-regressive Language Modeling</span>이라고 해.</p>
+                    <p>이전 단어들을 보고 다음 단어를 맞추는 거야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">학습 예시:
+
+문장: "나는 오늘 학교에 갔다"
+
+학습 단계별:
+
+입력: "나는"
+정답: "오늘" ← 다음 단어 맞추기
+
+입력: "나는 오늘"
+정답: "학교에"
+
+입력: "나는 오늘 학교에"
+정답: "갔다"
+
+→ 매 단계 다음 단어 예측 학습
+→ 수십억 번 반복하면 글쓰기 학습!
+
+
+실제 사용:
+"오늘 날씨가" (입력)
+→ "좋네요" (예측)
+→ "오늘 날씨가 좋네요" (생성)
+→ "오늘 날씨가 좋네요 산책하기" (계속 생성)
+→ "오늘 날씨가 좋네요 산책하기 좋은 날이에요" (완성!)
+</div>
+
+            <div class="chat">
+                <div class="q">그게 왜 강력해?</div>
+            </div>
+
+            <div class="code-block">GPT 학습의 장점:
+
+1. 무한한 데이터
+   모든 텍스트가 학습 데이터
+   "오늘은 화요일이다" 한 문장에서:
+   - "오늘은" → "화요일이다"
+   - "오늘은 화요일이다" → ?
+   → N개 학습 샘플 생성!
+
+2. 라벨 불필요
+   정답 = 다음 단어
+   → 별도 라벨링 불필요
+   → 인터넷의 모든 텍스트 활용
+
+3. 생성 능력 자연스럽게 습득
+   다음 단어 계속 예측 = 텍스트 생성
+   → 별도 생성 학습 불필요
+
+4. 확장성
+   데이터 많을수록, 모델 클수록 성능 향상
+   → GPT-1: 1억 파라미터
+   → GPT-2: 15억 파라미터
+   → GPT-3: 1750억 파라미터
+   → GPT-4: 추정 1조+ 파라미터
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. GPT의 진화</h2>
+
+            <div class="chat">
+                <div class="q">GPT가 계속 발전했어?</div>
+            </div>
+
+            <div class="code-block">GPT 시리즈:
+
+GPT-1 (2018, OpenAI)
+- 1.17억 파라미터
+- BookCorpus 학습
+- 개념 증명 수준
+
+GPT-2 (2019)
+- 15억 파라미터
+- WebText (800만 문서)
+- "너무 위험해서 공개 못 함" (당시)
+- 나중에 전체 공개
+
+GPT-3 (2020)
+- 1750억 파라미터
+- 45TB 텍스트 학습
+- Few-shot Learning 가능
+- API로만 제공
+
+ChatGPT (2022)
+- GPT-3.5 기반
+- RLHF (인간 피드백) 학습
+- 대화에 최적화
+- 10억 사용자 돌파
+
+GPT-4 (2023)
+- 크기 비공개 (추정 1조+)
+- 멀티모달 (텍스트+이미지)
+- 더 정확, 덜 헛소리
+- 현재 최강
+</div>
+
+            <div class="chat">
+                <div class="q">성능이 얼마나 좋아졌어?</div>
+            </div>
+
+            <div class="code-block">성능 비교:
+
+텍스트 생성 품질:
+GPT-1: 문법 OK, 의미 애매
+GPT-2: 몇 문장까지 일관성
+GPT-3: 수백 단어도 일관성
+GPT-4: 수천 단어 에세이 수준
+
+
+시험 성능:
+GPT-3: 미국 변호사 시험 하위 10%
+GPT-4: 미국 변호사 시험 상위 10%!
+
+GPT-3: SAT 점수 1260점
+GPT-4: SAT 점수 1410점 (상위 15%)
+
+→ 사람 수준에 근접
+
+
+창의성:
+GPT-3: 시, 소설 작성 가능
+GPT-4: 미묘한 유머, 스타일 모방 가능
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. Few-Shot Learning</h2>
+
+            <div class="chat">
+                <div class="q">Few-Shot Learning이 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">예시 몇 개만 보고 새 태스크를 학습</span>하는 거야.</p>
+                    <p>GPT-3부터 가능해진 능력이지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Few-Shot 예시:
+
+번역 태스크 (학습 없이!):
+
+입력:
+영어: "Hello" → 한국어: "안녕하세요"
+영어: "Thank you" → 한국어: "감사합니다"
+영어: "I love you" → 한국어:
+
+GPT-3 출력:
+"나는 너를 사랑해"
+
+→ 예시 2개만으로 번역 패턴 파악!
+→ Fine-tuning 없이 바로 사용
+
+
+감정 분석:
+
+입력:
+"This movie is great!" → Positive
+"Terrible film" → Negative
+"Amazing performance" →
+
+GPT-3 출력:
+Positive
+
+→ 예시로 태스크 이해!
+
+
+종류:
+- Zero-Shot: 예시 0개
+- One-Shot: 예시 1개
+- Few-Shot: 예시 2~5개
+
+→ GPT-3 이전엔 불가능했던 능력
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. BERT vs GPT 선택</h2>
+
+            <div class="chat">
+                <div class="q">언제 BERT 쓰고 언제 GPT 써?</div>
+            </div>
+
+            <div class="code-block">BERT 사용:
+
+✅ 문서 분류
+   스팸 메일 필터링
+   감정 분석
+   주제 분류
+
+✅ 검색 엔진
+   쿼리-문서 매칭
+   유사도 계산
+
+✅ 질의응답 (이해)
+   문서에서 답 찾기
+   정보 추출
+
+✅ Named Entity Recognition
+   인명, 지명 찾기
+
+장점:
+- 양방향 → 문맥 이해 최고
+- 빠름
+- Fine-tuning 쉬움
+
+
+GPT 사용:
+
+✅ 텍스트 생성
+   글쓰기
+   이메일 작성
+   코드 생성
+
+✅ 대화 시스템
+   챗봇
+   고객 서비스
+
+✅ 번역
+   언어 간 변환
+
+✅ 요약
+   긴 글 → 짧은 요약
+
+장점:
+- 생성 품질 최고
+- Few-shot 가능
+- 유연함
+
+
+현실:
+→ 이해 + 생성 둘 다 필요하면?
+→ GPT-4 사용 (둘 다 잘함)
+→ 요즘은 GPT 계열이 대세
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>다음 토픽에서 <span class="key-point">LLM(거대 언어 모델)</span>에 대해 배워볼게!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>GPT</strong> - 다음 단어 예측으로 학습, 텍스트 생성에 특화</li>
+                <li><strong>단방향</strong> - 왼쪽→오른쪽만 보지만 생성에는 더 유리</li>
+                <li><strong>진화</strong> - GPT-1 → GPT-4, 파라미터 1억 → 1조+</li>
+                <li><strong>Few-Shot</strong> - 예시 몇 개만으로 새 태스크 수행 가능</li>
+                <li><strong>ChatGPT</strong> - GPT-3.5 기반, RLHF로 대화 최적화</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic13/">← 이전: BERT는 어떻게 학습해?</a>
+            <a href="../topic15/">다음: LLM은 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

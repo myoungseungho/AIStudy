@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>세그멘테이션이 뭐야? - Section 5</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #00BCD4;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #00BCD4;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e0f7fa;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #e0f7fa;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #00838f;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #00BCD4 0%, #26C6DA 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #b2ebf2;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #00BCD4; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 5</a>
+            <span>/</span>
+            Topic 14
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 14</div>
+            <h1>세그멘테이션이 뭐야?</h1>
+            <p>Q. 픽셀 단위로 분류한다고?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 세그멘테이션(Segmentation)이란?</h2>
+
+            <div class="chat">
+                <div class="q">세그멘테이션이 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">픽셀 하나하나를 분류</span>하는 거야.</p>
+                    <p>"이 픽셀은 고양이, 저 픽셀은 배경"</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>작업</th>
+                    <th>질문</th>
+                    <th>출력</th>
+                </tr>
+                <tr>
+                    <td><strong>분류</strong></td>
+                    <td>이게 뭐야?</td>
+                    <td>레이블 1개<br>"고양이"</td>
+                </tr>
+                <tr>
+                    <td><strong>객체 탐지</strong></td>
+                    <td>어디에 뭐가?</td>
+                    <td>박스 + 레이블<br>"고양이 (100,50,200,150)"</td>
+                </tr>
+                <tr>
+                    <td><strong>세그멘테이션</strong></td>
+                    <td>픽셀마다 뭐야?</td>
+                    <td>픽셀별 레이블<br>(224×224) 마스크</td>
+                </tr>
+            </table>
+
+            <div class="code-block">비유:
+그림을 색칠하는 것과 비슷해.
+
+객체 탐지:
+→ 고양이 주위에 네모 박스 그리기
+→ 대략적인 위치
+
+세그멘테이션:
+→ 고양이 모양대로 정확히 칠하기
+→ 픽셀 단위로 정밀</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">가장 정밀한 컴퓨터 비전 task</span>야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 세그멘테이션의 종류</h2>
+
+            <div class="chat">
+                <div class="q">세그멘테이션에도 종류가 있어?</div>
+                <div class="a">
+                    <p>크게 두 가지야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">1. Semantic Segmentation (의미론적 분할)
+→ 같은 클래스는 하나로 취급
+→ "모든 고양이 픽셀 = 1"
+
+예시:
+고양이 2마리, 개 1마리 사진
+→ 고양이 픽셀: 모두 빨강
+→ 개 픽셀: 모두 파랑
+→ 배경: 검정
+→ 고양이끼리 구분 안 됨
+
+
+2. Instance Segmentation (개체 분할)
+→ 같은 클래스도 개체별로 구분
+→ "고양이1 = 1, 고양이2 = 2"
+
+예시:
+고양이 2마리, 개 1마리 사진
+→ 고양이1: 빨강
+→ 고양이2: 주황
+→ 개: 파랑
+→ 각 개체 구분됨</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">Semantic = 무엇인지만</span></p>
+                    <p><span class="key-point">Instance = 무엇 + 누구</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 어떻게 작동해?</h2>
+
+            <div class="chat">
+                <div class="q">픽셀마다 어떻게 분류해?</div>
+                <div class="a">
+                    <p><strong>Encoder-Decoder 구조</strong>를 써.</p>
+                </div>
+            </div>
+
+            <div class="code-block">U-Net 구조 (대표적):
+
+Encoder (Down-sampling):
+→ 입력: (224, 224, 3)
+→ Conv + Pool 반복
+→ (112, 112, 64) → (56, 56, 128) → (28, 28, 256)
+→ 특징 추출, 크기 감소
+
+Bottleneck:
+→ (28, 28, 512)
+→ 가장 압축된 특징
+
+Decoder (Up-sampling):
+→ (28, 28, 512) → (56, 56, 256) → (112, 112, 128)
+→ Transpose Conv로 크기 복원
+→ Skip Connection으로 세부 정보 복원
+
+출력:
+→ (224, 224, num_classes)
+→ 각 픽셀마다 클래스 확률</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="highlight">압축했다가 다시 펼치면서 픽셀별로 분류</span>하는 거야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. Skip Connection이 중요한 이유</h2>
+
+            <div class="chat">
+                <div class="q">Skip Connection이 뭐야?</div>
+                <div class="a">
+                    <p><strong>초반 층의 정보를 후반 층에 직접 전달</strong>하는 거야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">문제:
+Encoder에서 크기 축소하면서
+→ 세부 정보(엣지, 질감) 손실
+→ Decoder에서 복원해도 뭉개짐
+
+해결:
+Skip Connection (U-Net의 핵심)
+→ Encoder Layer 1 → Decoder Layer 4로 직접 연결
+→ Encoder Layer 2 → Decoder Layer 3으로 직접 연결
+→ 고해상도 정보 보존
+
+결과:
+→ 경계선이 선명
+→ 작은 객체도 정확히 분할</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이게 없으면 <span class="warning">경계가 흐릿</span>해져.</p>
+                    <p>세그멘테이션에서 <strong>Skip Connection은 필수</strong>야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 주요 모델들</h2>
+
+            <div class="code-block">Semantic Segmentation:
+
+U-Net (2015):
+→ 의료 이미지용으로 개발
+→ Skip Connection의 시초
+→ 가장 널리 쓰임
+
+FCN (Fully Convolutional Network):
+→ 완전 연결층 없음
+→ 모든 층이 합성곱
+
+DeepLab (v3+):
+→ Atrous Convolution
+→ 다양한 스케일 고려
+→ 높은 정확도
+
+
+Instance Segmentation:
+
+Mask R-CNN (2017):
+→ Faster R-CNN + Mask 추가
+→ 박스 + 마스크 동시 예측
+→ 업계 표준
+
+YOLACT:
+→ 실시간 Instance Segmentation
+→ YOLO 스타일 속도</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 실전 활용</h2>
+
+            <div class="code-block">세그멘테이션 활용:
+
+자율주행:
+→ 도로, 차선, 차량, 보행자 픽셀 단위 분할
+→ 정밀한 경로 계획 필수
+→ Semantic Segmentation
+
+의료 영상:
+→ CT, MRI에서 종양 위치 정확히 찾기
+→ U-Net 표준
+→ 생명이 걸린 문제라 정밀도 최우선
+
+배경 제거:
+→ 화상회의 배경 흐리게
+→ 사람 vs 배경 분할
+→ 실시간 처리 필요
+
+위성 사진:
+→ 건물, 도로, 숲, 물 분류
+→ 도시 계획, 재난 관리
+
+농업:
+→ 잡초 vs 작물 구분
+→ 선택적 제초제 살포
+
+패션 / 쇼핑:
+→ 옷 영역만 추출
+→ 가상 피팅</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">정밀도가 중요한 곳에서는 세그멘테이션이 필수</span>야.</p>
+                    <p>박스로는 부족하고, 정확한 모양이 필요할 때.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>픽셀 단위 분류</strong> - 각 픽셀이 무엇인지 판단</li>
+                <li><strong>Semantic vs Instance</strong> - 클래스만 vs 개체까지 구분</li>
+                <li><strong>Encoder-Decoder</strong> - 압축 후 복원하며 분류</li>
+                <li><strong>Skip Connection</strong> - 고해상도 정보 보존의 핵심</li>
+                <li><strong>U-Net이 표준</strong> - 특히 의료 영상에서</li>
+                <li><strong>가장 정밀한 task</strong> - 자율주행, 의료 등 필수</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic13/">← 이전: YOLO는 왜 빨라?</a>
+            <a href="../topic15/">다음: GAN은 어떻게 가짜를 만들어? →</a>
+        </div>
+    </div>
+</body>
+</html>

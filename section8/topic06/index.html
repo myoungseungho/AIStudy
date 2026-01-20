@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 편향은 왜 생겨? - Section 8</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #795548;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #795548;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #efebe9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #d7ccc8;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #4e342e;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #795548 0%, #8D6E63 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #d7ccc8;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #795548; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 8</a>
+            <span>/</span>
+            Topic 06
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 06</div>
+            <h1>AI 편향은 왜 생겨?</h1>
+            <p>Q. 데이터가 편향되면 AI도 편향돼?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. AI 편향이 뭐야?</h2>
+
+            <div class="chat">
+                <div class="q">AI도 차별한다면서? 기계가 어떻게 차별을 해?</div>
+                <div class="a">
+                    <p><span class="key-point">AI는 데이터에서 패턴을 배워.</span></p>
+                    <p>만약 <strong>데이터 자체가 편향</strong>되어 있으면, AI도 편향된 결정을 내려.</p>
+                    <p>AI는 "공정"을 모르고, 그저 숫자를 학습할 뿐이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유:
+
+아이가 책을 읽으면서 세상을 배운다고 생각해봐.
+
+만약 책에:
+- 남자는 항상 과학자로 나옴
+- 여자는 항상 간호사로 나옴
+
+→ 아이는 "과학자 = 남자"라고 배우겠지?
+
+AI도 똑같아.
+편향된 데이터로 학습하면 → 편향된 결정을 내림</div>
+
+            <div class="chat">
+                <div class="q">실제 사례가 있어?</div>
+                <div class="a">
+                    <p><span class="warning">엄청 많아. 심각한 문제야.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 실제 편향 사례</h2>
+
+            <table class="compare-table">
+                <tr>
+                    <th>사례</th>
+                    <th>문제</th>
+                    <th>원인</th>
+                </tr>
+                <tr>
+                    <td><strong>Amazon 채용 AI (2018)</strong></td>
+                    <td>남성 지원자 선호</td>
+                    <td>과거 채용 데이터가 남성 위주 (IT 업계 특성)</td>
+                </tr>
+                <tr>
+                    <td><strong>얼굴 인식 (MIT 연구)</strong></td>
+                    <td>흑인 여성 오류율 34%<br>(백인 남성 0.8%)</td>
+                    <td>학습 데이터가 백인 남성 위주</td>
+                </tr>
+                <tr>
+                    <td><strong>COMPAS (범죄 예측)</strong></td>
+                    <td>흑인 재범률 과대평가</td>
+                    <td>역사적 차별이 데이터에 반영됨</td>
+                </tr>
+                <tr>
+                    <td><strong>Google 번역 (초기)</strong></td>
+                    <td>"의사는 he", "간호사는 she"</td>
+                    <td>인터넷 텍스트의 성 고정관념</td>
+                </tr>
+                <tr>
+                    <td><strong>대출 심사 AI</strong></td>
+                    <td>특정 지역 거주자 불리</td>
+                    <td>우편번호가 인종/소득과 상관</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="a">
+                    <p>보이지? <span class="key-point">AI는 사회의 편견을 그대로 반영</span>해.</p>
+                    <p>심지어 증폭시키기도 해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Amazon 채용 AI 상세:
+
+[배경]
+2014년, Amazon이 이력서 자동 평가 AI 개발
+
+[문제 발생]
+- "여자대학교" 졸업자 감점
+- "여성" 단어가 있으면 감점
+- 남성 지원자를 선호
+
+[원인]
+- 과거 10년간 채용 데이터로 학습
+- IT 업계는 남성이 대부분이었음
+- AI: "채용된 사람 = 남성" 패턴 학습
+
+[결과]
+2018년 프로젝트 폐기
+→ 하지만 이미 몇 년간 사용됨</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 편향이 생기는 이유</h2>
+
+            <div class="chat">
+                <div class="q">왜 이런 일이 생기는 거야?</div>
+                <div class="a">
+                    <p><span class="highlight">3가지 원인</span>이 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">AI 편향의 3가지 원인:
+
+1. 데이터 편향 (Data Bias)
+   문제: 학습 데이터 자체가 편향됨
+   예시:
+   - 얼굴 인식 데이터: 백인 70%, 흑인 5%
+   - 의료 AI 데이터: 남성 환자 위주
+   - 음성 인식: 표준어 화자 위주
+
+2. 역사적 편향 (Historical Bias)
+   문제: 과거의 차별이 데이터에 반영됨
+   예시:
+   - 과거 여성은 고위직 적었음 → AI가 학습
+   - 특정 지역 범죄율 높았음 → AI가 과잉 단속
+   - "간호사 = 여성" 고정관념 → AI가 반복
+
+3. 측정 편향 (Measurement Bias)
+   문제: 측정 방식 자체가 편향됨
+   예시:
+   - 신용점수: 역사적으로 특정 그룹에 불리
+   - 성과 평가: 평가자의 주관적 편견
+   - 체포 기록: 경찰의 과잉 단속 반영</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="warning">문제는 AI가 이걸 "객관적 사실"로 학습한다는 거야.</span></p>
+                    <p>사람은 "이건 차별이야"라고 인식할 수 있지만,</p>
+                    <p>AI는 그저 "과거 데이터의 패턴"일 뿐이지.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 공정성(Fairness)의 딜레마</h2>
+
+            <div class="chat">
+                <div class="q">그럼 공정하게 만들면 되잖아?</div>
+                <div class="a">
+                    <p><span class="key-point">"공정"의 정의가 여러 가지야.</span></p>
+                    <p>모두를 만족시킬 수는 없어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">공정성의 3가지 정의 (충돌함):
+
+1. Demographic Parity (인구 비율)
+   → 결과가 인구 비율과 같아야 함
+   예: 남성 50%, 여성 50% 채용
+
+2. Equal Opportunity (기회 균등)
+   → 같은 능력이면 같은 확률로 선택
+   예: 똑같은 실력이면 성별 무관하게 동등하게
+
+3. Predictive Parity (예측 정확도)
+   → 그룹별로 예측 정확도가 같아야 함
+   예: 남성 정확도 90%, 여성 정확도도 90%
+
+[문제]
+이 3가지를 동시에 만족하는 건 수학적으로 불가능함
+(Impossibility Theorem)</div>
+
+            <div class="chat">
+                <div class="q">그럼 어떻게 해야 해?</div>
+                <div class="a">
+                    <p><span class="highlight">상황에 맞는 공정성을 선택</span>해야 해.</p>
+                    <p>그리고 <strong>trade-off(트레이드오프)</strong>를 인정하는 거지.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 편향 해결 방법</h2>
+
+            <div class="chat">
+                <div class="q">그래도 개선할 수는 있잖아?</div>
+                <div class="a">
+                    <p>당연하지. 여러 방법이 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">편향 완화 방법:
+
+[1. 데이터 단계]
+- 데이터 다양성 확보
+  → 다양한 인종, 성별, 나이 데이터 수집
+- 언더샘플링/오버샘플링
+  → 적은 그룹 데이터를 늘림
+- 합성 데이터 생성
+  → 부족한 데이터를 AI로 생성
+
+[2. 알고리즘 단계]
+- Fairness Constraint (공정성 제약)
+  → 학습 시 공정성 조건 추가
+- Adversarial Debiasing
+  → 편향을 감지하는 AI 추가
+- Regularization
+  → 특정 특징에 과도하게 의존 방지
+
+[3. 후처리 단계]
+- Threshold Adjustment
+  → 그룹별로 다른 기준선 적용
+- Calibration
+  → 예측 확률 조정
+
+[4. 시스템 설계]
+- Human-in-the-Loop
+  → 최종 결정은 사람이 함
+- 투명성 확보
+  → AI 판단 근거 공개
+- 정기 감사
+  → 편향 모니터링</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="warning">완벽한 해결책은 없어.</span></p>
+                    <p>하지만 <strong>계속 노력</strong>하는 게 중요해.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 우리가 할 수 있는 것</h2>
+
+            <div class="chat">
+                <div class="q">개발자가 아니면 할 수 있는 게 없잖아?</div>
+                <div class="a">
+                    <p><span class="key-point">아니야. 모두가 역할이 있어.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">각자의 역할:
+
+[AI 개발자]
+- 다양한 데이터 수집
+- 공정성 지표 측정
+- 편향 테스트 실시
+- 투명성 확보
+
+[기업]
+- 다양한 개발팀 구성
+- 윤리 심사 위원회
+- 정기 감사
+- 피해 구제 시스템
+
+[정부]
+- 규제 및 가이드라인
+- 감독 기관 운영
+- 피해자 보호
+
+[사용자 (우리)]
+- AI 결정을 맹신하지 않기
+- 편향 의심하고 피드백
+- 차별 사례 제보
+- 미디어 리터러시 높이기</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>AI 편향은 <strong>기술 문제가 아니라 사회 문제</strong>야.</p>
+                    <p>모두가 함께 풀어야 해.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>AI 편향</strong> - 데이터가 편향되면 AI도 편향된 결정</li>
+                <li><strong>실제 사례</strong> - Amazon 채용, 얼굴 인식, 범죄 예측, 대출 심사</li>
+                <li><strong>3가지 원인</strong> - 데이터 편향, 역사적 편향, 측정 편향</li>
+                <li><strong>공정성 딜레마</strong> - 여러 공정성 정의가 서로 충돌 (수학적으로 동시 만족 불가)</li>
+                <li><strong>해결 방법</strong> - 데이터 다양화, 알고리즘 개선, 후처리, 사람 개입</li>
+                <li><strong>사회적 문제</strong> - 기술만으로 해결 불가, 모두의 노력 필요</li>
+                <li><strong>우리 역할</strong> - AI 맹신 금지, 편향 의심, 피드백, 리터러시</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic05/">← 이전: 딥페이크는 어떻게 만들어져?</a>
+            <a href="../topic07/">다음: AI는 일자리를 뺏을까? →</a>
+        </div>
+    </div>
+</body>
+</html>

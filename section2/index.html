@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section 2: AI를 위한 수학</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* 네비게이션 */
+        .breadcrumb {
+            margin-bottom: 40px;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb span {
+            color: #999;
+            margin: 0 8px;
+        }
+
+        /* 헤더 */
+        .header {
+            margin-bottom: 48px;
+        }
+
+        .header-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #111;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .section-badge {
+            display: inline-block;
+            background: #FF9800;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        /* 글 목록 */
+        .article-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .article-item {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #eee;
+            border-left: 4px solid #FF9800;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .article-item:hover {
+            border-color: #FF9800;
+            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .article-number {
+            font-size: 0.75rem;
+            color: #FF9800;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .article-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #111;
+        }
+
+        .article-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../">AI 공부</a>
+            <span>/</span>
+            Section 2
+        </nav>
+
+        <header class="header">
+            <div class="section-badge">Section 2</div>
+            <div class="header-icon">🔢</div>
+            <h1>AI를 위한 수학</h1>
+            <p>왜 수학이 필요한지, 어떻게 쓰이는지 이해하기</p>
+        </header>
+
+        <div class="article-list">
+            <a href="./topic01/" class="article-item">
+                <div class="article-number">TOPIC 01</div>
+                <h3 class="article-title">AI에 수학이 왜 필요해?</h3>
+                <p class="article-desc">Q. 코딩만 하면 안 돼?</p>
+            </a>
+
+            <a href="./topic02/" class="article-item">
+                <div class="article-number">TOPIC 02</div>
+                <h3 class="article-title">벡터가 뭐야?</h3>
+                <p class="article-desc">Q. 숫자 여러 개를 묶어놓은 거?</p>
+            </a>
+
+            <a href="./topic03/" class="article-item">
+                <div class="article-number">TOPIC 03</div>
+                <h3 class="article-title">벡터로 단어를 표현한다고?</h3>
+                <p class="article-desc">Q. "사과"를 숫자로 어떻게 바꿔?</p>
+            </a>
+
+            <a href="./topic04/" class="article-item">
+                <div class="article-number">TOPIC 04</div>
+                <h3 class="article-title">행렬은 왜 쓰는 거야?</h3>
+                <p class="article-desc">Q. 표 형태로 쓰면 뭐가 좋은데?</p>
+            </a>
+
+            <a href="./topic05/" class="article-item">
+                <div class="article-number">TOPIC 05</div>
+                <h3 class="article-title">행렬 곱셈은 왜 저렇게 복잡해?</h3>
+                <p class="article-desc">Q. 그냥 같은 자리끼리 곱하면 안 돼?</p>
+            </a>
+
+            <a href="./topic06/" class="article-item">
+                <div class="article-number">TOPIC 06</div>
+                <h3 class="article-title">차원이 뭐야?</h3>
+                <p class="article-desc">Q. 3차원까지는 아는데 784차원은 뭐야?</p>
+            </a>
+
+            <a href="./topic07/" class="article-item">
+                <div class="article-number">TOPIC 07</div>
+                <h3 class="article-title">미분이 AI에 왜 나와?</h3>
+                <p class="article-desc">Q. 기울기가 학습이랑 무슨 상관이야?</p>
+            </a>
+
+            <a href="./topic08/" class="article-item">
+                <div class="article-number">TOPIC 08</div>
+                <h3 class="article-title">경사하강법이 뭐야?</h3>
+                <p class="article-desc">Q. 산을 내려간다는 비유는 무슨 뜻이야?</p>
+            </a>
+
+            <a href="./topic09/" class="article-item">
+                <div class="article-number">TOPIC 09</div>
+                <h3 class="article-title">손실함수가 뭐길래 줄여야 해?</h3>
+                <p class="article-desc">Q. 오차를 어떻게 숫자로 표현해?</p>
+            </a>
+
+            <a href="./topic10/" class="article-item">
+                <div class="article-number">TOPIC 10</div>
+                <h3 class="article-title">확률은 AI랑 무슨 관계야?</h3>
+                <p class="article-desc">Q. AI가 확률로 예측한다는 게 뭐야?</p>
+            </a>
+
+            <a href="./topic11/" class="article-item">
+                <div class="article-number">TOPIC 11</div>
+                <h3 class="article-title">통계는 왜 배워야 해?</h3>
+                <p class="article-desc">Q. 평균이랑 분산이 AI에 어떻게 쓰여?</p>
+            </a>
+
+            <a href="./topic12/" class="article-item">
+                <div class="article-number">TOPIC 12</div>
+                <h3 class="article-title">정규분포가 왜 중요해?</h3>
+                <p class="article-desc">Q. 종 모양 그래프가 왜 자주 나와?</p>
+            </a>
+
+            <a href="./topic13/" class="article-item">
+                <div class="article-number">TOPIC 13</div>
+                <h3 class="article-title">소프트맥스가 뭐야?</h3>
+                <p class="article-desc">Q. 숫자를 확률로 어떻게 바꿔?</p>
+            </a>
+
+            <a href="./topic14/" class="article-item">
+                <div class="article-number">TOPIC 14</div>
+                <h3 class="article-title">로그는 어디에 쓰여?</h3>
+                <p class="article-desc">Q. 곱셈을 덧셈으로 바꾸면 뭐가 좋은데?</p>
+            </a>
+
+            <a href="./topic15/" class="article-item">
+                <div class="article-number">TOPIC 15</div>
+                <h3 class="article-title">왜 수식이 이렇게 복잡해 보여?</h3>
+                <p class="article-desc">Q. 시그마, 델타 기호는 뭐야?</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI는 프로그래밍이랑 뭐가 다를까? - Section 1</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #4CAF50;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e8f5e9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #c8e6c9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #2e7d32;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #c8e6c9; }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #4CAF50; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 1</a>
+            <span>/</span>
+            Topic 05
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 05</div>
+            <h1>AI는 프로그래밍이랑 뭐가 다를까?</h1>
+            <p>Q. if-else로 다 만들면 안 돼?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 규칙 vs 학습</h2>
+
+            <div class="chat">
+                <div class="q">그냥 if-else로 다 코딩하면 안 돼? 왜 AI를 써?</div>
+                <div class="a">
+                    <p>좋은 질문이야. 먼저 예시를 볼게:</p>
+                </div>
+            </div>
+
+            <div class="code-block">if-else로 스팸 필터 만들기:
+
+if "대출" in 메일:
+    return "스팸"
+if "무료" in 메일:
+    return "스팸"
+if "$$$" in 메일:
+    return "스팸"
+
+문제 1: 새 패턴 나오면?
+→ "무이자", "공짜", "💰" 같은 거 또 추가해야 함
+
+문제 2: 정상 메일도 걸릴 수 있음
+→ "은행 대출 문의드립니다" ← 정상 메일인데 스팸 처리됨
+
+문제 3: 조합 폭발
+→ 단어 조합이 무한대로 늘어남
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">if-else는 "규칙"을 사람이 직접 정해.</span></p>
+                    <p><span class="highlight">AI는 "패턴"을 데이터에서 알아서 찾아.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 명시적 vs 암묵적</h2>
+
+            <div class="chat">
+                <div class="q">그럼 AI는 어떻게 다른데?</div>
+                <div class="a">
+                    <p>같은 스팸 필터를 AI로 만들면:</p>
+                </div>
+            </div>
+
+            <div class="code-block">AI 방식:
+
+1. 스팸 메일 1만 개 준비
+2. 정상 메일 1만 개 준비
+3. AI한테 보여줌
+
+AI: "분석 완료!"
+   - '긴급', '클릭', '!!!' 많으면 스팸 확률 ↑
+   - 발신자가 친구 목록에 있으면 정상 확률 ↑
+   - 이미지만 있고 텍스트 없으면 스팸 확률 ↑
+   - 기타 수백 가지 패턴 자동 발견
+
+→ 사람이 규칙 안 정해도 됨
+→ 새 패턴도 알아서 학습
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>핵심 차이:</strong></p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th></th>
+                    <th>일반 프로그래밍</th>
+                    <th>AI</th>
+                </tr>
+                <tr>
+                    <td><strong>방식</strong></td>
+                    <td>명시적 규칙</td>
+                    <td>암묵적 패턴</td>
+                </tr>
+                <tr>
+                    <td><strong>누가 정해?</strong></td>
+                    <td>사람이 코딩</td>
+                    <td>AI가 학습</td>
+                </tr>
+                <tr>
+                    <td><strong>새 상황</strong></td>
+                    <td>코드 수정 필요</td>
+                    <td>자동 적응</td>
+                </tr>
+                <tr>
+                    <td><strong>복잡도</strong></td>
+                    <td>단순한 규칙</td>
+                    <td>복잡한 패턴</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 설명 가능 vs 블랙박스</h2>
+
+            <div class="chat">
+                <div class="q">if-else는 명확하잖아. AI는 왜 그렇게 판단했는지 알 수 있어?</div>
+                <div class="a">
+                    <p><span class="warning">여기가 AI의 단점이야.</span></p>
+                    <p><span class="highlight">AI는 "블랙박스"야. 왜 그렇게 했는지 설명이 어려워.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">일반 프로그래밍:
+
+Q. 왜 이 메일을 스팸 처리했어?
+A. 코드 3번째 줄: if "대출" in 메일 ← 이거 때문
+
+→ 명확하게 설명 가능
+
+
+AI:
+
+Q. 왜 이 메일을 스팸 처리했어?
+A. 음... 파라미터 12,456번이 0.73이고,
+   레이어 5에서 활성화가...
+
+→ 설명 불가능 (또는 매우 복잡)
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>이게 문제가 될 때:</strong></p>
+                    <p>• 의료: "왜 암이라고 진단했어?" → 설명 필요</p>
+                    <p>• 금융: "왜 대출 거절했어?" → 법적으로 설명 의무</p>
+                    <p>• 자율주행: "왜 브레이크 밟았어?" → 사고 분석 필요</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 언제 뭘 써야 해?</h2>
+
+            <div class="chat">
+                <div class="q">그럼 언제는 일반 프로그래밍, 언제는 AI를 써?</div>
+                <div class="a">
+                    <p><span class="key-point">규칙이 명확하면 프로그래밍, 복잡하면 AI</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">일반 프로그래밍 쓸 때:
+
+✅ 세금 계산기
+   → 규칙 명확 (소득의 X%)
+
+✅ 은행 이자 계산
+   → 공식 정해져 있음
+
+✅ 신호등 시스템
+   → 빨강 = 정지, 명확함
+
+✅ 재고 관리 시스템
+   → if 재고 < 10: 발주
+
+
+AI 쓸 때:
+
+✅ 얼굴 인식
+   → "얼굴인지" 규칙으로 정의 불가능
+
+✅ 음성 인식
+   → 사람마다 억양 다름, 규칙화 불가
+
+✅ 번역
+   → 문맥 이해 필요, 규칙 너무 복잡
+
+✅ 추천 시스템
+   → 취향은 패턴이지 규칙 아님
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 하이브리드 접근</h2>
+
+            <div class="chat">
+                <div class="q">둘 중 하나만 써야 해?</div>
+                <div class="a">
+                    <p><span class="warning">아니야!</span></p>
+                    <p><span class="key-point">실전에서는 둘을 섞어서 써.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">실전 사례: 자율주행
+
+1. 카메라 이미지 인식 = AI
+   → "저건 사람이야, 저건 차야"
+
+2. 속도 계산 = 프로그래밍
+   → v = d / t (거리 / 시간)
+
+3. 브레이크 제어 = 프로그래밍
+   → if 장애물_거리 < 5m: 급정지
+
+4. 경로 최적화 = AI
+   → 교통 패턴 학습
+
+
+실전 사례: 게임 AI
+
+1. 적 발견 = 프로그래밍
+   → if 플레이어_거리 < 10m: 발견
+
+2. 행동 선택 = AI
+   → 상황 보고 공격/도망 판단
+
+3. 체력 계산 = 프로그래밍
+   → HP -= 데미지
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. AI도 프로그래밍이야</h2>
+
+            <div class="chat">
+                <div class="q">그럼 AI는 프로그래밍이 아닌 거야?</div>
+                <div class="a">
+                    <p><span class="warning">오해야!</span></p>
+                    <p><span class="highlight">AI도 프로그래밍이야. 다만 "어떻게" 프로그래밍하느냐가 다른 거지.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">일반 프로그래밍:
+
+"이렇게 해라"를 직접 코딩
+→ if, else, for, while 등
+
+
+AI 프로그래밍:
+
+"이런 결과를 원한다"만 지정
+→ 과정은 AI가 알아서 학습
+
+예시:
+일반: "3보다 크면 'big', 아니면 'small'"
+AI: "입력 [1,2,3,4,5], 출력 [small, small, small, big, big]"
+    → AI가 알아서 규칙 찾아냄
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>결론:</strong></p>
+                    <p>AI도 프로그래밍의 한 방법이야.</p>
+                    <p>다만 <span class="highlight">"규칙 기반"이 아니라 "데이터 기반"</span>인 거지.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>규칙 vs 패턴</strong> - 프로그래밍은 규칙 명시, AI는 패턴 학습</li>
+                <li><strong>명시적 vs 암묵적</strong> - if-else는 명확, AI는 블랙박스</li>
+                <li><strong>상황에 맞게</strong> - 간단하면 프로그래밍, 복잡하면 AI</li>
+                <li><strong>하이브리드</strong> - 실전에서는 둘을 섞어서 사용</li>
+                <li><strong>AI도 프로그래밍</strong> - 방법이 다를 뿐, 둘 다 프로그래밍</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic04/">← 이전: AI, 머신러닝, 딥러닝 뭐가 달라?</a>
+            <a href="../topic06/">다음: 왜 요즘 갑자기 AI가 난리야? →</a>
+        </div>
+    </div>
+</body>
+</html>

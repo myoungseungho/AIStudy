@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로봇도 강화학습으로 배워? - Section 7</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF5722;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF5722;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #ffebe9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #ffccbc;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #d84315;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #FF5722 0%, #FF7043 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #ffccbc; }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #FF5722; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 7</a>
+            <span>/</span>
+            Topic 15
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 15</div>
+            <h1>로봇도 강화학습으로 배워?</h1>
+            <p>Q. 실제 세계에서도 시행착오 학습 가능해?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 로봇 학습의 어려움</h2>
+
+            <div class="chat">
+                <div class="q">로봇도 강화학습으로 학습할 수 있어?</div>
+                <div class="a">
+                    <p><span class="key-point">가능하지만, 게임보다 훨씬 어려워.</span></p>
+                    <p>실제 세계는 시뮬레이터와 완전히 다르거든.</p>
+                </div>
+            </div>
+
+            <div class="code-block">게임 vs 로봇:
+
+게임 (Dota 2, 바둑):
+✅ 빠른 시뮬레이션 (초당 수천 게임)
+✅ 병렬 학습 (수백 개 동시)
+✅ 무료 (소프트웨어)
+✅ 안전 (가상 환경)
+✅ 리셋 간단 (재시작 버튼)
+
+로봇 (실제 세계):
+❌ 느린 학습 (실시간만)
+❌ 병렬 어려움 (로봇 비쌈)
+❌ 비용 높음 (하드웨어)
+❌ 위험 (고장, 파손)
+❌ 리셋 복잡 (수동 개입)</div>
+
+            <div class="chat">
+                <div class="q">그럼 어떻게 학습해?</div>
+                <div class="a">
+                    <p>두 가지 접근이 있어.</p>
+                    <p><span class="highlight">1. 시뮬레이터에서 학습 → 실제 로봇 전이</span></p>
+                    <p><span class="highlight">2. 실제 로봇에서 직접 학습 (느리지만 확실)</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. Sim-to-Real (시뮬에서 실제로)</h2>
+
+            <div class="chat">
+                <div class="q">Sim-to-Real이 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">시뮬레이터에서 학습 → 실제 로봇에 적용</span></p>
+                    <p>가장 실용적인 방법이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Sim-to-Real 과정:
+
+1단계: 물리 시뮬레이터 구축
+   → MuJoCo, PyBullet, Isaac Gym
+   → 로봇 물리 모델링
+   → 중력, 마찰, 관성 등
+
+2단계: 시뮬레이터에서 학습
+   → 수백만 번 시행착오
+   → 빠른 병렬 학습
+   → 정책 획득
+
+3단계: 도메인 랜덤화
+   → 시뮬레이터 파라미터 변화
+   → 마찰 계수 랜덤
+   → 질량 랜덤
+   → "실제와 다를 수 있다" 가정
+
+4단계: 실제 로봇 전이
+   → 학습된 정책 적용
+   → 미세 조정
+   → 실전 배포</div>
+
+            <div class="code-block">예: 로봇 손 (OpenAI Dactyl)
+
+목표: 루빅스 큐브 조작
+
+시뮬레이터 학습:
+→ 100년치 경험 (3개월 학습)
+→ 도메인 랜덤화 적용
+  - 큐브 크기 변화
+  - 마찰 계수 변화
+  - 손가락 길이 변화
+
+실제 로봇:
+→ 시뮬에서 학습한 정책 적용
+→ 성공! 큐브 조작 가능
+→ 때때로 큐브 회전도 성공
+
+→ Sim-to-Real 성공 사례</div>
+
+            <div class="chat">
+                <div class="q">도메인 랜덤화가 왜 필요해?</div>
+                <div class="a">
+                    <p><span class="highlight">시뮬과 실제의 차이를 극복</span>하기 위해서야.</p>
+                    <p>다양한 환경에서 학습하면 <strong>실제 세계에 강건</strong>해져.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 실제 로봇 학습</h2>
+
+            <div class="chat">
+                <div class="q">실제 로봇으로 직접 학습할 수는 없어?</div>
+                <div class="a">
+                    <p>가능해. 하지만 <span class="warning">시간과 비용이 엄청나</span>.</p>
+                </div>
+            </div>
+
+            <div class="code-block">실제 로봇 학습 사례:
+
+Google의 로봇 팔 (2016):
+
+과제: 물건 잡기
+로봇: 14대 병렬
+학습 시간: 3개월
+시도 횟수: 80만 번
+
+결과:
+→ 96% 성공률
+→ 다양한 물체 잡기 가능
+→ 새로운 물체도 일반화
+
+
+Berkeley의 로봇 (2018):
+
+과제: 천 접기
+학습: 실제 로봇만
+시간: 수개월
+
+결과:
+→ 다양한 천 접기 성공
+→ 하지만 학습 시간 너무 김</div>
+
+            <div class="code-block">실제 학습의 문제:
+
+1. 느린 속도
+   → 실시간만 가능
+   → 하루 100회 정도
+   → 수개월 소요
+
+2. 로봇 마모
+   → 모터 수명
+   → 센서 고장
+   → 유지보수 비용
+
+3. 안전 문제
+   → 예측 못한 동작
+   → 주변 파손
+   → 사람 위험
+
+4. 수동 개입
+   → 매번 리셋 필요
+   → 물체 재배치
+   → 관리자 필요
+
+→ 매우 비실용적</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">그래서 대부분 Sim-to-Real을 선호</span>해.</p>
+                    <p>시뮬에서 대부분 학습하고, <strong>실제는 미세조정</strong>만 해.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 성공 사례들</h2>
+
+            <div class="chat">
+                <div class="q">로봇 강화학습 성공 사례는?</div>
+                <div class="a">
+                    <p>점점 더 인상적인 결과들이 나오고 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">1. Boston Dynamics (Atlas)
+
+과제: 파쿠르, 백플립
+방법: 시뮬레이터 + 강화학습 + 수동 조정
+결과:
+→ 장애물 뛰어넘기
+→ 공중제비
+→ 계단 오르기
+
+→ 일부 강화학습, 많은 전통 제어</div>
+
+            <div class="code-block">2. ANYmal (ETH Zurich)
+
+과제: 험지 보행
+방법: PPO + Sim-to-Real
+결과:
+→ 울퉁불퉁한 지형
+→ 계단, 장애물
+→ 강건한 보행
+
+→ 순수 강화학습 성공</div>
+
+            <div class="code-block">3. Cassie (Agility Robotics)
+
+과제: 이족 보행
+방법: 강화학습
+결과:
+→ 5km 주행 기록
+→ 계단 오르기
+→ 외부 충격 회복
+
+→ 강화학습으로 균형 제어</div>
+
+            <div class="code-block">4. 산업용 로봇 팔
+
+과제: 물건 집기, 분류
+회사: Covariant, Osaro
+방법: 강화학습 + 컴퓨터 비전
+
+결과:
+→ 창고 자동화
+→ 다양한 물체 처리
+→ 실제 상용화!
+
+→ 실제 비즈니스 적용</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 로봇 학습의 최신 트렌드</h2>
+
+            <div class="chat">
+                <div class="q">요즘은 어떤 연구가 진행돼?</div>
+                <div class="a">
+                    <p>몇 가지 흥미로운 방향이 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">1. 대규모 병렬 시뮬레이션
+
+Isaac Gym (NVIDIA):
+→ GPU로 수천 개 로봇 동시 시뮬
+→ 초당 100만 프레임
+→ 몇 분 만에 학습
+
+효과:
+→ 학습 속도 100배 향상
+→ Sim-to-Real 격차 감소</div>
+
+            <div class="code-block">2. Foundation Models for Robotics
+
+아이디어:
+→ 대규모 로봇 데이터 수집
+→ 범용 로봇 모델 학습
+→ 새 과제에 빠른 적응
+
+예: RT-2 (Google)
+→ 언어 모델 + 로봇 제어
+→ "빨간 사과 집어줘" 이해
+→ 시각-언어-행동 통합</div>
+
+            <div class="code-block">3. Offline RL (오프라인 강화학습)
+
+아이디어:
+→ 기존 데이터셋 재사용
+→ 새로운 시행착오 없이 학습
+→ 비용 절감
+
+효과:
+→ 안전 (실제 실험 불필요)
+→ 데이터 재활용
+→ 빠른 프로토타이핑</div>
+
+            <div class="code-block">4. Imitation Learning + RL
+
+아이디어:
+→ 먼저 인간 시연 학습 (Imitation)
+→ 그 다음 강화학습으로 개선
+
+장점:
+→ 빠른 부트스트래핑
+→ 안전한 초기 정책
+→ 더 나은 최종 성능
+
+예: GAIL, IRL, DAgger</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 미래 전망</h2>
+
+            <div class="chat">
+                <div class="q">로봇 강화학습의 미래는?</div>
+                <div class="a">
+                    <p>빠르게 발전하고 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">가까운 미래 (1-5년):
+
+1. 창고 자동화
+   → 물류 로봇 대량 배치
+   → 강화학습 기반 제어
+   → 이미 상용화 시작
+
+2. 가정용 로봇
+   → 간단한 집안일
+   → 강화학습으로 적응
+   → 개인화된 행동
+
+3. 농업 로봇
+   → 수확, 선별
+   → 다양한 환경 대응</div>
+
+            <div class="code-block">먼 미래 (5-20년):
+
+1. 범용 휴머노이드
+   → 인간처럼 다양한 작업
+   → 강화학습 + Foundation Model
+   → 자연스러운 상호작용
+
+2. 자율 제조
+   → 공장 전체 자동화
+   → 적응형 생산
+   → 유연한 제조
+
+3. 극한 환경 탐사
+   → 재난 구조
+   → 우주 탐사
+   → 심해 탐사
+
+→ 강화학습이 핵심 기술</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">로봇 강화학습은 아직 초기 단계</span>야.</p>
+                    <p>하지만 <strong>가장 실용적이고 영향력 있는 분야</strong>가 될 거야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>어려움</strong> - 실제 세계는 느리고, 비싸고, 위험함</li>
+                <li><strong>Sim-to-Real</strong> - 시뮬에서 학습 → 실제 전이 (주류 방법)</li>
+                <li><strong>도메인 랜덤화</strong> - 다양한 환경 학습으로 강건성 확보</li>
+                <li><strong>성공 사례</strong> - 보행 로봇, 로봇 팔, 창고 자동화</li>
+                <li><strong>미래</strong> - 범용 로봇, 대규모 자동화, Foundation Model</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic14/">← 이전: OpenAI Five는 어떻게 학습했어?</a>
+            <a href="../">목록으로 →</a>
+        </div>
+    </div>
+</body>
+</html>

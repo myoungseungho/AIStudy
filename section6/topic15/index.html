@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM은 뭐야? - Section 6</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #E91E63;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #E91E63;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #fce4ec;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #fce4ec;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c2185b;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #E91E63 0%, #EC407A 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fce4ec;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #E91E63; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 6</a>
+            <span>/</span>
+            Topic 15
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 15</div>
+            <h1>LLM은 뭐야?</h1>
+            <p>Q. 거대 언어 모델이 왜 똑똑해 보여?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. LLM이 뭐야?</h2>
+
+            <div class="chat">
+                <div class="q">LLM(Large Language Model)이 뭔데?</div>
+                <div class="a">
+                    <p><span class="key-point">파라미터가 수십억~조 단위인 거대한 언어 모델</span>이야.</p>
+                    <p>ChatGPT, Claude, Gemini 같은 게 다 LLM이지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">크기 비교:
+
+일반 모델 (2010년대):
+- 파라미터: 수백만~수천만 개
+- 학습 데이터: 수 GB
+- 학습 시간: 며칠
+- 비용: 수백만 원
+
+LLM (2020년대):
+- 파라미터: 수백억~조 개
+- 학습 데이터: 수십 TB
+- 학습 시간: 몇 달
+- 비용: 수백억~수천억 원
+
+비유:
+일반 모델 = 지역 도서관 (책 1만 권)
+LLM = 국회도서관 (책 1천만 권)
+</div>
+
+            <div class="chat">
+                <div class="q">왜 크기가 중요해?</div>
+            </div>
+
+            <div class="code-block">크기의 마법: Scaling Law
+
+발견 (OpenAI, 2020):
+모델 크기 10배 → 성능 일정 비율 향상
+→ 예측 가능한 패턴!
+
+실제 데이터:
+GPT-2 (15억): 텍스트 생성 OK
+GPT-3 (1750억): Few-shot 가능
+GPT-4 (추정 1조+): 추론, 코딩 가능
+
+놀라운 점:
+→ 일정 크기 넘으면 "창발(Emergence)" 현상
+→ 갑자기 새로운 능력이 나타남!
+
+예시:
+- 100억: 기본 대화
+- 500억: 간단한 추론
+- 1000억: 복잡한 추론, 코딩 🎉
+- 1조+: 멀티모달 이해 🎉
+
+→ 크면 클수록 똑똑해짐
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. LLM의 능력들</h2>
+
+            <div class="chat">
+                <div class="q">LLM이 뭘 할 수 있어?</div>
+            </div>
+
+            <div class="code-block">1. In-Context Learning
+
+새로운 것을 학습 없이 배움:
+
+예시:
+"다음 패턴을 찾으세요
+2, 4, 6, 8, ?
+3, 6, 9, 12, ?
+5, 10, 15, 20, ?
+7, 14, 21, 28, ?"
+
+ChatGPT:
+"35입니다. 패턴은 7의 배수입니다."
+
+→ 예시만 보고 패턴 파악!
+→ 추가 학습 없음
+
+
+2. Chain-of-Thought (추론)
+
+단계별로 생각:
+
+질문: "사과 3개가 300원이면 사과 7개는?"
+
+LLM 답변:
+"1단계: 사과 1개 가격 = 300 ÷ 3 = 100원
+2단계: 사과 7개 가격 = 100 × 7 = 700원
+답: 700원"
+
+→ 중간 과정 보여줌
+→ 추론 과정 투명
+
+
+3. Instruction Following
+
+명령 이해:
+
+"다음 문장을 존댓말로 바꿔줘: 너 뭐해?"
+
+ChatGPT:
+"무엇을 하고 계신가요?"
+
+→ 명령 의도 이해
+→ 정확히 수행
+
+
+4. Code Generation
+
+프로그래밍:
+
+"파이썬으로 피보나치 함수 만들어줘"
+
+```python
+def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+```
+
+→ 주석까지 자동 생성
+→ 다양한 언어 지원
+
+
+5. Multimodal Understanding
+
+이미지 + 텍스트:
+
+입력: 사진 + "이게 뭐야?"
+GPT-4: "이것은 황금 리트리버 강아지입니다..."
+
+→ 여러 모달리티 통합 이해
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. LLM 학습 과정</h2>
+
+            <div class="chat">
+                <div class="q">LLM은 어떻게 만들어?</div>
+                <div class="a">
+                    <p>보통 <span class="highlight">3단계 학습</span>을 거쳐.</p>
+                </div>
+            </div>
+
+            <div class="code-block">1단계: Pre-training (사전 학습)
+
+데이터:
+- 인터넷 크롤링 (웹페이지, 위키 등)
+- 책, 논문
+- 코드 (GitHub 등)
+- 총 수십~수백 TB
+
+학습:
+- 다음 단어 예측
+- 수백~수천 개 GPU
+- 몇 달 소요
+- 비용: 수백억 원
+
+결과:
+- 언어의 기본 이해
+- 하지만 대화는 서툴음
+
+
+2단계: Supervised Fine-tuning (SFT)
+
+데이터:
+- 사람이 작성한 대화 예시
+- "질문 → 좋은 답변" 쌍
+- 수만~수십만 개
+
+학습:
+- 좋은 답변 모방
+- 며칠 소요
+- 비용: 수억 원
+
+결과:
+- 대화 형식 학습
+- 하지만 여전히 부족
+
+
+3단계: RLHF (인간 피드백 강화학습)
+
+과정:
+1. 여러 답변 생성
+2. 사람이 평가 (A > B > C)
+3. 높은 평가 받은 답변 방향으로 학습
+4. 반복
+
+학습:
+- 수천 명의 평가자
+- 몇 주 소요
+- 비용: 수십억 원
+
+결과:
+- 유용하고 안전한 답변
+- ChatGPT 수준 완성!
+</div>
+
+            <div class="chat">
+                <div class="q">비용이 어마어마하네?</div>
+            </div>
+
+            <div class="code-block">LLM 개발 비용 (추정):
+
+GPT-3:
+- Pre-training: 120억 원
+- Fine-tuning: 10억 원
+- 총: 130억 원
+
+GPT-4:
+- Pre-training: 1000억+ 원
+- Fine-tuning: 100억 원
+- 총: 1100억+ 원
+
+Google PaLM:
+- 약 500억 원
+
+→ 대기업만 만들 수 있음
+→ 개인/중소기업은 불가능
+
+
+운영 비용도 엄청남:
+ChatGPT 하루 운영비: 약 7억 원 (추정)
+→ 한 달 200억 원!
+→ 사용자가 많아서 비용 분산
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 유명한 LLM들</h2>
+
+            <div class="chat">
+                <div class="q">어떤 LLM들이 있어?</div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>모델</th>
+                    <th>회사</th>
+                    <th>특징</th>
+                </tr>
+                <tr>
+                    <td><strong>GPT-4</strong></td>
+                    <td>OpenAI</td>
+                    <td>가장 강력, 멀티모달</td>
+                </tr>
+                <tr>
+                    <td><strong>Claude</strong></td>
+                    <td>Anthropic</td>
+                    <td>안전성 강조, 긴 문맥</td>
+                </tr>
+                <tr>
+                    <td><strong>Gemini</strong></td>
+                    <td>Google</td>
+                    <td>멀티모달, 통합 생태계</td>
+                </tr>
+                <tr>
+                    <td><strong>LLaMA</strong></td>
+                    <td>Meta</td>
+                    <td>오픈소스, 효율적</td>
+                </tr>
+                <tr>
+                    <td><strong>PaLM</strong></td>
+                    <td>Google</td>
+                    <td>대규모, 연구용</td>
+                </tr>
+                <tr>
+                    <td><strong>Claude</strong></td>
+                    <td>Anthropic</td>
+                    <td>200K 토큰 문맥</td>
+                </tr>
+            </table>
+
+            <div class="code-block">한국어 LLM:
+
+HyperCLOVA X (Naver)
+- 파라미터: 비공개
+- 한국어 특화
+- 네이버 서비스 통합
+
+EXAONE (LG)
+- 파라미터: 약 3000억
+- 한영 이중 언어
+- 기업용
+
+Ko-GPT (KakaoBrain)
+- 파라미터: 60억
+- 오픈소스
+- 연구/교육용
+
+Polyglot-Ko (EleutherAI)
+- 파라미터: 125억
+- 완전 오픈소스
+- 커뮤니티 주도
+
+→ 한국어도 발전 중!
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. LLM의 한계와 미래</h2>
+
+            <div class="chat">
+                <div class="q">LLM도 완벽하진 않겠지?</div>
+                <div class="a">
+                    <p>맞아. <span class="warning">명확한 한계</span>가 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">LLM의 한계:
+
+1. 환각 (Hallucination)
+   - 그럴듯하게 거짓말
+   - "서울타워는 1935년에 건설" ← 거짓
+   - 사실 확인 필수
+
+2. 시간 정보 부족
+   - 학습 데이터 마지막 날짜 이후 모름
+   - "어제 뉴스는?" → 모름
+
+3. 계산 약함
+   - 복잡한 수식 계산 실수
+   - "39482 × 28391 = ?" → 틀릴 수 있음
+
+4. 추론 한계
+   - 논리적 추론 완벽하지 않음
+   - 복잡한 논리 문제 실수
+
+5. 편향 (Bias)
+   - 학습 데이터의 편향 반영
+   - 성별, 인종 등 편견 가능
+
+6. 비용
+   - 운영 비용 엄청남
+   - 무료 서비스 지속 어려움
+</div>
+
+            <div class="chat">
+                <div class="q">미래는 어떻게 될 것 같아?</div>
+            </div>
+
+            <div class="code-block">LLM의 미래:
+
+단기 (2024~2025):
+- 더 큰 모델 (10조 파라미터)
+- 더 긴 문맥 (100만 토큰)
+- 더 정확한 추론
+- 비용 감소
+
+중기 (2026~2028):
+- 멀티모달 강화 (텍스트+이미지+영상+음성)
+- 개인화 모델
+- 에이전트 기능 (자율 실행)
+- 전문 분야 특화
+
+장기 (2029~):
+- AGI 수준 접근?
+- 지속적 학습 가능
+- 실시간 정보 통합
+- 더 적은 비용
+
+
+우려 사항:
+- 일자리 대체
+- 가짜 정보 생성
+- 프라이버시 침해
+- 에너지 소비
+
+→ 기술 발전 + 윤리적 사용 병행 필요
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>Section 6 끝! <span class="key-point">NLP의 여정</span>을 마쳤어.</p>
+                    <p>토큰화 → 임베딩 → RNN → Transformer → BERT → GPT → LLM</p>
+                    <p>이제 ChatGPT가 어떻게 작동하는지 이해했지? 축하해! 🎉</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>LLM</strong> - 수백억~조 단위 파라미터의 거대 언어 모델</li>
+                <li><strong>Scaling Law</strong> - 크기 증가 → 성능 향상, 창발 현상 발생</li>
+                <li><strong>3단계 학습</strong> - Pre-training → SFT → RLHF</li>
+                <li><strong>능력</strong> - 추론, 코딩, 멀티모달, Few-shot 등</li>
+                <li><strong>현실</strong> - 강력하지만 환각, 편향 등 한계 존재</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic14/">← 이전: GPT는 BERT랑 뭐가 달라?</a>
+            <a href="../">목록으로 →</a>
+        </div>
+    </div>
+</body>
+</html>

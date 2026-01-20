@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSTM은 뭐가 다를까? - Section 6</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #E91E63;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #E91E63;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #fce4ec;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #fce4ec;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c2185b;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #E91E63 0%, #EC407A 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fce4ec;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #E91E63; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 6</a>
+            <span>/</span>
+            Topic 08
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 08</div>
+            <h1>LSTM은 뭐가 다를까?</h1>
+            <p>Q. 장기 기억을 어떻게 유지해?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. RNN의 문제를 해결하다</h2>
+
+            <div class="chat">
+                <div class="q">LSTM이 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">Long Short-Term Memory</span>의 약자야.</p>
+                    <p>말 그대로 <span class="highlight">장기 기억을 유지할 수 있는</span> RNN의 개선 버전이지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 뇌의 기억 시스템
+
+일반 RNN:
+단기 기억만 가능
+"5분 전에 뭐 먹었지?" → 기억
+"어제 뭐 먹었지?" → 기억 안 남
+
+LSTM:
+장기 + 단기 기억 모두 가능
+"5분 전에 뭐 먹었지?" → 기억
+"어제 뭐 먹었지?" → 기억!
+"1주일 전에 뭐 먹었지?" → 중요하면 기억!
+
+→ 중요한 정보는 오래 보관
+→ 중요하지 않은 정보는 빨리 잊음
+</div>
+
+            <div class="chat">
+                <div class="q">어떻게 그게 가능해?</div>
+                <div class="a">
+                    <p><span class="highlight">게이트(Gate)</span>라는 장치를 사용해.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 세 개의 게이트</h2>
+
+            <div class="chat">
+                <div class="q">게이트가 뭐야?</div>
+                <div class="a">
+                    <p>정보를 <span class="key-point">통과시킬지 막을지 결정하는 문</span>이라고 생각하면 돼.</p>
+                </div>
+            </div>
+
+            <div class="code-block">LSTM의 3가지 게이트:
+
+1. Forget Gate (망각 게이트)
+   역할: 뭘 잊을지 결정
+   "이 정보는 더 이상 필요 없어!" → 삭제
+
+2. Input Gate (입력 게이트)
+   역할: 새로운 정보 중 뭘 저장할지 결정
+   "이 정보는 중요해!" → 저장
+
+3. Output Gate (출력 게이트)
+   역할: 현재 기억 중 뭘 출력할지 결정
+   "지금 필요한 정보만 꺼내자!" → 출력
+
+
+비유: 서랍장 정리
+- Forget Gate = 필요 없는 물건 버리기
+- Input Gate = 새 물건 중 중요한 것만 넣기
+- Output Gate = 지금 필요한 물건만 꺼내기
+</div>
+
+            <div class="chat">
+                <div class="q">구체적인 예시를 보여줘.</div>
+            </div>
+
+            <div class="code-block">문장 처리 예시:
+
+문장: "나는 어제 친구를 만났다. 그 친구는 의사다."
+
+t=1: "나는" 입력
+→ Input Gate: "주어 정보 저장" ✓
+→ 기억: [주어=나]
+
+t=2: "어제" 입력
+→ Input Gate: "시간 정보 저장" ✓
+→ 기억: [주어=나, 시간=어제]
+
+t=3: "친구를" 입력
+→ Input Gate: "목적어 저장" ✓
+→ 기억: [주어=나, 시간=어제, 목적어=친구]
+
+t=4: "만났다" 입력
+→ Input Gate: "동사 저장" ✓
+→ Output Gate: 문장 완성, 출력!
+
+t=5: "그" 입력
+→ "그" = 이전에 나온 것 가리킴
+→ Forget Gate: "어제" 정보 삭제 (덜 중요)
+→ 기억: [목적어=친구, ...]
+
+t=6: "친구는" 입력
+→ "친구"가 다시 주어로!
+→ Forget Gate: 이전 주어 "나" 삭제
+→ Input Gate: 새 주어 "친구" 저장
+→ 기억: [주어=친구, ...]
+
+→ 중요한 정보("친구")는 계속 유지!
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. Cell State - 장기 기억 저장소</h2>
+
+            <div class="chat">
+                <div class="q">장기 기억은 어디에 저장해?</div>
+                <div class="a">
+                    <p><span class="key-point">Cell State(셀 상태)</span>라는 별도 저장소를 써.</p>
+                </div>
+            </div>
+
+            <div class="code-block">RNN vs LSTM 구조:
+
+RNN:
+Hidden State만 있음
+→ 모든 정보를 여기에 저장
+→ 계속 덮어쓰기됨
+→ 오래된 정보 손실!
+
+    input(t) → [RNN] → output(t)
+                ↑↓
+           hidden state
+
+
+LSTM:
+Cell State + Hidden State 둘 다 있음
+→ Cell State: 장기 기억 (중요한 정보)
+→ Hidden State: 단기 기억 (최근 정보)
+→ 분리해서 관리!
+
+    input(t) → [LSTM] → output(t)
+                ↑↓↓
+          cell state (장기)
+          hidden state (단기)
+
+
+비유:
+RNN = 단기 메모장 (금방 지워짐)
+LSTM = 단기 메모장 + 장기 노트북
+</div>
+
+            <div class="chat">
+                <div class="q">Cell State는 어떻게 업데이트해?</div>
+            </div>
+
+            <div class="code-block">Cell State 업데이트 과정:
+
+1. 이전 Cell State 가져오기
+   C(t-1) = [0.5, 0.3, 0.8, ...]
+
+2. Forget Gate로 불필요한 정보 삭제
+   Forget = [0.2, 1.0, 0.1, ...]  (0~1 사이 값)
+   C(t-1) × Forget = [0.1, 0.3, 0.08, ...]
+   → 첫 번째 위치 값 줄어듦 (잊음)
+   → 두 번째 위치 값 유지 (기억)
+
+3. Input Gate로 새 정보 추가
+   NewInfo = [0.7, 0.0, 0.5, ...]
+   Input = [0.9, 0.1, 0.8, ...]
+   NewInfo × Input = [0.63, 0.0, 0.4, ...]
+   → 중요한 새 정보만 선택
+
+4. 합치기
+   C(t) = [0.1, 0.3, 0.08] + [0.63, 0.0, 0.4]
+        = [0.73, 0.3, 0.48, ...]
+
+→ 오래된 중요한 정보 + 새로운 중요한 정보
+→ 장기 기억 유지!
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. LSTM vs RNN 성능 비교</h2>
+
+            <div class="chat">
+                <div class="q">LSTM이 진짜 더 좋아?</div>
+                <div class="a">
+                    <p>응! 특히 <span class="highlight">긴 시퀀스</span>에서 훨씬 좋아.</p>
+                </div>
+            </div>
+
+            <div class="code-block">성능 비교:
+
+짧은 문장 (5~10 단어):
+RNN: ✓ 잘 작동
+LSTM: ✓ 잘 작동 (비슷함)
+
+중간 문장 (10~30 단어):
+RNN: △ 가끔 기억 상실
+LSTM: ✓ 안정적
+
+긴 문장 (30단어 이상):
+RNN: ✗ 앞부분 기억 못 함
+LSTM: ✓ 장기 의존성 학습 가능
+
+매우 긴 시퀀스 (100단어 이상):
+RNN: ✗✗ 사용 불가
+LSTM: △ 가능하지만 느림
+
+
+실제 성능 (영어 언어 모델링):
+RNN: Perplexity 120 (나쁨)
+LSTM: Perplexity 80 (좋음)
+→ 숫자 낮을수록 좋음
+</div>
+
+            <div class="chat">
+                <div class="q">단점은 없어?</div>
+            </div>
+
+            <div class="code-block">LSTM의 단점:
+
+1. 복잡하다
+   - 게이트가 3개
+   - 파라미터가 RNN의 4배
+   - 이해하기 어려움
+
+2. 느리다
+   - 계산이 많아서 학습 느림
+   - RNN보다 3~4배 더 오래 걸림
+
+3. 메모리 많이 씀
+   - Cell State + Hidden State 둘 다 저장
+   - GPU 메모리 부담
+
+4. 여전히 순차 처리
+   - 병렬 처리 불가
+   - 긴 시퀀스는 시간 오래 걸림
+
+
+→ 이런 문제들 때문에 요즘은 Transformer를 더 많이 씀
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. GRU - LSTM의 간소화 버전</h2>
+
+            <div class="chat">
+                <div class="q">LSTM 말고 다른 개선 버전은 없어?</div>
+                <div class="a">
+                    <p><span class="highlight">GRU(Gated Recurrent Unit)</span>가 있어.</p>
+                    <p>LSTM을 단순화한 버전이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">LSTM vs GRU:
+
+LSTM:
+- 게이트 3개: Forget, Input, Output
+- Cell State + Hidden State 분리
+- 복잡하지만 강력
+
+GRU:
+- 게이트 2개: Reset, Update
+- Cell State 없음 (Hidden State만)
+- 단순하고 빠름
+
+
+성능:
+- 대부분의 경우 LSTM ≈ GRU
+- 작은 데이터: GRU가 약간 좋음
+- 큰 데이터: LSTM이 약간 좋음
+
+속도:
+- GRU가 20~30% 더 빠름
+- 메모리도 적게 씀
+
+
+실전:
+→ 빠르게 프로토타입: GRU
+→ 최고 성능 필요: LSTM
+→ 최신 프로젝트: Transformer
+</div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>LSTM</strong> - 장기 기억을 유지할 수 있는 RNN 개선 버전</li>
+                <li><strong>3개 게이트</strong> - Forget, Input, Output으로 정보 흐름 제어</li>
+                <li><strong>Cell State</strong> - 장기 기억 전용 저장소로 중요 정보 보존</li>
+                <li><strong>장점</strong> - 긴 시퀀스에서도 의존성 학습 가능</li>
+                <li><strong>단점</strong> - 복잡하고 느림, 최근엔 Transformer가 대세</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic07/">← 이전: RNN은 왜 필요해?</a>
+            <a href="../topic09/">다음: Seq2Seq가 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section 4: 딥러닝과 신경망</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* 네비게이션 */
+        .breadcrumb {
+            margin-bottom: 40px;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb span {
+            color: #999;
+            margin: 0 8px;
+        }
+
+        /* 헤더 */
+        .header {
+            margin-bottom: 48px;
+        }
+
+        .header-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #111;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .section-badge {
+            display: inline-block;
+            background: #9C27B0;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        /* 글 목록 */
+        .article-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .article-item {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #eee;
+            border-left: 4px solid #9C27B0;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .article-item:hover {
+            border-color: #9C27B0;
+            box-shadow: 0 4px 12px rgba(156, 39, 176, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .article-number {
+            font-size: 0.75rem;
+            color: #9C27B0;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .article-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #111;
+        }
+
+        .article-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../">AI 공부</a>
+            <span>/</span>
+            Section 4
+        </nav>
+
+        <header class="header">
+            <div class="section-badge">Section 4</div>
+            <div class="header-icon">🧠</div>
+            <h1>딥러닝과 신경망</h1>
+            <p>신경망의 구조와 작동 원리, 그리고 딥러닝의 핵심 개념</p>
+        </header>
+
+        <div class="article-list">
+            <a href="./topic01/" class="article-item">
+                <div class="article-number">TOPIC 01</div>
+                <h3 class="article-title">신경망은 정말 뇌를 닮았어?</h3>
+                <p class="article-desc">Q. 뉴런이랑 퍼셉트론이 같은 거야?</p>
+            </a>
+
+            <a href="./topic02/" class="article-item">
+                <div class="article-number">TOPIC 02</div>
+                <h3 class="article-title">퍼셉트론은 뭐야?</h3>
+                <p class="article-desc">Q. 입력 받아서 출력하는 게 다야?</p>
+            </a>
+
+            <a href="./topic03/" class="article-item">
+                <div class="article-number">TOPIC 03</div>
+                <h3 class="article-title">가중치와 편향은 뭐야?</h3>
+                <p class="article-desc">Q. 학습한다는 게 이 값들을 조정하는 거야?</p>
+            </a>
+
+            <a href="./topic04/" class="article-item">
+                <div class="article-number">TOPIC 04</div>
+                <h3 class="article-title">활성화 함수는 왜 필요해?</h3>
+                <p class="article-desc">Q. 선형 변환만 하면 안 돼?</p>
+            </a>
+
+            <a href="./topic05/" class="article-item">
+                <div class="article-number">TOPIC 05</div>
+                <h3 class="article-title">ReLU가 뭐야?</h3>
+                <p class="article-desc">Q. 음수를 0으로 만들면 뭐가 좋은데?</p>
+            </a>
+
+            <a href="./topic06/" class="article-item">
+                <div class="article-number">TOPIC 06</div>
+                <h3 class="article-title">층을 왜 여러 개 쌓아?</h3>
+                <p class="article-desc">Q. 한 층으로 부족해?</p>
+            </a>
+
+            <a href="./topic07/" class="article-item">
+                <div class="article-number">TOPIC 07</div>
+                <h3 class="article-title">딥러닝은 왜 '딥'이야?</h3>
+                <p class="article-desc">Q. 층이 깊다는 게 뭐가 다른데?</p>
+            </a>
+
+            <a href="./topic08/" class="article-item">
+                <div class="article-number">TOPIC 08</div>
+                <h3 class="article-title">역전파가 뭐야?</h3>
+                <p class="article-desc">Q. 오차를 뒤로 전달한다는 게 무슨 뜻이야?</p>
+            </a>
+
+            <a href="./topic09/" class="article-item">
+                <div class="article-number">TOPIC 09</div>
+                <h3 class="article-title">기울기 소실 문제는 뭐야?</h3>
+                <p class="article-desc">Q. 층이 깊으면 왜 학습이 안 돼?</p>
+            </a>
+
+            <a href="./topic10/" class="article-item">
+                <div class="article-number">TOPIC 10</div>
+                <h3 class="article-title">배치 정규화가 뭐야?</h3>
+                <p class="article-desc">Q. 데이터를 왜 정규화해?</p>
+            </a>
+
+            <a href="./topic11/" class="article-item">
+                <div class="article-number">TOPIC 11</div>
+                <h3 class="article-title">드롭아웃은 왜 해?</h3>
+                <p class="article-desc">Q. 뉴런을 꺼버리면 성능이 좋아진다고?</p>
+            </a>
+
+            <a href="./topic12/" class="article-item">
+                <div class="article-number">TOPIC 12</div>
+                <h3 class="article-title">학습률은 어떻게 정해?</h3>
+                <p class="article-desc">Q. 너무 크면? 너무 작으면?</p>
+            </a>
+
+            <a href="./topic13/" class="article-item">
+                <div class="article-number">TOPIC 13</div>
+                <h3 class="article-title">옵티마이저가 뭐야?</h3>
+                <p class="article-desc">Q. SGD, Adam은 뭐가 달라?</p>
+            </a>
+
+            <a href="./topic14/" class="article-item">
+                <div class="article-number">TOPIC 14</div>
+                <h3 class="article-title">에폭, 배치, 이터레이션이 뭐야?</h3>
+                <p class="article-desc">Q. 데이터를 몇 번 학습시켜?</p>
+            </a>
+
+            <a href="./topic15/" class="article-item">
+                <div class="article-number">TOPIC 15</div>
+                <h3 class="article-title">GPU는 왜 필요해?</h3>
+                <p class="article-desc">Q. CPU로는 안 돼?</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

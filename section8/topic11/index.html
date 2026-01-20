@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>개인정보와 AI는 어떤 관계야? - Section 8</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #795548;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #795548;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #efebe9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #d7ccc8;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #4e342e;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #795548 0%, #8D6E63 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #d7ccc8;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #795548; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 8</a>
+            <span>/</span>
+            Topic 11
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 11</div>
+            <h1>개인정보와 AI는 어떤 관계야?</h1>
+            <p>Q. 내 데이터는 어디에 쓰이는 거야?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. AI는 내 데이터를 어떻게 쓸까?</h2>
+
+            <div class="chat">
+                <div class="q">AI가 나를 너무 잘 아는 것 같아. 내 정보를 다 보고 있는 거야?</div>
+                <div class="a">
+                    <p><span class="key-point">맞아. AI는 엄청난 양의 개인 데이터를 사용해.</span></p>
+                    <p>검색 기록, 위치, 구매 내역, 좋아요, 심지어 얼굴까지.</p>
+                    <p><strong>AI 성능 = 데이터 양</strong>이니까 기업들은 계속 수집하려 하지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">AI가 수집하는 데이터:
+
+[온라인 행동]
+- 검색어, 클릭한 링크
+- 머문 시간, 스크롤 패턴
+- 구매 내역, 장바구니
+- 좋아요, 댓글, 공유
+
+[위치 정보]
+- GPS 위치 (실시간)
+- 자주 가는 곳 (집, 회사)
+- 이동 패턴, 속도
+
+[생체 정보]
+- 얼굴 (얼굴 인식)
+- 목소리 (음성 비서)
+- 지문 (스마트폰)
+- 걸음걸이 (걸음 수)
+
+[소셜 정보]
+- 친구 관계
+- 대화 내용 (메신저)
+- 사진 속 사람들
+
+[기기 정보]
+- 어떤 앱 설치
+- 언제 사용하는지
+- 배터리, 저장공간
+
+→ 종합하면 "너"에 대한 프로필 완성</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="warning">이 데이터로 AI는 너를 예측</span>해.</p>
+                    <p>뭘 살지, 어디 갈지, 누구와 만날지, 심지어 기분까지.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 데이터 수집의 문제점</h2>
+
+            <div class="chat">
+                <div class="q">그게 뭐가 문제야? 난 숨길 거 없는데?</div>
+                <div class="a">
+                    <p><span class="highlight">"숨길 게 없다"가 문제가 아니야.</span></p>
+                    <p>프라이버시는 기본 권리야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">프라이버시 침해 사례:
+
+1. 동의 없는 수집
+   - 앱이 몰래 위치 추적
+   - 카메라, 마이크 무단 접근
+   - 쿠키로 웹 전체 추적
+
+2. 과도한 수집
+   - 손전등 앱이 연락처 요구
+   - 필요 이상의 데이터 수집
+   - 삭제해도 서버에 남음
+
+3. 제3자 공유
+   - 내 데이터를 다른 회사에 팔기
+   - 광고 회사에 프로필 제공
+   - 정부 요청으로 제공
+
+4. 유출 사고
+   - 해킹으로 데이터 유출
+   - 페이스북 8700만 명 유출 (2018)
+   - 카카오톡 1천만 명 유출 (2023)
+
+5. 악용
+   - 스토킹, 사생활 침해
+   - 신원 도용
+   - 타겟 광고, 조작
+
+6. 감시
+   - 중국 사회 신용 점수
+   - 얼굴 인식으로 실시간 추적
+   - 행동 패턴 분석</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="warning">"지금"은 문제없어도, 나중에 악용될 수 있어.</span></p>
+                    <p>정권이 바뀌거나, 법이 바뀌면?</p>
+                    <p>과거 데이터가 무기가 될 수 있어.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 프라이버시 vs AI 성능 딜레마</h2>
+
+            <div class="chat">
+                <div class="q">그럼 데이터를 안 주면 돼?</div>
+                <div class="a">
+                    <p><span class="highlight">문제는 데이터를 안 주면 AI가 작동 안 해.</span></p>
+                    <p>이게 딜레마야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Trade-off (트레이드오프):
+
+더 많은 데이터 → 더 좋은 AI
+더 적은 데이터 → 프라이버시 보호
+
+--------------------------------------------------
+
+예시 1: 넷플릭스
+
+데이터 많이 줄 때:
+- 시청 기록, 평점, 언제 보는지
+→ 완벽한 추천, 정확한 취향 파악
+
+데이터 안 줄 때:
+- 로그인도 안 함
+→ 추천 X, 인기작만 봄
+
+--------------------------------------------------
+
+예시 2: 구글 지도
+
+데이터 많이 줄 때:
+- 위치 항상 공유
+→ 실시간 교통, 도착 시간 정확, 맞춤 추천
+
+데이터 안 줄 때:
+- 위치 끔
+→ 기본 지도만, 실시간 정보 없음
+
+--------------------------------------------------
+
+예시 3: 의료 AI
+
+데이터 많이 줄 때:
+- 병력, 유전자, 생활습관
+→ 정확한 진단, 맞춤 치료
+
+데이터 안 줄 때:
+- 최소 정보만
+→ 일반적 진단, 정확도 낮음</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">완벽한 균형은 없어.</span></p>
+                    <p>각자 어디까지 공유할지 선택해야 해.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 프라이버시 보호 기술</h2>
+
+            <div class="chat">
+                <div class="q">둘 다 가질 수는 없어? AI 성능도 유지하면서 프라이버시도 보호?</div>
+                <div class="a">
+                    <p>연구자들이 노력하고 있어. <span class="highlight">몇 가지 기술</span>이 있지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">프라이버시 보호 AI 기술:
+
+1. Differential Privacy (차등 프라이버시)
+   - 데이터에 "노이즈" 추가
+   - 전체 통계는 유지, 개인 식별 불가
+   - Apple이 사용 (키보드 학습)
+   → 전체 패턴은 배우되, 개인 정보는 안 드러남
+
+2. Federated Learning (연합 학습)
+   - 데이터를 서버로 안 보냄
+   - 각 기기에서 학습
+   - 모델만 공유
+   → Google 키보드가 사용
+
+3. Homomorphic Encryption (동형 암호)
+   - 데이터를 암호화한 채로 연산
+   - 서버도 내용 못 봄
+   → 아직 느려서 실용화 어려움
+
+4. Synthetic Data (합성 데이터)
+   - 가짜 데이터 생성
+   - 통계적 특성은 유사
+   - 실제 사람 데이터 아님
+   → 테스트, 학습에 사용
+
+5. Data Minimization (최소 수집)
+   - 필요한 것만 수집
+   - 빨리 삭제
+   → GDPR 원칙
+
+6. On-Device Processing (기기 내 처리)
+   - 서버로 안 보내고 폰에서 처리
+   - Apple Face ID (얼굴 데이터 폰에만)
+   → 유출 위험 감소</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이런 기술들이 <strong>어느 정도 균형</strong>을 제공해.</p>
+                    <p>완벽하진 않지만, 발전하고 있어.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 법과 규제</h2>
+
+            <div class="chat">
+                <div class="q">법으로 보호받을 수 있어?</div>
+                <div class="a">
+                    <p>많은 나라가 프라이버시 법을 만들었어.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>법/규제</th>
+                    <th>지역</th>
+                    <th>주요 내용</th>
+                </tr>
+                <tr>
+                    <td><strong>GDPR</strong></td>
+                    <td>EU</td>
+                    <td>동의 필수, 삭제권, 이동권, 설명 권리</td>
+                </tr>
+                <tr>
+                    <td><strong>CCPA</strong></td>
+                    <td>미국 캘리포니아</td>
+                    <td>데이터 판매 거부, 삭제 요청 가능</td>
+                </tr>
+                <tr>
+                    <td><strong>개인정보보호법</strong></td>
+                    <td>한국</td>
+                    <td>동의, 목적 제한, 최소 수집</td>
+                </tr>
+                <tr>
+                    <td><strong>신용정보법</strong></td>
+                    <td>한국</td>
+                    <td>가명 처리, MyData (데이터 이동권)</td>
+                </tr>
+            </table>
+
+            <div class="code-block">GDPR 주요 권리:
+
+1. 알 권리 (Right to be Informed)
+   - 어떤 데이터를 어떻게 쓰는지 알려줘야 함
+
+2. 접근권 (Right of Access)
+   - 내 데이터 복사본 요청 가능
+
+3. 정정권 (Right to Rectification)
+   - 잘못된 데이터 수정 요구
+
+4. 삭제권 (Right to Erasure, "잊힐 권리")
+   - 내 데이터 삭제 요청
+   - 구글 검색 결과에서 제거 가능
+
+5. 이동권 (Right to Data Portability)
+   - 내 데이터를 다른 서비스로 이동
+
+6. 거부권 (Right to Object)
+   - 프로파일링, 자동화 거부
+
+7. 설명 권리
+   - AI 자동 결정에 대한 설명 요구
+
+위반 시: 최대 2천만 유로 or 매출 4% 벌금</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">권리가 있다는 걸 아는 게 중요</span>해.</p>
+                    <p>모르면 행사할 수 없으니까.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 우리가 할 수 있는 것</h2>
+
+            <div class="chat">
+                <div class="q">나는 뭘 할 수 있어?</div>
+                <div class="a">
+                    <p><span class="highlight">많은 걸 할 수 있어!</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">프라이버시 보호 실천법:
+
+[기본 설정]
+- 앱 권한 최소화 (위치, 카메라, 마이크)
+- 불필요한 앱 삭제
+- 자동 업데이트로 보안 패치
+
+[계정 관리]
+- 강력한 비밀번호 (각 사이트마다 다르게)
+- 2단계 인증 (2FA) 활성화
+- 주기적으로 로그인 기록 확인
+
+[웹 브라우징]
+- 시크릿 모드 사용
+- 쿠키 주기적 삭제
+- 추적 차단 (Ghostery, uBlock Origin)
+- VPN 사용 (공공 Wi-Fi에서)
+
+[소셜 미디어]
+- 공개 범위 설정 (친구만)
+- 위치 태그 끄기
+- 민감한 정보 올리지 않기
+- 주기적으로 과거 게시물 삭제
+
+[AI 서비스]
+- 데이터 수집 최소화 설정
+- 개인화 끄기 (정확도 떨어지지만 프라이버시 ↑)
+- 주기적으로 활동 기록 삭제
+
+[이메일/메시지]
+- 의심스러운 링크 클릭 X
+- 개인정보 요구하는 이메일 무시
+- 중요한 건 암호화 (Signal, ProtonMail)
+
+[구글/애플 설정]
+- 위치 기록 끄기
+- 광고 개인화 끄기
+- 활동 기록 자동 삭제 설정 (3개월)
+
+[정기 점검]
+- 3개월마다 앱 권한 검토
+- 사용 안 하는 계정 삭제
+- 데이터 유출 확인 (haveibeenpwned.com)</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="warning">100% 프라이버시는 불가능해.</span></p>
+                    <p>하지만 <strong>리스크를 줄일 수는 있어</strong>.</p>
+                    <p>편리함과 프라이버시 사이에서 자신만의 균형을 찾는 거야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>AI와 데이터</strong> - AI는 개인 데이터를 대량 수집·분석 (행동, 위치, 생체 정보)</li>
+                <li><strong>문제점</strong> - 동의 없는 수집, 과도한 수집, 유출, 악용, 감시</li>
+                <li><strong>딜레마</strong> - 더 많은 데이터 = 더 좋은 AI, 프라이버시 보호와 트레이드오프</li>
+                <li><strong>보호 기술</strong> - 차등 프라이버시, 연합 학습, 기기 내 처리, 합성 데이터</li>
+                <li><strong>법적 권리</strong> - GDPR (삭제권, 이동권, 설명권), 한국 개인정보보호법</li>
+                <li><strong>실천법</strong> - 권한 최소화, 설정 점검, 추적 차단, 주기적 삭제</li>
+                <li><strong>균형</strong> - 편리함 vs 프라이버시, 각자 선택이 필요</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic10/">← 이전: AI 윤리는 왜 중요해?</a>
+            <a href="../topic12/">다음: AGI가 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

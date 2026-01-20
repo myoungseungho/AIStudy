@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>맥스 풀링과 평균 풀링은 뭐가 달라? - Section 5</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #00BCD4;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #00BCD4;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e0f7fa;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #e0f7fa;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #00838f;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #00BCD4 0%, #26C6DA 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #b2ebf2;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #00BCD4; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 5</a>
+            <span>/</span>
+            Topic 08
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 08</div>
+            <h1>맥스 풀링과 평균 풀링은 뭐가 달라?</h1>
+            <p>Q. 제일 큰 값만 남기는 이유는?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 두 가지 풀링 방법</h2>
+
+            <div class="chat">
+                <div class="q">풀링 방법이 여러 가지야?</div>
+                <div class="a">
+                    <p>주로 두 가지를 써.</p>
+                    <p><span class="key-point">맥스 풀링(Max Pooling)</span>과 <span class="key-point">평균 풀링(Average Pooling)</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">같은 입력, 다른 결과:
+
+입력 (2×2):
+[1  3]
+[5  6]
+
+
+맥스 풀링:
+→ 최댓값 선택
+→ 결과: 6
+
+
+평균 풀링:
+→ 평균 계산
+→ (1+3+5+6) / 4 = 3.75</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">맥스는 "가장 강한 신호"를 남기고,</span></p>
+                    <p><span class="highlight">평균은 "전체 요약"을 만들어.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 맥스 풀링이 인기 있는 이유</h2>
+
+            <div class="chat">
+                <div class="q">왜 맥스 풀링을 더 많이 써?</div>
+                <div class="a">
+                    <p>이미지 특징 추출에 더 적합하거든.</p>
+                </div>
+            </div>
+
+            <div class="code-block">맥스 풀링의 장점:
+
+1. 특징 강조
+→ "엣지가 있다" 같은 강한 신호 보존
+→ 약한 노이즈는 무시
+
+2. 희소성 (Sparsity)
+→ 중요한 것만 전달
+→ 불필요한 정보 제거
+
+3. 역전파 효율
+→ 그래디언트가 최댓값에만 흐름
+→ 학습이 더 sharp함
+
+예시:
+[0, 0, 0, 8] → 맥스: 8 (특징 살아있음)
+[0, 0, 0, 8] → 평균: 2 (특징 희석됨)</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">"이 영역에 엣지가 있다!"</span>는 신호를 최대한 보존하는 게 중요해.</p>
+                    <p>맥스 풀링이 이걸 잘해.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 평균 풀링은 언제 써?</h2>
+
+            <div class="chat">
+                <div class="q">그럼 평균 풀링은 쓸모없어?</div>
+                <div class="a">
+                    <p><span class="warning">아니. 특정 상황에서는 더 좋아.</span></p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>상황</th>
+                    <th>맥스 풀링</th>
+                    <th>평균 풀링</th>
+                </tr>
+                <tr>
+                    <td><strong>특징 추출</strong></td>
+                    <td>◯ 강한 신호 보존</td>
+                    <td>△ 신호 희석</td>
+                </tr>
+                <tr>
+                    <td><strong>노이즈 제거</strong></td>
+                    <td>△ 노이즈도 살릴 수 있음</td>
+                    <td>◯ 평균으로 완화</td>
+                </tr>
+                <tr>
+                    <td><strong>위치 정보</strong></td>
+                    <td>△ 손실 큼</td>
+                    <td>◯ 더 보존됨</td>
+                </tr>
+                <tr>
+                    <td><strong>Global Pooling</strong></td>
+                    <td>△ 덜 사용</td>
+                    <td>◯ 주로 사용</td>
+                </tr>
+            </table>
+
+            <div class="code-block">평균 풀링 사용 사례:
+
+1. Global Average Pooling
+→ 마지막 층에서 사용
+→ (7, 7, 512) → (1, 1, 512)
+→ 완전 연결층 대신
+
+2. 질감 분석
+→ 전체적인 패턴이 중요할 때
+→ 섬유 검사, 표면 분석 등
+
+3. Segmentation
+→ 픽셀 단위 예측
+→ 공간 정보 중요</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 실제 차이 비교</h2>
+
+            <div class="code-block">구체적 예시:
+
+입력 특징 맵 (엣지 검출 후):
+[0  0  8  8]
+[0  0  9  7]
+[0  0  0  0]
+[0  0  0  0]
+
+
+2×2 맥스 풀링:
+[0  9]
+[0  0]
+→ 엣지 신호(9) 선명하게 유지
+
+
+2×2 평균 풀링:
+[0  8]
+[0  0]
+→ (0+0+8+9)/4 = 4.25 → 반올림 8
+→ 신호 약해짐</div>
+
+            <div class="chat">
+                <div class="q">그럼 왜 평균을 써?</div>
+                <div class="a">
+                    <p><strong>Global Average Pooling</strong> 때문이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Global Average Pooling (GAP):
+
+전통적 방법:
+Conv → Flatten → FC(완전연결) → 분류
+→ 파라미터 엄청 많음
+
+GAP 사용:
+Conv → Global Average Pooling → 분류
+→ 파라미터 거의 없음
+
+예시:
+(7, 7, 512) 특징 맵
+→ 각 512개 채널의 7×7 값을 평균
+→ (1, 1, 512) = 512개 숫자
+→ 바로 분류에 사용
+
+장점:
+→ 과적합 방지
+→ 파라미터 대폭 감소
+→ 위치 불변성 강화</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 어떤 걸 선택해야 해?</h2>
+
+            <div class="chat">
+                <div class="q">그래서 어떤 걸 쓰는 게 좋아?</div>
+                <div class="a">
+                    <p><span class="highlight">대부분은 맥스 풀링</span>을 써.</p>
+                </div>
+            </div>
+
+            <div class="code-block">선택 가이드:
+
+중간 층 (특징 추출):
+→ 맥스 풀링 (99% 사용)
+→ 특징을 선명하게 유지
+
+마지막 층 (분류 직전):
+→ Global Average Pooling
+→ FC layer 대신
+
+특수한 경우:
+→ L2 Pooling (거리 계산)
+→ Stochastic Pooling (랜덤)
+→ 하지만 거의 안 씀
+
+
+실무 조언:
+→ 일단 맥스 풀링 쓰고
+→ 성능 안 나오면 다른 거 실험
+→ 최신 모델은 Strided Conv로 대체 경향</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>AlexNet, VGG, ResNet 모두 맥스 풀링</strong>을 써.</p>
+                    <p>검증된 방법이니까 기본으로 선택하면 돼.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>맥스 풀링 = 최댓값</strong> - 강한 신호 보존, 특징 강조</li>
+                <li><strong>평균 풀링 = 평균값</strong> - 전체 요약, 노이즈 완화</li>
+                <li><strong>맥스가 일반적</strong> - 중간 층에서는 거의 항상 맥스</li>
+                <li><strong>GAP는 평균</strong> - Global Average Pooling은 마지막 층</li>
+                <li><strong>용도에 따라 선택</strong> - 특징 추출 vs 전체 요약</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic07/">← 이전: 풀링은 왜 해?</a>
+            <a href="../topic09/">다음: 특징 맵이 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

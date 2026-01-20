@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>검증 데이터는 왜 또 필요해? - Section 3</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #2196F3;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #2196F3;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e3f2fd;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #bbdefb;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #0d47a1;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #2196F3 0%, #42A5F5 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #bbdefb;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 3</a>
+            <span>/</span>
+            Topic 09
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 09</div>
+            <h1>검증 데이터는 왜 또 필요해?</h1>
+            <p>Q. 훈련/테스트 2개로 부족해?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 테스트는 단 한 번만 써야 해</h2>
+
+            <div class="chat">
+                <div class="q">훈련/테스트 2개면 충분한 거 아니야? 검증(Validation) 데이터는 왜 필요해?</div>
+                <div class="a">
+                    <p><span class="key-point">테스트 데이터는 "최종 시험"이라서, 미리 보면 안 돼.</span></p>
+                    <p>비유로 설명해줄게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 수능 준비
+
+모의고사 (검증 데이터):
+- 여러 번 봐도 OK
+- 점수 보고 공부 방법 조정
+- "이 부분이 약하네" → 보완
+
+수능 (테스트 데이터):
+- 딱 한 번만
+- 이걸로 최종 평가
+- 미리 보면 의미 없음
+
+
+문제 상황:
+모의고사 없이 수능만 있으면?
+→ 어떻게 준비할지 모름
+→ 실력 확인 방법이 없음
+
+모의고사를 수능으로 착각하면?
+→ 모의고사 문제만 달달 외움
+→ 진짜 수능에서 망함</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="highlight">검증은 "중간 점검", 테스트는 "최종 평가"야.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 3가지 데이터 세트</h2>
+
+            <div class="chat">
+                <div class="q">그럼 데이터를 3개로 나누는 거야?</div>
+                <div class="a">
+                    <p>그래. 보통 이렇게 나눠.</p>
+                </div>
+            </div>
+
+            <div class="code-block">데이터 분할 (1000개 기준):
+
+1. 훈련 데이터 (Training Set): 600개 (60%)
+→ AI가 패턴을 배우는 데이터
+→ "공부하는 교과서"
+
+
+2. 검증 데이터 (Validation Set): 200개 (20%)
+→ 학습 중간에 성능 확인
+→ "모의고사"
+→ 여러 번 봐도 됨
+
+
+3. 테스트 데이터 (Test Set): 200개 (20%)
+→ 최종 성능 평가
+→ "수능"
+→ 딱 한 번만!
+
+
+비율은 상황에 따라 다름:
+- 6:2:2 (일반적)
+- 7:2:1 (데이터 많을 때)
+- 8:1:1 (데이터 적을 때)</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">3개로 나누면 각자 역할이 명확해져.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 검증 데이터의 역할</h2>
+
+            <div class="chat">
+                <div class="q">검증 데이터로 구체적으로 뭘 하는데?</div>
+                <div class="a">
+                    <p>여러 가지 의사결정에 사용해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">검증 데이터 활용:
+
+1. 조기 종료 (Early Stopping)
+에폭 1: 검증 성능 80%
+에폭 2: 검증 성능 85%
+에폭 3: 검증 성능 88%
+에폭 4: 검증 성능 87% ← 떨어지기 시작!
+→ 에폭 3에서 멈춤 (과적합 방지)
+
+
+2. 하이퍼파라미터 튜닝
+학습률 0.001 → 검증 성능 82%
+학습률 0.01 → 검증 성능 87% ← 더 좋네!
+학습률 0.1 → 검증 성능 75%
+→ 0.01 선택
+
+
+3. 모델 선택
+모델A: 검증 성능 83%
+모델B: 검증 성능 89% ← 이거 선택!
+모델C: 검증 성능 81%
+
+
+4. 과적합 감지
+훈련 성능: 95%
+검증 성능: 70%
+→ 과적합 발견! → 조치 필요</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">검증 데이터는 "개발 중 의사결정"에 써.</span></p>
+                    <p>테스트는 절대 건드리지 말고!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 교차 검증</h2>
+
+            <div class="chat">
+                <div class="q">검증 데이터가 너무 적으면 어떡해?</div>
+                <div class="a">
+                    <p><span class="key-point">교차 검증(Cross-Validation)</span>을 써.</p>
+                </div>
+            </div>
+
+            <div class="code-block">K-Fold 교차 검증 (K=5 예시):
+
+전체 데이터를 5개로 나눔:
+[1] [2] [3] [4] [5]
+
+Round 1: [2][3][4][5] 훈련, [1] 검증 → 성능 85%
+Round 2: [1][3][4][5] 훈련, [2] 검증 → 성능 87%
+Round 3: [1][2][4][5] 훈련, [3] 검증 → 성능 84%
+Round 4: [1][2][3][5] 훈련, [4] 검증 → 성능 86%
+Round 5: [1][2][3][4] 훈련, [5] 검증 → 성능 88%
+
+최종 성능: (85+87+84+86+88)/5 = 86%
+
+
+장점:
+- 모든 데이터가 검증에 한 번씩 사용됨
+- 평균 성능이 더 신뢰도 높음
+- 데이터 적을 때 유용
+
+단점:
+- 5번 학습해야 해서 시간 오래 걸림</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>데이터가 부족하면 교차 검증이 필수야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 테스트는 정말 한 번만</h2>
+
+            <div class="chat">
+                <div class="q">테스트를 여러 번 보면 안 돼?</div>
+                <div class="a">
+                    <p><span class="warning">절대 안 돼!</span> 테스트를 여러 번 보면 의미가 없어져.</p>
+                </div>
+            </div>
+
+            <div class="code-block">잘못된 프로세스:
+
+시도1:
+모델A → 테스트 성능 80%
+"아, 별로네"
+
+시도2:
+모델B → 테스트 성능 85%
+"더 좋네!"
+
+시도3:
+모델C → 테스트 성능 90%
+"이거다!"
+
+문제:
+→ 테스트 성능을 보고 모델을 조정함
+→ 결국 테스트 데이터에 맞춰 튜닝한 셈
+→ "시험 문제 보고 공부"한 거랑 같음
+→ 일반화 성능 알 수 없음!
+
+
+올바른 프로세스:
+
+개발 단계 (검증 데이터 사용):
+모델A → 검증 성능 80%
+모델B → 검증 성능 85%
+모델C → 검증 성능 90% ← 선택
+
+최종 평가 (테스트 데이터, 딱 한 번):
+모델C → 테스트 성능 88%
+→ 이게 진짜 성능!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">검증으로 개발하고, 테스트로 최종 확인만 해.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 실전 workflow</h2>
+
+            <div class="chat">
+                <div class="q">그래서 실제로는 어떻게 진행해?</div>
+                <div class="a">
+                    <p>전체 흐름을 보여줄게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">AI 개발 전체 흐름:
+
+1. 데이터 분할
+전체 1000개 → 훈련 600 / 검증 200 / 테스트 200
+(테스트는 금고에 보관하듯 숨겨둠)
+
+
+2. 개발 & 튜닝 (검증 사용)
+- 여러 모델 시도
+- 하이퍼파라미터 조정
+- 검증 성능 보며 개선
+→ 수십, 수백 번 반복 OK
+
+
+3. 최종 모델 선택
+검증 성능이 가장 좋은 모델 선택
+
+
+4. 최종 평가 (테스트 사용, 딱 한 번!)
+테스트 데이터로 성능 측정
+→ 이 숫자가 공식 성능
+
+
+5. 배포
+실전에 투입
+→ 실제 사용자 데이터로 모니터링
+
+
+6. 재학습 (필요시)
+성능 떨어지면 새 데이터 모아서 재학습
+→ 새로 훈련/검증/테스트 분할</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">검증은 개발 도구, 테스트는 성적표야.</span></p>
+                    <p>역할을 혼동하면 안 돼!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>3개 세트 필요</strong> - 훈련(학습), 검증(개발), 테스트(최종평가)</li>
+                <li><strong>검증은 여러 번</strong> - 모델 선택, 하이퍼파라미터 튜닝에 사용</li>
+                <li><strong>테스트는 단 한 번</strong> - 최종 성능 측정용, 절대 개발에 사용 금지</li>
+                <li><strong>교차 검증</strong> - 데이터 적을 때 검증 데이터를 효율적으로 사용</li>
+                <li><strong>비율</strong> - 보통 6:2:2 또는 7:2:1로 분할</li>
+                <li><strong>역할 구분</strong> - 검증은 개발 도구, 테스트는 성적표</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic08/">← 이전: 일반화가 왜 중요해?</a>
+            <a href="../topic10/">다음: 특징(Feature)이 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>설명 가능한 AI(XAI)가 뭐야? - Section 8</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #795548;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #795548;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #efebe9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #d7ccc8;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #4e342e;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #795548 0%, #8D6E63 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #d7ccc8;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #795548; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 8</a>
+            <span>/</span>
+            Topic 09
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 09</div>
+            <h1>설명 가능한 AI(XAI)가 뭐야?</h1>
+            <p>Q. 왜 그렇게 판단했는지 알 수 있어?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. XAI가 뭐야?</h2>
+
+            <div class="chat">
+                <div class="q">블랙박스는 나쁘다고 했잖아? 그럼 XAI가 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">XAI = eXplainable AI (설명 가능한 AI)</span></p>
+                    <p>AI의 결정을 <strong>사람이 이해할 수 있도록 설명</strong>하는 기술이야.</p>
+                    <p>"왜 이렇게 판단했어?"라는 질문에 답하는 거지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유:
+
+블랙박스 AI:
+Q. 왜 대출 거절했어?
+A. 그냥... 시스템이 그렇게 나왔어요.
+
+XAI:
+Q. 왜 대출 거절했어?
+A. 신용점수가 기준보다 30점 낮고,
+   최근 3개월 연체 기록이 있어서입니다.
+   소득이 10% 더 높았다면 승인됐을 거예요.
+
+→ 이해할 수 있고, 개선할 수 있고, 신뢰할 수 있음</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>XAI는 <span class="highlight">투명성, 신뢰, 책임</span>을 위한 기술이야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. XAI가 필요한 이유</h2>
+
+            <div class="chat">
+                <div class="q">꼭 설명이 필요해? 결과만 맞으면 되잖아?</div>
+                <div class="a">
+                    <p><span class="warning">결과만으로는 부족한 경우가 많아.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">XAI가 필요한 이유:
+
+1. 신뢰 (Trust)
+   "왜 그렇게 판단했는지 알아야 믿을 수 있어"
+   예: 의사가 AI 진단을 신뢰하려면 근거 필요
+
+2. 디버깅 (Debugging)
+   "왜 틀렸는지 알아야 고칠 수 있어"
+   예: AI가 고양이를 개로 분류 → 어느 부분을 잘못 봤나?
+
+3. 개선 (Improvement)
+   "어떻게 하면 더 나아질지 알 수 있어"
+   예: 대출 거절 → 뭘 개선하면 다음에 승인?
+
+4. 공정성 (Fairness)
+   "차별하는지 확인할 수 있어"
+   예: AI가 성별로 차별하는지 검증
+
+5. 규제 준수 (Compliance)
+   "법으로 설명 의무가 있어"
+   예: EU GDPR - 자동화 결정 설명 권리
+
+6. 학습 (Learning)
+   "AI로부터 배울 수 있어"
+   예: 의료 AI가 어떤 패턴을 보는지 배워서 인간도 적용</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">특히 고위험 결정일수록 설명이 필수</span>야.</p>
+                    <p>의료, 금융, 법률, 채용 같은 중요한 분야에서는 더욱.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. XAI 기법들</h2>
+
+            <div class="chat">
+                <div class="q">어떻게 설명해?</div>
+                <div class="a">
+                    <p>여러 가지 방법이 있어. 대표적인 것들을 보여줄게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">1. Feature Importance (특성 중요도)
+
+"어떤 입력이 가장 중요했나요?"
+
+예: 대출 심사
+- 신용점수: 40%
+- 연봉: 30%
+- 연체 기록: 20%
+- 나이: 10%
+
+→ 전체적인 중요도 파악
+
+--------------------------------------------------
+
+2. LIME (Local Interpretable Model-agnostic Explanations)
+
+"이 특정 케이스에서는 왜?"
+
+예: 이미지 분류
+- AI: "이건 고양이예요"
+- LIME: "귀 모양(60%), 수염(30%), 눈(10%)을 보고 판단했어요"
+- 시각화: 해당 부분 하이라이트
+
+→ 개별 예측 설명
+
+--------------------------------------------------
+
+3. SHAP (SHapley Additive exPlanations)
+
+"각 특성이 얼마나 기여했나요?"
+
+예: 집값 예측
+- 평수 +2천만원
+- 위치 +1천만원
+- 층수 -500만원
+- 연식 -300만원
+
+→ 수치로 기여도 계산 (게임 이론 기반)
+
+--------------------------------------------------
+
+4. Attention Map (주목도 시각화)
+
+"AI가 어디를 봤나요?"
+
+예: 의료 영상 진단
+- X-ray 이미지에서 "이 부분"을 집중해서 봤어요
+- 히트맵으로 시각화
+
+→ 딥러닝이 "주목한" 위치 표시
+
+--------------------------------------------------
+
+5. Counterfactual Explanation (반사실적 설명)
+
+"뭘 바꿨으면 결과가 달라졌을까요?"
+
+예: 대출 거절
+- "소득이 500만원 더 높았다면 승인됐을 거예요"
+- "연체 기록이 없었다면 승인됐을 거예요"
+
+→ 개선 방향 제시
+
+--------------------------------------------------
+
+6. Rule Extraction (규칙 추출)
+
+"AI가 배운 규칙이 뭐예요?"
+
+예: 신용 평가
+- IF 신용점수 > 700 AND 연체 = 0 THEN 승인
+- IF 신용점수 < 600 THEN 거절
+
+→ if-then 규칙으로 변환</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>각 방법은 <span class="highlight">상황에 맞게 사용</span>돼.</p>
+                    <p>이미지는 Attention Map이 유용하고,</p>
+                    <p>표 데이터는 SHAP이나 LIME이 좋고.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. XAI의 한계</h2>
+
+            <div class="chat">
+                <div class="q">완벽한 설명이 가능해?</div>
+                <div class="a">
+                    <p><span class="warning">아니, 여전히 한계가 많아.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">XAI의 한계:
+
+1. 부분적 설명
+   - 전체 과정이 아닌 "근사" 설명
+   - 100% 정확한 설명은 불가능
+
+2. 복잡성
+   - 딥러닝은 수억 개 파라미터
+   - 사람이 이해하기엔 여전히 복잡
+
+3. 성능 저하
+   - 설명 가능하게 만들면 성능 떨어질 수 있음
+   - Trade-off
+
+4. 신뢰성 문제
+   - AI가 "설명"을 잘못 생성할 수도
+   - 설명 자체도 검증 필요
+
+5. 사용자 이해도
+   - SHAP 값, 주목도 맵 등을 일반인이 이해하기 어려움
+   - 전문가만 활용 가능
+
+6. 속도
+   - 설명 생성에 시간 소요
+   - 실시간 서비스에 부담</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">XAI는 "완벽한 투명성"이 아니라 "더 나은 투명성"</span>이야.</p>
+                    <p>블랙박스보다는 낫지만, 완전히 이해할 수는 없어.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 실전 활용 사례</h2>
+
+            <div class="chat">
+                <div class="q">실제로 어디에 쓰여?</div>
+                <div class="a">
+                    <p>이미 많은 분야에서 활용되고 있어.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>분야</th>
+                    <th>활용</th>
+                    <th>XAI 기법</th>
+                </tr>
+                <tr>
+                    <td><strong>의료</strong></td>
+                    <td>암 진단 근거 제시</td>
+                    <td>Attention Map, LIME</td>
+                </tr>
+                <tr>
+                    <td><strong>금융</strong></td>
+                    <td>대출 거절 이유 설명</td>
+                    <td>SHAP, Counterfactual</td>
+                </tr>
+                <tr>
+                    <td><strong>채용</strong></td>
+                    <td>불합격 사유, 개선점</td>
+                    <td>Feature Importance</td>
+                </tr>
+                <tr>
+                    <td><strong>자율주행</strong></td>
+                    <td>사고 원인 분석</td>
+                    <td>Attention Map, Rule Extraction</td>
+                </tr>
+                <tr>
+                    <td><strong>보험</strong></td>
+                    <td>보험료 산정 근거</td>
+                    <td>SHAP, LIME</td>
+                </tr>
+                <tr>
+                    <td><strong>법률</strong></td>
+                    <td>재범 예측 근거</td>
+                    <td>Rule Extraction</td>
+                </tr>
+            </table>
+
+            <div class="code-block">실제 사례: Google의 What-If Tool
+
+- AI 모델 예측을 인터랙티브하게 탐색
+- "이 값을 바꾸면 예측이 어떻게 달라질까?"
+- 공정성 검증
+- 구글 클라우드에서 제공
+
+--------------------------------------------------
+
+LIME 라이브러리 (Python):
+
+import lime
+explainer = lime.lime_tabular.LimeTabularExplainer(...)
+explanation = explainer.explain_instance(data)
+explanation.show_in_notebook()
+
+→ Jupyter에서 바로 시각화
+
+--------------------------------------------------
+
+SHAP 라이브러리:
+
+import shap
+explainer = shap.TreeExplainer(model)
+shap_values = explainer.shap_values(X)
+shap.summary_plot(shap_values, X)
+
+→ 각 특성의 영향력 시각화</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>오픈소스 도구가 많아서 <span class="highlight">개발자가 쉽게 적용</span>할 수 있어.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 미래: XAI는 어떻게 발전할까?</h2>
+
+            <div class="chat">
+                <div class="q">앞으로는 어떻게 될까?</div>
+                <div class="a">
+                    <p><span class="highlight">XAI는 필수가 될 거야.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">XAI 미래 트렌드:
+
+1. 자연어 설명
+   - AI가 "말"로 설명
+   - "이 환자는 폐에 8mm 결절이 보여 암으로 의심됩니다"
+   - ChatGPT 같은 언어 모델 활용
+
+2. 인터랙티브 설명
+   - 사용자가 질문하면 AI가 답변
+   - "왜 이 부분을 중요하게 봤어?"
+   - "소득을 얼마나 올리면 승인돼?"
+
+3. 인과관계 설명
+   - 상관관계가 아닌 인과관계
+   - "A 때문에 B가 일어났다"는 설명
+
+4. 설명 자동 생성
+   - 개발자가 코딩 안 해도 자동으로 설명
+   - AI가 자기 설명을 스스로 생성
+
+5. 규제 의무화
+   - EU AI Act: 고위험 AI는 설명 필수
+   - 설명 못 하면 사용 금지
+   - 전 세계적으로 확산 예상
+
+6. Interpretable by Design
+   - 처음부터 설명 가능하게 설계
+   - 후처리로 설명 붙이는 게 아니라
+   - 모델 구조 자체를 투명하게</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">앞으로는 "설명 못 하는 AI"는 사용하기 어려워질 거야.</span></p>
+                    <p>특히 의료, 금융, 법률 같은 중요한 분야에서는 더욱.</p>
+                    <p>XAI는 선택이 아닌 <strong>필수</strong>가 될 거야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>XAI</strong> - AI 결정을 사람이 이해할 수 있도록 설명하는 기술</li>
+                <li><strong>필요 이유</strong> - 신뢰, 디버깅, 개선, 공정성, 규제, 학습</li>
+                <li><strong>주요 기법</strong> - Feature Importance, LIME, SHAP, Attention Map, Counterfactual</li>
+                <li><strong>한계</strong> - 부분적 설명, 복잡성, 성능 저하, 이해도 문제</li>
+                <li><strong>활용 분야</strong> - 의료, 금융, 채용, 자율주행, 법률</li>
+                <li><strong>미래</strong> - 자연어 설명, 인터랙티브, 규제 의무화, 설계 단계부터 적용</li>
+                <li><strong>중요성</strong> - 고위험 AI에서는 XAI가 필수가 될 것</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic08/">← 이전: 블랙박스 문제가 뭐야?</a>
+            <a href="../topic10/">다음: AI 윤리는 왜 중요해? →</a>
+        </div>
+    </div>
+</body>
+</html>

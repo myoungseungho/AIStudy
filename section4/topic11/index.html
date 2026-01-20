@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>드롭아웃은 왜 해? - Section 4</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #9C27B0;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #9C27B0;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f3e5f5;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #f3e5f5;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #6a1b9a;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #f3e5f5;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #9C27B0; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 4</a>
+            <span>/</span>
+            Topic 11
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 11</div>
+            <h1>드롭아웃은 왜 해?</h1>
+            <p>Q. 뉴런을 꺼버리면 성능이 좋아진다고?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 드롭아웃이 뭐야?</h2>
+
+            <div class="chat">
+                <div class="q">드롭아웃(Dropout)이 정확히 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">학습할 때 일부 뉴런을 랜덤하게 끄는 기법</span>이야.</p>
+                    <p>말 그대로 "drop out" = 떨어뜨린다, 제외한다는 뜻이지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">작동 방식:
+
+학습 시:
+[뉴런1] [뉴런2] [뉴런3] [뉴런4] [뉴런5]
+   ✓       X        ✓        X        ✓
+(활성)  (꺼짐)   (활성)   (꺼짐)   (활성)
+
+→ 확률 p(보통 0.5)로 랜덤하게 뉴런 제거
+→ 매 학습마다 다른 뉴런 조합 사용
+
+
+추론 시:
+[뉴런1] [뉴런2] [뉴런3] [뉴런4] [뉴런5]
+   ✓       ✓        ✓        ✓        ✓
+(전부 활성)
+
+→ 모든 뉴런 사용
+→ 대신 출력에 p를 곱함 (스케일 조정)</code>
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이상하지?</p>
+                    <p>뉴런을 꺼버리는데 왜 성능이 좋아질까?</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 왜 효과적이야?</h2>
+
+            <div class="chat">
+                <div class="q">뉴런을 끄면 오히려 나빠질 것 같은데?</div>
+                <div class="a">
+                    <p><span class="highlight">과적합을 막기 때문</span>이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">과적합 문제:
+
+드롭아웃 없음:
+- 특정 뉴런 조합에만 의존
+- 훈련 데이터만 너무 잘 맞춤
+- 새로운 데이터에는 약함
+
+예:
+뉴런A가 항상 "고양이 귀" 감지
+뉴런B가 항상 "고양이 수염" 감지
+→ 둘 다 있어야만 고양이로 판단
+→ 한쪽이 가려지면 인식 실패
+
+
+드롭아웃 있음:
+- 매번 다른 뉴런 조합 사용
+- 여러 방법으로 학습
+- 로버스트(robust)한 모델
+
+뉴런A만으로도 고양이 인식
+뉴런B만으로도 고양이 인식
+뉴런C만으로도 고양이 인식
+→ 어떤 뉴런이 꺼져도 작동
+→ 일반화 능력 향상!
+
+
+비유:
+드롭아웃 없음 = 항상 같은 멤버로 시험 공부
+→ 의존성 생김, 한 명 없으면 못함
+
+드롭아웃 있음 = 매번 다른 조합으로 공부
+→ 혼자서도 할 수 있게 됨</code>
+        </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 앙상블 효과</h2>
+
+            <div class="chat">
+                <div class="q">다른 관점에서 보면 어떻게 설명할 수 있어?</div>
+                <div class="a">
+                    <p><span class="key-point">앙상블(Ensemble) 학습</span>이라고 볼 수 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">앙상블의 개념:
+
+전통적인 앙상블:
+- 여러 모델을 독립적으로 학습
+- 예측 시 투표나 평균
+- 성능 향상하지만 비용 높음
+
+예:
+모델1 예측: 고양이
+모델2 예측: 고양이
+모델3 예측: 강아지
+→ 다수결: 고양이 (정확도 높음)
+
+
+드롭아웃의 앙상블:
+- 하나의 네트워크로 여러 서브네트워크 학습
+- 매번 다른 뉴런 조합 = 다른 모델
+- 추론 시 모든 조합의 평균
+
+뉴런 10개, 드롭아웃 0.5:
+가능한 조합: 2^10 = 1024개
+→ 1024개 모델을 동시에 학습하는 효과!
+
+
+비용:
+전통 앙상블: 모델 10개 학습 = 10배 비용
+드롭아웃: 모델 1개로 1024개 효과 = 거의 공짜</code>
+        </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 어떻게 사용해?</h2>
+
+            <div class="code-block">구현:
+
+PyTorch:
+
+import torch.nn as nn
+
+class ModelWithDropout(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(784, 512)
+        self.dropout1 = nn.Dropout(p=0.5)  # 50% 확률
+        self.fc2 = nn.Linear(512, 256)
+        self.dropout2 = nn.Dropout(p=0.3)  # 30% 확률
+        self.fc3 = nn.Linear(256, 10)
+        self.relu = nn.ReLU()
+
+    def forward(self, x):
+        x = self.relu(self.fc1(x))
+        x = self.dropout1(x)  # 드롭아웃 적용
+
+        x = self.relu(self.fc2(x))
+        x = self.dropout2(x)  # 드롭아웃 적용
+
+        x = self.fc3(x)
+        return x
+
+
+# 학습 모드
+model.train()  # 드롭아웃 활성화
+output = model(input)
+
+# 추론 모드
+model.eval()  # 드롭아웃 비활성화
+output = model(input)
+
+
+수동 구현:
+
+def dropout(x, p=0.5, training=True):
+    if not training:
+        return x
+
+    # 랜덤 마스크 생성
+    mask = (np.random.rand(*x.shape) > p)
+    # 0 또는 1로 변환
+    # 드롭아웃 적용 및 스케일 조정
+    return x * mask / (1 - p)</code>
+        </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 드롭아웃 비율 선택</h2>
+
+            <div class="chat">
+                <div class="q">드롭아웃 비율은 어떻게 정해?</div>
+                <div class="a">
+                    <p>경험적인 가이드라인이 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">일반적인 가이드:
+
+p = 0.5 (50%):
+- 가장 흔하게 사용
+- 은닉층에 추천
+- 이론적으로 최적
+
+p = 0.2~0.3 (20~30%):
+- 입력층에 사용
+- 너무 많이 끄면 정보 손실
+
+p = 0.3~0.4 (30~40%):
+- 출력 가까운 층
+- 약간 보수적
+
+p = 0.0 (0%):
+- 드롭아웃 안 함
+- 출력층에는 안 씀
+
+
+과적합 정도에 따라:
+
+심한 과적합:
+→ p = 0.6~0.7 (더 많이 끄기)
+
+약한 과적합:
+→ p = 0.2~0.3 (적게 끄기)
+
+과적합 없음:
+→ p = 0 (드롭아웃 불필요)
+
+
+실전 팁:
+1. 일단 p=0.5로 시작
+2. 과적합 있으면 늘리기
+3. 과적합 없으면 줄이거나 제거
+4. 층마다 다르게 설정 가능</code>
+        </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 드롭아웃의 변형</h2>
+
+            <div class="code-block">다양한 드롭아웃 기법:
+
+1. Standard Dropout
+   - 가장 기본
+   - 뉴런 단위로 제거
+
+2. Spatial Dropout (2D)
+   - CNN용
+   - 채널 전체를 제거
+   - 특징 맵 단위로 드롭아웃
+
+3. DropConnect
+   - 뉴런이 아닌 연결(가중치)을 제거
+   - 더 세밀한 정규화
+
+4. Variational Dropout
+   - 같은 마스크를 시퀀스 전체에 적용
+   - RNN/LSTM용
+
+5. Alpha Dropout
+   - SELU 활성화 함수용
+   - 평균과 분산 유지
+
+
+최신 트렌드:
+- Transformer: Dropout 여전히 사용
+- ResNet: Dropout보다 Batch Norm 선호
+- 작은 데이터: Dropout 필수
+- 큰 데이터: Dropout 덜 중요</code>
+        </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>드롭아웃 = 랜덤하게 뉴런 끄기</strong> - 학습 시에만 적용</li>
+                <li><strong>과적합 방지</strong> - 특정 뉴런에 의존하지 않도록 강제</li>
+                <li><strong>앙상블 효과</strong> - 여러 서브네트워크를 동시에 학습</li>
+                <li><strong>p=0.5가 일반적</strong> - 은닉층에는 50%, 입력층에는 20~30%</li>
+                <li><strong>추론 시 비활성화</strong> - 모든 뉴런 사용하고 스케일 조정</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic10/">← 이전: 배치 정규화가 뭐야?</a>
+            <a href="../topic12/">다음: 학습률은 어떻게 정해? →</a>
+        </div>
+    </div>
+</body>
+</html>

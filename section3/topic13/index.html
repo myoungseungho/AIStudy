@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로지스틱 회귀는 왜 '회귀'야? - Section 3</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #2196F3;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #2196F3;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e3f2fd;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #bbdefb;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #0d47a1;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #2196F3 0%, #42A5F5 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #bbdefb;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 3</a>
+            <span>/</span>
+            Topic 13
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 13</div>
+            <h1>로지스틱 회귀는 왜 '회귀'야?</h1>
+            <p>Q. 분류 문제인데 왜 회귀라고 불러?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 이름이 헷갈려</h2>
+
+            <div class="chat">
+                <div class="q">로지스틱 회귀(Logistic Regression)는 '회귀'인데 분류를 한다고? 뭐가 잘못된 거 아냐?</div>
+                <div class="a">
+                    <p><span class="key-point">이름은 회귀지만, 실제로는 분류 알고리즘이야.</span></p>
+                    <p>역사적인 이유로 이름이 이렇게 됐어. 헷갈리지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 붕어빵
+
+붕어빵 ← 붕어가 아니야, 빵이야!
+
+로지스틱 회귀 ← 회귀가 아니야, 분류야!
+
+
+실제 하는 일:
+선형 회귀: 숫자 예측 (집값, 온도...)
+로지스틱 회귀: 카테고리 분류 (스팸/정상, 합격/불합격...)
+
+→ 완전 다른 문제를 풀어</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>왜 이런 이름이 붙었는지 설명해줄게.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 확률로 바꾸기</h2>
+
+            <div class="chat">
+                <div class="q">그럼 로지스틱 회귀는 어떻게 작동해?</div>
+                <div class="a">
+                    <p><span class="key-point">선형 회귀 + 확률 변환</span>이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">선형 회귀의 문제:
+
+문제: 이메일 스팸 분류
+선형 회귀로 시도:
+
+이메일1: 예측 = 0.8
+이메일2: 예측 = 1.2  ← 문제!
+이메일3: 예측 = -0.3 ← 문제!
+
+→ 스팸(1) 또는 정상(0)이어야 하는데
+→ 1.2나 -0.3 같은 값 나옴
+→ 분류에 못 써!
+
+
+로지스틱 회귀의 해결:
+
+1단계: 선형 회귀
+z = wx + b
+z = 1.5 (값 제한 없음)
+
+2단계: 시그모이드 함수 적용
+확률 = 1 / (1 + e^(-z))
+확률 = 0.82 (0~1 사이)
+
+3단계: 분류
+확률 ≥ 0.5 → 스팸
+확률 < 0.5 → 정상
+
+→ 0.82 ≥ 0.5 → 스팸!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">핵심은 "시그모이드 함수"로 0~1 사이 확률로 변환하는 거야.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 시그모이드 함수</h2>
+
+            <div class="chat">
+                <div class="q">시그모이드 함수가 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">어떤 숫자든 0~1 사이로 압축하는 마법 함수</span>야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">시그모이드 함수:
+
+σ(x) = 1 / (1 + e^(-x))
+
+입력 → 출력:
+-10 → 0.00005 (거의 0)
+-2 → 0.12
+-1 → 0.27
+0 → 0.5 (중간)
+1 → 0.73
+2 → 0.88
+10 → 0.99995 (거의 1)
+
+
+모양:
+  1.0 |          ________
+      |        /
+  0.5 |      /
+      |    /
+  0.0 |____
+      -10  0  10
+
+→ S자 모양 (Sigmoid = S자형)
+→ 끝에서는 평평, 중간은 급격
+
+
+활용:
+wx + b = 2.5
+→ σ(2.5) = 0.92
+→ "92% 확률로 스팸"</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">시그모이드는 "확률로 해석 가능한 숫자"를 만들어줘.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 학습 과정</h2>
+
+            <div class="chat">
+                <div class="q">로지스틱 회귀는 어떻게 학습해?</div>
+                <div class="a">
+                    <p>선형 회귀랑 비슷한데, 손실 함수가 달라.</p>
+                </div>
+            </div>
+
+            <div class="code-block">로지스틱 회귀 학습:
+
+데이터:
+이메일1: 특징=[5, 10], 정답=스팸(1)
+이메일2: 특징=[2, 3], 정답=정상(0)
+
+초기: w=[0, 0], b=0
+
+Step 1:
+이메일1 예측:
+z = 0×5 + 0×10 + 0 = 0
+확률 = σ(0) = 0.5
+정답: 1 (스팸)
+오차: 큼!
+
+Step 2: w, b 조정
+w=[0.3, 0.4], b=0.1
+
+이메일1 예측:
+z = 0.3×5 + 0.4×10 + 0.1 = 5.6
+확률 = σ(5.6) = 0.996
+정답: 1 (스팸)
+오차: 작아짐!
+
+...반복...
+
+최종:
+이메일1 → 확률 0.99 → 스팸 ✓
+이메일2 → 확률 0.05 → 정상 ✓</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>선형 회귀처럼 경사하강법으로 w와 b를 학습해.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 다중 클래스 분류</h2>
+
+            <div class="chat">
+                <div class="q">로지스틱 회귀는 2개만 분류할 수 있어?</div>
+                <div class="a">
+                    <p>기본은 2개(이진 분류)인데, <strong>확장</strong>하면 3개 이상도 가능해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">이진 분류 (Binary):
+스팸 vs 정상
+→ 확률 하나: P(스팸) = 0.8
+→ P(정상) = 1 - 0.8 = 0.2
+
+
+다중 클래스 (Multi-class):
+뉴스 분류: 정치/경제/스포츠
+
+Softmax 함수 사용:
+P(정치) = 0.1
+P(경제) = 0.7 ← 가장 높음
+P(스포츠) = 0.2
+합계 = 1.0
+
+→ "경제" 선택!
+
+
+방법:
+One-vs-Rest:
+- 정치 vs (경제+스포츠)
+- 경제 vs (정치+스포츠)
+- 스포츠 vs (정치+경제)
+→ 3개 모델 만들어서 투표</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">로지스틱 회귀는 2개 분류가 기본, Softmax로 확장 가능</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 언제 쓰고 언제 안 써?</h2>
+
+            <div class="chat">
+                <div class="q">로지스틱 회귀는 언제 쓰는 게 좋아?</div>
+                <div class="a">
+                    <p>장단점이 명확해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">로지스틱 회귀 장점:
+
+1. 간단하고 빠름
+→ 학습 속도 빠름
+→ 예측 속도 빠름
+
+2. 확률 제공
+→ "80% 확률로 스팸"
+→ 확신도 알 수 있음
+
+3. 해석 가능
+→ w=[2, 3] → "첫 번째 특징이 중요"
+→ 의사결정 설명 쉬움
+
+4. 과적합 적음
+→ 단순한 모델
+→ 일반화 잘됨
+
+
+로지스틱 회귀 단점:
+
+1. 선형 관계만
+→ 복잡한 패턴 못 잡음
+→ 곡선 경계 안 됨
+
+2. 특징 공학 필요
+→ 좋은 특징 만들어줘야 함
+
+3. 클래스 불균형에 약함
+→ 스팸 99%, 정상 1%면 성능 떨어짐
+
+
+언제 쓰나:
+✓ 빠른 프로토타입
+✓ 해석 필요할 때
+✓ 간단한 분류 문제
+✓ 베이스라인
+
+언제 안 쓰나:
+✗ 복잡한 패턴
+✗ 비선형 관계
+✗ 이미지/음성 같은 고차원</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">로지스틱 회귀는 "간단하고 빠른" 분류의 대표주자야.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>이름은 회귀, 실제는 분류</strong> - 역사적 이유로 이름이 이상함</li>
+                <li><strong>선형 회귀 + 시그모이드</strong> - 확률로 변환해서 분류</li>
+                <li><strong>0~1 확률</strong> - "80% 확률로 스팸" 같은 해석 가능</li>
+                <li><strong>이진 분류 기본</strong> - Softmax로 다중 클래스 확장 가능</li>
+                <li><strong>간단하고 빠름</strong> - 프로토타입, 베이스라인용으로 좋음</li>
+                <li><strong>선형 한계</strong> - 복잡한 패턴은 못 잡음</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic12/">← 이전: 선형 회귀가 뭐야?</a>
+            <a href="../topic14/">다음: 의사결정나무는 어떻게 결정해? →</a>
+        </div>
+    </div>
+</body>
+</html>

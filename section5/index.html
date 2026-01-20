@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section 5: 컴퓨터 비전</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* 네비게이션 */
+        .breadcrumb {
+            margin-bottom: 40px;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb span {
+            color: #999;
+            margin: 0 8px;
+        }
+
+        /* 헤더 */
+        .header {
+            margin-bottom: 48px;
+        }
+
+        .header-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #111;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .section-badge {
+            display: inline-block;
+            background: #00BCD4;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        /* 글 목록 */
+        .article-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .article-item {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #eee;
+            border-left: 4px solid #00BCD4;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .article-item:hover {
+            border-color: #00BCD4;
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .article-number {
+            font-size: 0.75rem;
+            color: #00BCD4;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .article-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #111;
+        }
+
+        .article-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../">AI 공부</a>
+            <span>/</span>
+            Section 5
+        </nav>
+
+        <header class="header">
+            <div class="section-badge">Section 5</div>
+            <div class="header-icon">👁️</div>
+            <h1>컴퓨터 비전</h1>
+            <p>컴퓨터가 이미지를 보고 이해하는 방법</p>
+        </header>
+
+        <div class="article-list">
+            <a href="./topic01/" class="article-item">
+                <div class="article-number">TOPIC 01</div>
+                <h3 class="article-title">컴퓨터는 이미지를 어떻게 봐?</h3>
+                <p class="article-desc">Q. 사진이 숫자 덩어리라고?</p>
+            </a>
+
+            <a href="./topic02/" class="article-item">
+                <div class="article-number">TOPIC 02</div>
+                <h3 class="article-title">픽셀과 RGB가 뭐야?</h3>
+                <p class="article-desc">Q. 빨강 초록 파랑으로 모든 색을 만들어?</p>
+            </a>
+
+            <a href="./topic03/" class="article-item">
+                <div class="article-number">TOPIC 03</div>
+                <h3 class="article-title">이미지는 몇 차원이야?</h3>
+                <p class="article-desc">Q. 28×28 흑백 이미지는 어떻게 표현해?</p>
+            </a>
+
+            <a href="./topic04/" class="article-item">
+                <div class="article-number">TOPIC 04</div>
+                <h3 class="article-title">합성곱(Convolution)이 뭐야?</h3>
+                <p class="article-desc">Q. 필터를 밀면서 곱한다는 게 뭐야?</p>
+            </a>
+
+            <a href="./topic05/" class="article-item">
+                <div class="article-number">TOPIC 05</div>
+                <h3 class="article-title">CNN은 왜 이미지에 강해?</h3>
+                <p class="article-desc">Q. 일반 신경망이랑 뭐가 달라?</p>
+            </a>
+
+            <a href="./topic06/" class="article-item">
+                <div class="article-number">TOPIC 06</div>
+                <h3 class="article-title">필터는 어떻게 학습돼?</h3>
+                <p class="article-desc">Q. 엣지, 코너를 찾는 필터가 자동으로 만들어져?</p>
+            </a>
+
+            <a href="./topic07/" class="article-item">
+                <div class="article-number">TOPIC 07</div>
+                <h3 class="article-title">풀링은 왜 해?</h3>
+                <p class="article-desc">Q. 이미지를 축소하면 뭐가 좋은데?</p>
+            </a>
+
+            <a href="./topic08/" class="article-item">
+                <div class="article-number">TOPIC 08</div>
+                <h3 class="article-title">맥스 풀링과 평균 풀링은 뭐가 달라?</h3>
+                <p class="article-desc">Q. 제일 큰 값만 남기는 이유는?</p>
+            </a>
+
+            <a href="./topic09/" class="article-item">
+                <div class="article-number">TOPIC 09</div>
+                <h3 class="article-title">특징 맵이 뭐야?</h3>
+                <p class="article-desc">Q. 층을 거치면서 이미지가 어떻게 변해?</p>
+            </a>
+
+            <a href="./topic10/" class="article-item">
+                <div class="article-number">TOPIC 10</div>
+                <h3 class="article-title">전이 학습이 뭐야?</h3>
+                <p class="article-desc">Q. 남이 학습한 모델을 가져다 쓸 수 있어?</p>
+            </a>
+
+            <a href="./topic11/" class="article-item">
+                <div class="article-number">TOPIC 11</div>
+                <h3 class="article-title">ImageNet은 뭐야?</h3>
+                <p class="article-desc">Q. AI 올림픽 같은 거야?</p>
+            </a>
+
+            <a href="./topic12/" class="article-item">
+                <div class="article-number">TOPIC 12</div>
+                <h3 class="article-title">객체 탐지는 분류랑 뭐가 달라?</h3>
+                <p class="article-desc">Q. 사진 속에서 물체 위치까지 찾는다고?</p>
+            </a>
+
+            <a href="./topic13/" class="article-item">
+                <div class="article-number">TOPIC 13</div>
+                <h3 class="article-title">YOLO는 왜 빨라?</h3>
+                <p class="article-desc">Q. 실시간 탐지는 어떻게 가능해?</p>
+            </a>
+
+            <a href="./topic14/" class="article-item">
+                <div class="article-number">TOPIC 14</div>
+                <h3 class="article-title">세그멘테이션이 뭐야?</h3>
+                <p class="article-desc">Q. 픽셀 단위로 분류한다고?</p>
+            </a>
+
+            <a href="./topic15/" class="article-item">
+                <div class="article-number">TOPIC 15</div>
+                <h3 class="article-title">GAN은 어떻게 가짜를 만들어?</h3>
+                <p class="article-desc">Q. 생성자와 판별자가 싸운다는 게 뭐야?</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

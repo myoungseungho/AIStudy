@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI에 수학이 왜 필요해? - Section 2</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+
+        /* 네비게이션 */
+        .breadcrumb {
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF9800;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+
+        /* 대화 스타일 */
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF9800;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #fff3e0;
+        }
+
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before {
+            content: "Q. ";
+            color: #e65100;
+            font-weight: 700;
+        }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #fff3e0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #e65100;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+
+        /* 코드 블록 */
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        /* 비교 테이블 */
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+
+        /* 핵심 정리 박스 */
+        .summary-box {
+            background: linear-gradient(135deg, #FF9800 0%, #FFB74D 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .summary-box ul {
+            list-style: none;
+        }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fff3e0;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #FF9800;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 2</a>
+            <span>/</span>
+            Topic 01
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 01</div>
+            <h1>AI에 수학이 왜 필요해?</h1>
+            <p>Q. 코딩만 하면 안 돼?</p>
+        </header>
+
+        <!-- Part 1: 수학 없이 AI 만들 수 없어? -->
+        <div class="conversation">
+            <h2>Part 1. 수학 없이 AI 만들 수 없어?</h2>
+
+            <div class="chat">
+                <div class="q">파이썬 배우면 AI 만들 수 있다고 했잖아. 근데 왜 수학이 나와?</div>
+                <div class="a">
+                    <p>좋은 질문이야. <span class="key-point">파이썬은 도구고, 수학은 원리야.</span></p>
+                    <p>비유하자면:</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유:
+
+자동차 운전 vs 자동차 설계
+- 운전만 할 거면 → 핸들/브레이크만 알면 됨
+- 자동차 만들 거면 → 물리학/역학 알아야 함
+
+AI도 마찬가지:
+- 만들어진 AI 쓸 거면 → 코드만 알면 됨
+- AI를 이해하고 개선할 거면 → 수학 알아야 함</div>
+
+            <div class="chat">
+                <div class="q">그럼 코딩만 할 거면 수학 안 배워도 돼?</div>
+                <div class="a">
+                    <p><span class="warning">이론적으로는 그래.</span></p>
+                    <p>하지만 <strong>문제는 이거야:</strong></p>
+                    <p>AI가 왜 이상한 결과를 내는지, 어떻게 고쳐야 하는지 모르면 <span class="highlight">그냥 블랙박스를 쓰는 거야.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: 수학이 어디에 쓰이는데? -->
+        <div class="conversation">
+            <h2>Part 2. 수학이 어디에 쓰이는데?</h2>
+
+            <div class="chat">
+                <div class="q">구체적으로 수학이 어디에 쓰이는 거야?</div>
+                <div class="a">
+                    <p>AI의 <span class="key-point">모든 단계</span>에 수학이 들어가.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>단계</th>
+                    <th>쓰이는 수학</th>
+                    <th>왜 필요한가</th>
+                </tr>
+                <tr>
+                    <td><strong>데이터 표현</strong></td>
+                    <td>벡터, 행렬</td>
+                    <td>이미지/텍스트를 숫자로 변환</td>
+                </tr>
+                <tr>
+                    <td><strong>학습</strong></td>
+                    <td>미분, 경사하강법</td>
+                    <td>모델을 개선하는 방법 계산</td>
+                </tr>
+                <tr>
+                    <td><strong>예측</strong></td>
+                    <td>확률, 통계</td>
+                    <td>결과를 확률로 표현</td>
+                </tr>
+                <tr>
+                    <td><strong>평가</strong></td>
+                    <td>손실함수, 로그</td>
+                    <td>모델의 정확도 측정</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="a">
+                    <p>보이지? <span class="highlight">수학 없이는 AI가 작동조차 안 해.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: 실제로 어떻게 쓰여? -->
+        <div class="conversation">
+            <h2>Part 3. 실제로 어떻게 쓰여?</h2>
+
+            <div class="chat">
+                <div class="q">예를 들어서 설명해줄래?</div>
+                <div class="a">
+                    <p>간단한 예시: <strong>고양이 사진 인식 AI</strong></p>
+                </div>
+            </div>
+
+            <div class="code-block">1단계: 데이터 표현 (벡터/행렬)
+
+사진 → 픽셀 → 숫자 배열
+[
+  [255, 200, 100, ...],
+  [180, 220, 150, ...],
+  ...
+]
+
+→ 이미지를 숫자로 바꿈
+
+
+2단계: 학습 (미분/경사하강법)
+
+현재 예측: "개" (틀림)
+정답: "고양이"
+
+→ 오차 계산 → 미분으로 어느 방향으로 수정할지 계산
+→ 경사하강법으로 조금씩 개선
+
+
+3단계: 예측 (확률)
+
+새 사진 입력 →
+고양이: 85%
+개: 10%
+토끼: 5%
+
+→ 확률이 가장 높은 "고양이" 선택</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이 과정 전체가 <span class="key-point">수학 계산의 연속</span>이야.</p>
+                    <p>코드는 이 수학을 실행하는 도구일 뿐이야.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: 수학을 얼마나 알아야 해? -->
+        <div class="conversation">
+            <h2>Part 4. 수학을 얼마나 알아야 해?</h2>
+
+            <div class="chat">
+                <div class="q">그럼 대학 수학을 다 알아야 해?</div>
+                <div class="a">
+                    <p><span class="warning">아니.</span> 생각보다 많지 않아.</p>
+                </div>
+            </div>
+
+            <div class="code-block">AI에 필요한 수학 (우선순위 순):
+
+1. 선형대수 (Linear Algebra)
+   - 벡터, 행렬, 곱셈
+   → AI의 핵심 언어
+
+2. 미적분 (Calculus)
+   - 미분, 편미분, 체인룰
+   → 학습의 핵심 원리
+
+3. 확률/통계 (Probability & Statistics)
+   - 확률, 분포, 평균, 분산
+   → 예측과 평가
+
+4. 기초 수학
+   - 로그, 지수, 시그마 표기법
+   → 수식 읽기</div>
+
+            <div class="chat">
+                <div class="q">이거 배우는 데 얼마나 걸려?</div>
+                <div class="a">
+                    <p><span class="highlight">AI 수준으로만 배우면 1-2개월이면 충분해.</span></p>
+                    <p>수학과 학생처럼 증명까지 다 알 필요는 없어.</p>
+                    <p><strong>"이게 뭔지, 어디에 쓰이는지"</strong>만 알면 돼.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: 수학 vs 코딩 비중 -->
+        <div class="conversation">
+            <h2>Part 5. 수학 vs 코딩 비중은?</h2>
+
+            <div class="chat">
+                <div class="q">그럼 수학이 더 중요해? 코딩이 더 중요해?</div>
+                <div class="a">
+                    <p><span class="key-point">둘 다 필요해. 하지만 역할이 달라.</span></p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>구분</th>
+                    <th>수학</th>
+                    <th>코딩</th>
+                </tr>
+                <tr>
+                    <td><strong>역할</strong></td>
+                    <td>원리 이해</td>
+                    <td>구현 도구</td>
+                </tr>
+                <tr>
+                    <td><strong>언제 쓰나</strong></td>
+                    <td>설계/디버깅/개선</td>
+                    <td>실제 구현/실행</td>
+                </tr>
+                <tr>
+                    <td><strong>없으면</strong></td>
+                    <td>블랙박스만 쓸 수 있음</td>
+                    <td>아무것도 못 만듦</td>
+                </tr>
+                <tr>
+                    <td><strong>학습 방법</strong></td>
+                    <td>개념 이해 중심</td>
+                    <td>실습 중심</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="a">
+                    <p>현실적으로:</p>
+                    <p><strong>초반</strong> → 수학 개념 이해 (30%)</p>
+                    <p><strong>중반</strong> → 코딩으로 구현 연습 (70%)</p>
+                    <p><strong>고급</strong> → 논문 읽고 새 모델 설계 (수학 50%, 코딩 50%)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 6: 수학 공포증 극복 -->
+        <div class="conversation">
+            <h2>Part 6. 수학 못하는데 AI 포기해야 해?</h2>
+
+            <div class="chat">
+                <div class="q">나 수학 진짜 못하는데... AI는 나랑 안 맞는 건가?</div>
+                <div class="a">
+                    <p><span class="warning">절대 아니야.</span></p>
+                    <p><span class="highlight">AI 수학은 학교 수학이랑 완전히 달라.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">학교 수학 vs AI 수학
+
+학교 수학:
+- 복잡한 증명
+- 정확한 풀이 과정
+- 손으로 계산
+→ 너무 어려움
+
+AI 수학:
+- 개념만 이해
+- 컴퓨터가 계산함
+- 코드로 바로 확인 가능
+→ 훨씬 쉬움
+
+예시:
+학교: "이차방정식 근의 공식 증명하시오"
+AI: "미분이 뭔지 알고, 코드로 돌려보면 됨"</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>핵심은 이거야:</strong></p>
+                    <p>수학을 <span class="key-point">"계산 도구"</span>가 아니라 <span class="key-point">"사고 도구"</span>로 배우는 거야.</p>
+                    <p>"이게 왜 필요한지, 어떻게 쓰이는지"만 알면 돼.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>수학은 AI의 언어</strong> - 데이터 표현, 학습, 예측 모두 수학으로 이루어짐</li>
+                <li><strong>코딩은 도구, 수학은 원리</strong> - 둘 다 필요하지만 역할이 다름</li>
+                <li><strong>많이 필요하지 않음</strong> - 선형대수, 미적분, 확률/통계 정도면 충분</li>
+                <li><strong>AI 수학은 쉬움</strong> - 증명보다는 개념 이해와 활용이 중요</li>
+                <li><strong>1-2개월이면 충분</strong> - AI 수준의 수학은 생각보다 빨리 배울 수 있음</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../">← 목록으로</a>
+            <a href="../topic02/">다음: 벡터가 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

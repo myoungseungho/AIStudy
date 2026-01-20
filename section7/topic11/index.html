@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>몬테카를로 트리 탐색이 뭐야? - Section 7</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF5722;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF5722;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #ffebe9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #ffccbc;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #d84315;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #FF5722 0%, #FF7043 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #ffccbc; }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #FF5722; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 7</a>
+            <span>/</span>
+            Topic 11
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 11</div>
+            <h1>몬테카를로 트리 탐색이 뭐야?</h1>
+            <p>Q. 미래를 시뮬레이션한다는 거야?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. MCTS란?</h2>
+
+            <div class="chat">
+                <div class="q">몬테카를로 트리 탐색(MCTS)이 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">가능한 미래를 시뮬레이션해서 최선의 행동을 찾는 알고리즘</span>이야.</p>
+                    <p>알파고의 핵심 기술 중 하나지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 체스 두는 법
+
+사람이 체스 둘 때:
+"내가 이걸 두면..."
+"상대가 저걸 두고..."
+"그럼 내가 이걸 두고..."
+→ 머릿속으로 몇 수 앞을 시뮬레이션
+
+MCTS도 똑같음:
+→ 수천 가지 미래를 빠르게 시뮬레이션
+→ 가장 좋은 결과가 나온 수 선택</div>
+
+            <div class="chat">
+                <div class="q">왜 "몬테카를로"야?</div>
+                <div class="a">
+                    <p><span class="highlight">랜덤 시뮬레이션을 많이 하는 방법</span>이거든.</p>
+                    <p>카지노로 유명한 몬테카를로에서 이름을 따왔어.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. MCTS의 4단계</h2>
+
+            <div class="chat">
+                <div class="q">MCTS는 어떻게 작동해?</div>
+                <div class="a">
+                    <p>4단계를 반복해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">MCTS 4단계:
+
+1. 선택 (Selection)
+   → 트리에서 유망한 노드 선택
+   → UCB 공식으로 탐험-활용 균형
+
+2. 확장 (Expansion)
+   → 새로운 자식 노드 추가
+   → 아직 탐험 안 한 행동
+
+3. 시뮬레이션 (Simulation / Rollout)
+   → 끝까지 랜덤 플레이
+   → 승/패 결과 얻기
+
+4. 역전파 (Backpropagation)
+   → 결과를 부모 노드들에 전파
+   → 방문 횟수, 승률 업데이트
+
+→ 이걸 수천 번 반복!
+→ 가장 방문 많은 수 선택</div>
+
+            <div class="code-block">트리 구조:
+
+              현재 판 (루트)
+            /     |     \
+          수A    수B    수C
+         / | \   / \    / | \
+       ...  ...  ...  ...  ...
+
+각 노드 정보:
+- 방문 횟수 (N)
+- 승리 횟수 (W)
+- 승률 (W/N)</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 선택 단계 - UCB</h2>
+
+            <div class="chat">
+                <div class="q">유망한 노드는 어떻게 고르는데?</div>
+                <div class="a">
+                    <p><span class="key-point">UCB (Upper Confidence Bound)</span> 공식을 써.</p>
+                </div>
+            </div>
+
+            <div class="code-block">UCB 공식:
+
+UCB = 활용 점수 + 탐험 보너스
+
+UCB(node) = W/N + C × √(ln(부모 N) / N)
+
+W: 승리 횟수
+N: 방문 횟수
+C: 탐험 상수 (보통 √2)
+
+
+의미:
+활용 (W/N):
+→ 승률이 높은 수 선택
+
+탐험 (√...):
+→ 덜 탐험한 수에 보너스
+→ N이 작으면 보너스 큼</div>
+
+            <div class="code-block">예시:
+
+현재 노드의 자식들:
+
+수 A: W=10, N=20
+→ 승률: 10/20 = 50%
+→ 방문 적음
+→ UCB = 0.50 + 0.5 = 1.0
+
+수 B: W=30, N=40
+→ 승률: 30/40 = 75%
+→ 방문 많음
+→ UCB = 0.75 + 0.3 = 1.05  ← 선택!
+
+수 C: W=5, N=10
+→ 승률: 5/10 = 50%
+→ 방문 매우 적음
+→ UCB = 0.50 + 0.7 = 1.2  ← 다음에 탐험할 가치!
+
+→ 승률도 보고, 탐험도 고려</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">UCB는 자동으로 탐험-활용 균형을 맞춰줘.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. MCTS 실행 예시</h2>
+
+            <div class="chat">
+                <div class="q">구체적인 예시를 보여줘.</div>
+                <div class="a">
+                    <p>틱택토로 설명할게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">초기 상태:
+
+  X | O |
+ -----------
+    | X |
+ -----------
+    |   |
+
+가능한 수: 6개
+
+
+반복 1:
+1. 선택: 루트 → 수1 (랜덤)
+2. 확장: 수1의 자식 추가
+3. 시뮬레이션: 끝까지 랜덤 플레이 → X 승
+4. 역전파: 수1의 승률 업데이트
+   수1: W=1, N=1
+
+
+반복 100:
+수1: W=45, N=50 (승률 90%)
+수2: W=10, N=30 (승률 33%)
+수3: W=15, N=20 (승률 75%)
+
+→ 수1이 가장 좋음!
+
+
+반복 1000:
+수1: W=520, N=600 (승률 87%)
+수2: W=80, N=200 (승률 40%)
+수3: W=120, N=200 (승률 60%)
+
+→ 수1 선택!</div>
+
+            <div class="code-block">시뮬레이션 과정:
+
+선택한 수: 왼쪽 위
+
+시뮬레이션:
+X 둠 (0,0) → O 랜덤 둠 → X 랜덤 둠 → ...
+→ 결과: X 승!
+
+또 시뮬레이션:
+X 둠 (0,0) → O 랜덤 둠 → X 랜덤 둠 → ...
+→ 결과: O 승
+
+... 수백 번 반복 ...
+
+평균 승률 계산:
+→ 수1로 두면 87% 승률!
+→ 이 수가 최선이구나</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. MCTS의 장점</h2>
+
+            <div class="chat">
+                <div class="q">MCTS가 왜 좋아?</div>
+                <div class="a">
+                    <p>여러 장점이 있어.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>장점</th>
+                    <th>설명</th>
+                </tr>
+                <tr>
+                    <td><strong>도메인 지식 불필요</strong></td>
+                    <td>게임 규칙만 알면 됨, 전략을 몰라도 OK</td>
+                </tr>
+                <tr>
+                    <td><strong>점진적 개선</strong></td>
+                    <td>시간 많을수록 더 좋은 답 찾음</td>
+                </tr>
+                <tr>
+                    <td><strong>불균형 트리</strong></td>
+                    <td>유망한 경로만 집중 탐색 (효율적)</td>
+                </tr>
+                <tr>
+                    <td><strong>확률적 견고성</strong></td>
+                    <td>확률적 환경에도 잘 작동</td>
+                </tr>
+            </table>
+
+            <div class="code-block">효율성:
+
+기존 트리 탐색 (minimax):
+→ 모든 가능성을 골고루 탐색
+→ 나쁜 수도 많은 시간 소비
+
+MCTS:
+→ 좋은 수에 더 많은 시간 할애
+→ 나쁜 수는 빠르게 무시
+
+예: 바둑
+가능한 수: 250개
+
+Minimax:
+→ 250개 모두 똑같이 탐색
+→ 비효율적
+
+MCTS:
+→ 좋은 수 10개에 대부분 시간
+→ 나쁜 수 240개는 거의 무시
+→ 훨씬 효율적!</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. MCTS의 한계와 개선</h2>
+
+            <div class="chat">
+                <div class="q">MCTS도 약점이 있어?</div>
+                <div class="a">
+                    <p>물론이지. 그래서 알파고는 개선했어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">순수 MCTS의 약점:
+
+1. 랜덤 시뮬레이션이 부정확
+   → 끝까지 랜덤으로 두면 현실성 없음
+   → 실제 게임과 다름
+
+2. 긴 게임에 불리
+   → 바둑은 150수 이상
+   → 시뮬레이션이 너무 오래 걸림
+
+3. 복잡한 판 평가 어려움
+   → 랜덤으로는 좋은 판 찾기 힘듦</div>
+
+            <div class="code-block">알파고의 개선:
+
+1. Policy Network로 시뮬레이션
+   순수 MCTS:
+   → 랜덤으로 끝까지 둠
+
+   알파고:
+   → 학습된 네트워크로 그럴듯하게 둠
+   → 훨씬 현실적인 시뮬레이션
+
+2. Value Network로 평가
+   순수 MCTS:
+   → 끝까지 둬야 승패 알 수 있음
+
+   알파고:
+   → 중간 판도 승률 예측 가능
+   → 시뮬레이션 생략 가능
+
+3. 조합
+   MCTS + Policy Network + Value Network
+   → 시너지 효과
+   → 인간을 뛰어넘는 성능!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">MCTS는 탐색 알고리즘, 딥러닝은 평가 함수</span></p>
+                    <p><strong>둘을 결합하면 최강</strong>이 되는 거야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>MCTS</strong> - 미래를 시뮬레이션해서 최선의 수 찾기</li>
+                <li><strong>4단계</strong> - 선택, 확장, 시뮬레이션, 역전파</li>
+                <li><strong>UCB</strong> - 탐험과 활용의 자동 균형</li>
+                <li><strong>장점</strong> - 도메인 지식 불필요, 점진적 개선</li>
+                <li><strong>알파고</strong> - MCTS + 딥러닝으로 초인적 성능 달성</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic10/">← 이전: 알파고는 어떻게 이겼어?</a>
+            <a href="../topic12/">다음: 정책 경사법이 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

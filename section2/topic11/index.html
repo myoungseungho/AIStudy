@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>통계는 왜 배워야 해? - Section 2</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF9800;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF9800;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #fff3e0;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #fff3e0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #e65100;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #FF9800 0%, #FFB74D 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fff3e0;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #FF9800; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 2</a>
+            <span>/</span>
+            Topic 11
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 11</div>
+            <h1>통계는 왜 배워야 해?</h1>
+            <p>Q. 평균이랑 분산이 AI에 어떻게 쓰여?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 평균(Mean)</h2>
+
+            <div class="chat">
+                <div class="q">평균은 알잖아. AI랑 무슨 상관이야?</div>
+                <div class="a">
+                    <p><span class="key-point">데이터의 중심을 파악하려고</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">평균:
+
+μ = (Σx_i) / n
+
+예시:
+데이터: [2, 4, 6, 8, 10]
+평균 = (2+4+6+8+10)/5 = 30/5 = 6
+
+
+AI에서:
+1. 배치 정규화
+   → 각 층의 출력을 평균 0으로 조정
+
+2. 평균 손실 계산
+   → MSE = 평균 제곱 오차
+
+3. 데이터 중심화
+   → 학습 전에 평균 빼기</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 분산(Variance)과 표준편차</h2>
+
+            <div class="chat">
+                <div class="q">분산은 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">데이터가 평균에서 얼마나 퍼져있는지</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">분산:
+
+σ² = Σ(x_i - μ)² / n
+
+표준편차:
+σ = √분산
+
+
+예시 1 (분산 작음):
+데이터: [5, 6, 6, 7]
+평균 = 6
+분산 = ((5-6)² + (6-6)² + (6-6)² + (7-6)²) / 4 = 0.5
+→ 데이터가 뭉쳐있음
+
+
+예시 2 (분산 큼):
+데이터: [0, 2, 10, 12]
+평균 = 6
+분산 = ((0-6)² + (2-6)² + (10-6)² + (12-6)²) / 4 = 26
+→ 데이터가 널리 퍼져있음
+
+
+AI에서:
+1. 배치 정규화
+   → 분산을 1로 조정
+
+2. 가중치 초기화
+   → 분산을 고려해서 초기값 설정
+
+3. 데이터 정규화
+   → (x - μ) / σ</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 배치 정규화(Batch Normalization)</h2>
+
+            <div class="chat">
+                <div class="q">배치 정규화가 뭐길래 자주 나와?</div>
+                <div class="a">
+                    <p><span class="highlight">딥러닝의 핵심 기법</span></p>
+                    <p>각 층의 출력을 정규화해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">문제:
+
+층1 출력: [100, 200, 150, ...]  평균=150, 분산=큼
+층2 출력: [0.1, 0.3, 0.2, ...]  평균=0.2, 분산=작음
+
+→ 층마다 데이터 분포가 달라짐
+→ 학습이 불안정해짐
+
+
+해결: Batch Normalization
+
+1. 배치 평균 계산: μ
+2. 배치 분산 계산: σ²
+3. 정규화: x_norm = (x - μ) / σ
+4. 스케일/시프트: y = γ×x_norm + β
+
+결과:
+→ 평균 0, 분산 1로 표준화
+→ 학습이 안정적이고 빨라짐
+→ 학습률을 높게 설정 가능</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 공분산과 상관계수</h2>
+
+            <div class="chat">
+                <div class="q">공분산은 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">두 변수가 함께 변하는 정도</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">공분산:
+
+Cov(X, Y) = Σ(x_i - μ_x)(y_i - μ_y) / n
+
+
+해석:
+- 양수: X 증가 → Y도 증가 (양의 상관)
+- 음수: X 증가 → Y 감소 (음의 상관)
+- 0: 상관없음
+
+
+상관계수 (정규화된 공분산):
+
+r = Cov(X, Y) / (σ_x × σ_y)
+
+→ -1 ~ 1 사이
+→ -1: 완전 음의 상관
+→ 0: 무관
+→ 1: 완전 양의 상관
+
+
+AI에서:
+1. 특징 선택
+   → 상관이 높은 특징은 하나만
+
+2. PCA (주성분 분석)
+   → 공분산 행렬 사용
+
+3. 데이터 전처리
+   → 다중공선성 제거</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 실전 사용</h2>
+
+            <div class="chat">
+                <div class="q">코드로는 어떻게 써?</div>
+                <div class="a">
+                    <p>NumPy와 PyTorch 예시:</p>
+                </div>
+            </div>
+
+            <div class="code-block">import numpy as np
+
+# 평균과 분산
+data = np.array([2, 4, 6, 8, 10])
+mean = np.mean(data)  # 6.0
+var = np.var(data)    # 8.0
+std = np.std(data)    # 2.828
+
+# 정규화
+normalized = (data - mean) / std
+print(normalized)
+# [-1.41 -0.71  0.    0.71  1.41]
+
+# 배치 정규화 (PyTorch)
+import torch
+import torch.nn as nn
+
+bn = nn.BatchNorm1d(num_features=10)
+
+x = torch.randn(32, 10)  # 배치 32, 특징 10
+output = bn(x)
+
+print(x.mean())      # ~0 (랜덤)
+print(output.mean()) # ~0 (정규화됨)
+print(output.std())  # ~1 (정규화됨)</div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>평균 = 중심</strong> - 데이터의 대표값</li>
+                <li><strong>분산 = 퍼진 정도</strong> - 데이터의 변동성</li>
+                <li><strong>배치 정규화</strong> - 평균 0, 분산 1로 표준화</li>
+                <li><strong>공분산 = 함께 변하는 정도</strong> - 두 변수의 관계</li>
+                <li><strong>정규화는 필수</strong> - AI 학습의 안정성과 속도 향상</li>
+                <li><strong>통계로 데이터 이해</strong> - 전처리와 분석의 기초</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic10/">← 이전: 확률은 AI랑 무슨 관계야?</a>
+            <a href="../topic12/">다음: 정규분포가 왜 중요해? →</a>
+        </div>
+    </div>
+</body>
+</html>

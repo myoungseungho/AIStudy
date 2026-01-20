@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>옵티마이저가 뭐야? - Section 4</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #9C27B0;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #9C27B0;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f3e5f5;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #f3e5f5;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #6a1b9a;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #f3e5f5;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #9C27B0; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 4</a>
+            <span>/</span>
+            Topic 13
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 13</div>
+            <h1>옵티마이저가 뭐야?</h1>
+            <p>Q. SGD, Adam은 뭐가 달라?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 옵티마이저란?</h2>
+
+            <div class="chat">
+                <div class="q">옵티마이저(Optimizer)가 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">가중치를 어떻게 업데이트할지 결정하는 알고리즘</span>이야.</p>
+                    <p>같은 기울기라도 옵티마이저에 따라 업데이트 방식이 달라져.</p>
+                </div>
+            </div>
+
+            <div class="code-block">기본 개념:
+
+기울기 (Gradient):
+- 역전파로 계산된 방향과 크기
+- "이쪽으로 가면 손실이 줄어들어요"
+
+옵티마이저:
+- 기울기를 받아서 실제 업데이트 수행
+- "얼마나, 어떻게 이동할까요?"
+
+w_new = w_old - optimizer(gradient)
+
+
+비유:
+기울기 = GPS가 알려주는 방향
+옵티마이저 = 운전자의 주행 스타일
+
+- 조심스러운 운전자 (SGD)
+- 빠른 운전자 (Adam)
+- 균형잡힌 운전자 (RMSprop)</code>
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. SGD (가장 기본)</h2>
+
+            <div class="chat">
+                <div class="q">SGD가 뭐야?</div>
+                <div class="a">
+                    <p><span class="highlight">Stochastic Gradient Descent</span></p>
+                    <p>확률적 경사 하강법. 가장 기본적인 옵티마이저야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">SGD 공식:
+
+w = w - lr × gradient
+
+장점:
+✅ 간단하고 이해하기 쉬움
+✅ 메모리 사용량 적음
+✅ 일반화 성능 좋음
+
+단점:
+❌ 학습 속도 느림
+❌ 지역 최솟값에 갇힐 수 있음
+❌ 학습률 설정이 까다로움
+❌ 차원마다 다른 학습률 필요한 경우 대응 어려움
+
+
+SGD with Momentum (개선판):
+
+v = momentum × v - lr × gradient
+w = w + v
+
+- 이전 방향 정보 활용
+- 관성(momentum) 효과
+- 지역 최솟값 탈출 쉬움
+
+보통 momentum = 0.9 사용</code>
+        </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. Adam (가장 인기)</h2>
+
+            <div class="chat">
+                <div class="q">Adam은 뭐가 다른데?</div>
+                <div class="a">
+                    <p><span class="highlight">Adaptive Moment Estimation</span></p>
+                    <p>현재 가장 많이 쓰이는 옵티마이저야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Adam의 특징:
+
+1. Momentum (1차 모멘트)
+   - 기울기의 이동 평균
+   - 방향 정보
+
+2. RMSprop (2차 모멘트)
+   - 기울기 제곱의 이동 평균
+   - 크기 정보
+
+3. Adaptive Learning Rate
+   - 파라미터마다 다른 학습률
+   - 자동으로 조정
+
+
+공식 (간단히):
+m = β₁ × m + (1-β₁) × gradient
+v = β₂ × v + (1-β₂) × gradient²
+w = w - lr × m / (√v + ε)
+
+기본 하이퍼파라미터:
+lr = 0.001
+β₁ = 0.9 (momentum)
+β₂ = 0.999 (RMSprop)
+ε = 1e-8
+
+
+장점:
+✅ 빠른 수렴
+✅ 학습률 자동 조정
+✅ 하이퍼파라미터에 둔감
+✅ 대부분의 경우 잘 작동
+
+단점:
+❌ 메모리 사용량 많음 (2배)
+❌ 일반화 성능이 SGD보다 약간 낮을 수 있음
+❌ 때때로 수렴 안 함</code>
+        </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 주요 옵티마이저 비교</h2>
+
+            <table class="compare-table">
+                <tr>
+                    <th>옵티마이저</th>
+                    <th>특징</th>
+                    <th>장점</th>
+                    <th>단점</th>
+                </tr>
+                <tr>
+                    <td><strong>SGD</strong></td>
+                    <td>기본 경사하강</td>
+                    <td>간단, 일반화 좋음</td>
+                    <td>느림, 튜닝 어려움</td>
+                </tr>
+                <tr>
+                    <td><strong>Momentum</strong></td>
+                    <td>관성 추가</td>
+                    <td>빠름, 진동 감소</td>
+                    <td>하이퍼파라미터 추가</td>
+                </tr>
+                <tr>
+                    <td><strong>RMSprop</strong></td>
+                    <td>적응적 학습률</td>
+                    <td>차원별 조정</td>
+                    <td>불안정할 수 있음</td>
+                </tr>
+                <tr>
+                    <td><strong>Adam</strong></td>
+                    <td>Momentum + RMSprop</td>
+                    <td>빠름, 안정적</td>
+                    <td>메모리 많이 씀</td>
+                </tr>
+                <tr>
+                    <td><strong>AdamW</strong></td>
+                    <td>Adam + Weight Decay</td>
+                    <td>정규화 개선</td>
+                    <td>약간 복잡</td>
+                </tr>
+                <tr>
+                    <td><strong>Adagrad</strong></td>
+                    <td>파라미터별 학습률</td>
+                    <td>희소 데이터에 좋음</td>
+                    <td>학습률 감소 문제</td>
+                </tr>
+            </table>
+
+            <div class="code-block">PyTorch 코드:
+
+import torch.optim as optim
+
+# SGD
+optimizer = optim.SGD(
+    model.parameters(),
+    lr=0.01,
+    momentum=0.9
+)
+
+# Adam
+optimizer = optim.Adam(
+    model.parameters(),
+    lr=0.001,
+    betas=(0.9, 0.999)
+)
+
+# AdamW (Adam + Weight Decay)
+optimizer = optim.AdamW(
+    model.parameters(),
+    lr=0.001,
+    weight_decay=0.01
+)
+
+# RMSprop
+optimizer = optim.RMSprop(
+    model.parameters(),
+    lr=0.01,
+    alpha=0.99
+)</code>
+        </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 어떤 걸 써야 해?</h2>
+
+            <div class="chat">
+                <div class="q">실전에서는 뭘 써야 돼?</div>
+                <div class="a">
+                    <p>상황에 따라 다르지만 가이드라인을 줄게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">선택 가이드:
+
+일반적인 경우:
+→ Adam (무난하고 빠름)
+
+최고 성능 필요 (논문, 대회):
+→ SGD + Momentum (느리지만 최고 성능)
+
+Transformer (NLP):
+→ AdamW (가장 표준)
+
+CNN (이미지):
+→ SGD + Momentum 또는 Adam
+
+GAN:
+→ Adam (β₁=0.5로 조정)
+
+강화학습:
+→ Adam
+
+메모리 부족:
+→ SGD (메모리 효율적)
+
+
+실전 전략:
+
+1단계: Adam으로 빠르게 프로토타입
+2단계: 성능 중요하면 SGD로 재학습
+3단계: 하이퍼파라미터 튜닝</code>
+        </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 최신 트렌드</h2>
+
+            <div class="code-block">최신 옵티마이저:
+
+1. AdamW (2019)
+   - Transformer 표준
+   - Weight decay 개선
+   - GPT, BERT 등에서 사용
+
+2. LAMB (2019)
+   - 큰 배치 학습용
+   - BERT 학습 속도 향상
+
+3. RAdam (2019)
+   - Adam의 초기 불안정성 해결
+   - Warmup 불필요
+
+4. Lookahead (2019)
+   - 다른 옵티마이저와 결합
+   - 안정성 향상
+
+5. Sophia (2023)
+   - 2차 미분 정보 활용
+   - GPT-2 학습 2배 빠름
+
+
+현재 트렌드:
+- 대부분: Adam 또는 AdamW
+- 이미지 분류: SGD + Momentum
+- Transformer: AdamW
+- 연구 최전선: Sophia, Lion 등 실험</code>
+        </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>옵티마이저 = 업데이트 전략</strong> - 기울기를 어떻게 사용할지 결정</li>
+                <li><strong>SGD = 기본</strong> - 간단하지만 느림, 일반화 좋음</li>
+                <li><strong>Adam = 인기</strong> - 빠르고 안정적, 대부분의 경우 추천</li>
+                <li><strong>상황별 선택</strong> - 프로토타입은 Adam, 최고 성능은 SGD</li>
+                <li><strong>AdamW가 트렌드</strong> - Transformer에서 표준</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic12/">← 이전: 학습률은 어떻게 정해?</a>
+            <a href="../topic14/">다음: 에폭, 배치, 이터레이션이 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

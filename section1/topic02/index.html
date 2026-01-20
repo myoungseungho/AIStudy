@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI를 본 적 있어? - Section 1</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+
+        .breadcrumb {
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #4CAF50;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e8f5e9;
+        }
+
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before {
+            content: "Q. ";
+            color: #e65100;
+            font-weight: 700;
+        }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #c8e6c9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #2e7d32;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .summary-box ul {
+            list-style: none;
+        }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #c8e6c9;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 1</a>
+            <span>/</span>
+            Topic 02
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 02</div>
+            <h1>AI를 본 적 있어?</h1>
+            <p>Q. ChatGPT, 시리, 알렉사... 이게 다 AI야?</p>
+        </header>
+
+        <!-- Part 1: 이미 주변에 있다 -->
+        <div class="conversation">
+            <h2>Part 1. AI는 이미 네 주변에 있어</h2>
+
+            <div class="chat">
+                <div class="q">AI가 뭔지는 알겠는데, 나는 AI를 써본 적이 없는 것 같아.</div>
+                <div class="a">
+                    <p><span class="warning">착각이야.</span></p>
+                    <p><span class="key-point">너 이미 매일 AI 쓰고 있어.</span></p>
+                </div>
+            </div>
+
+            <div class="chat">
+                <div class="q">무슨 소리야? 나 ChatGPT도 안 쓰는데?</div>
+                <div class="a">
+                    <p>ChatGPT만 AI가 아니야. 생각해봐:</p>
+                </div>
+            </div>
+
+            <div class="code-block">너 어제 한 일:
+
+아침: 스마트폰 알람 끄기
+→ "헤이 시리, 알람 꺼줘" ← AI
+
+출근길: 넷플릭스/유튜브 추천 영상 봄
+→ "너가 좋아할 만한 영상" ← AI
+
+점심: 검색하면서 자동완성 사용
+→ "검색어 자동 완성" ← AI
+
+저녁: 인스타그램 스크롤
+→ "피드 정렬 알고리즘" ← AI
+
+밤: 스팸 메일 필터링
+→ "이 메일은 스팸입니다" ← AI
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>보여? <span class="highlight">AI는 이미 네 일상 구석구석에 있어.</span></p>
+                    <p>그냥 "AI입니다!"라고 광고를 안 해서 몰랐을 뿐이지.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: 보이지 않는 AI -->
+        <div class="conversation">
+            <h2>Part 2. 보이지 않는 AI들</h2>
+
+            <div class="chat">
+                <div class="q">그럼 내가 모르는 사이에 AI가 뭘 하고 있는 거야?</div>
+                <div class="a">
+                    <p>엄청 많아. 몇 가지만 볼게:</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>서비스</th>
+                    <th>AI가 하는 일</th>
+                    <th>네가 경험하는 것</th>
+                </tr>
+                <tr>
+                    <td><strong>넷플릭스</strong></td>
+                    <td>시청 패턴 분석 → 추천</td>
+                    <td>"지금 뜨는 콘텐츠"</td>
+                </tr>
+                <tr>
+                    <td><strong>유튜브</strong></td>
+                    <td>영상 내용 분석 → 추천</td>
+                    <td>홈 화면 추천 영상</td>
+                </tr>
+                <tr>
+                    <td><strong>구글 포토</strong></td>
+                    <td>얼굴 인식 → 자동 분류</td>
+                    <td>"사람별로 사진 모아보기"</td>
+                </tr>
+                <tr>
+                    <td><strong>스마트폰 카메라</strong></td>
+                    <td>피사체 인식 → 최적 모드</td>
+                    <td>"야간 모드 자동 전환"</td>
+                </tr>
+                <tr>
+                    <td><strong>카카오톡</strong></td>
+                    <td>텍스트 분석 → 이모티콘 추천</td>
+                    <td>입력창 위 추천 이모티콘</td>
+                </tr>
+                <tr>
+                    <td><strong>네이버 쇼핑</strong></td>
+                    <td>클릭 패턴 분석 → 추천</td>
+                    <td>"이 상품은 어때요?"</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="key-point">AI는 "ChatGPT처럼 대화하는 것"만 의미하지 않아.</span></p>
+                    <p><strong>패턴을 인식하고 예측하는 모든 시스템</strong>이 AI야.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: 오래된 AI vs 최신 AI -->
+        <div class="conversation">
+            <h2>Part 3. 그럼 시리도 ChatGPT랑 똑같아?</h2>
+
+            <div class="chat">
+                <div class="q">시리, 알렉사, 빅스비도 AI잖아. 근데 ChatGPT랑 느낌이 다른데?</div>
+                <div class="a">
+                    <p><span class="highlight">맞아, 세대가 다른 거야.</span></p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th></th>
+                    <th>구세대 AI (시리, 알렉사)</th>
+                    <th>신세대 AI (ChatGPT, Gemini)</th>
+                </tr>
+                <tr>
+                    <td><strong>방식</strong></td>
+                    <td>명령어 기반</td>
+                    <td>대화 기반</td>
+                </tr>
+                <tr>
+                    <td><strong>정해진 답변</strong></td>
+                    <td>O (미리 프로그래밍)</td>
+                    <td>X (실시간 생성)</td>
+                </tr>
+                <tr>
+                    <td><strong>복잡한 질문</strong></td>
+                    <td>잘 못함</td>
+                    <td>잘함</td>
+                </tr>
+                <tr>
+                    <td><strong>맥락 이해</strong></td>
+                    <td>약함</td>
+                    <td>강함</td>
+                </tr>
+                <tr>
+                    <td><strong>비유</strong></td>
+                    <td>리모컨 (버튼 눌러야 작동)</td>
+                    <td>비서 (알아서 이해)</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="q">그럼 시리는 진짜 AI가 아닌 거야?</div>
+                <div class="a">
+                    <p><span class="warning">아니야, AI는 맞아.</span></p>
+                    <p>다만 <strong>AI 기술의 수준</strong>이 다른 거지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유:
+
+자동차도 세대가 있잖아?
+- 1990년대 자동차 = 수동 변속기
+- 2020년대 자동차 = 자율주행
+
+둘 다 "자동차"는 맞아.
+근데 기술 수준이 다른 거지.
+
+AI도 마찬가지:
+- 2011년 시리 = 명령어 인식 AI
+- 2023년 ChatGPT = 생성형 AI
+
+둘 다 "AI"는 맞아.
+근데 기술 수준이 다른 거야.
+</div>
+        </div>
+
+        <!-- Part 4: 인식 못하는 이유 -->
+        <div class="conversation">
+            <h2>Part 4. 왜 AI인 줄 몰랐을까?</h2>
+
+            <div class="chat">
+                <div class="q">그럼 왜 나는 이게 AI인 줄 몰랐어?</div>
+                <div class="a">
+                    <p><strong>이유 1: 너무 자연스러워서</strong></p>
+                    <p>AI가 잘 작동하면, 그냥 "원래 그런가 보다" 생각하게 돼.</p>
+                </div>
+            </div>
+
+            <div class="code-block">예시:
+
+유튜브 추천 영상
+→ "아, 유튜브가 내 취향을 안다"
+→ "AI가 학습했구나"라고 생각 안 함
+
+구글 번역
+→ "오, 번역이 잘 되네"
+→ "AI가 번역하는구나"라고 생각 안 함
+
+얼굴 인식 잠금 해제
+→ "편하네"
+→ "AI가 내 얼굴 인식하는구나"라고 생각 안 함
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>이유 2: "AI"라고 부르지 않아서</strong></p>
+                    <p>회사들이 굳이 "이건 AI입니다!"라고 광고하지 않아.</p>
+                    <p>그냥 "스마트 추천", "자동 필터", "맞춤형" 같은 말을 쓰지.</p>
+                </div>
+            </div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>이유 3: 결과만 보고 과정은 안 봐서</strong></p>
+                    <p>AI는 <span class="highlight">백그라운드에서 작동</span>해.</p>
+                    <p>너는 결과만 보지, AI가 뭘 했는지는 안 보는 거야.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: 실전 확인 -->
+        <div class="conversation">
+            <h2>Part 5. 직접 찾아보기</h2>
+
+            <div class="chat">
+                <div class="q">그럼 내가 쓰는 앱 중에 AI가 어디 있는지 어떻게 알아?</div>
+                <div class="a">
+                    <p>간단한 체크리스트:</p>
+                </div>
+            </div>
+
+            <div class="code-block">AI가 있는지 확인하는 법:
+
+✅ "추천"이라는 말이 나오는가?
+   → 추천 = AI가 패턴 학습
+
+✅ "자동"이라는 말이 나오는가?
+   → 자동 태그, 자동 분류 = AI가 인식
+
+✅ "검색"이 똑똑한가?
+   → 오타도 알아듣기, 연관 검색어 = AI가 분석
+
+✅ "알림"이 정확한가?
+   → "관심 있을 만한 소식" = AI가 예측
+
+✅ "필터"가 작동하는가?
+   → 스팸 필터, 유해 콘텐츠 차단 = AI가 판단
+</div>
+
+            <div class="chat">
+                <div class="q">그럼 거의 모든 앱에 AI가 있는 거네?</div>
+                <div class="a">
+                    <p><span class="key-point">맞아. 2024년 기준으로 대부분의 앱에 AI가 있어.</span></p>
+                    <p>AI가 없으면 경쟁에서 밀리기 때문이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">AI 없는 앱 vs AI 있는 앱:
+
+음악 앱 (AI 없음)
+→ 내가 직접 플레이리스트 만듦
+→ 새 음악은 일일이 검색
+
+음악 앱 (AI 있음)
+→ "취향 맞춤 플레이리스트" 자동 생성
+→ "이 노래 어때?" 추천
+
+→ 당연히 AI 있는 앱이 이기겠지?
+</div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>AI는 이미 일상에 있다</strong> - 넷플릭스, 유튜브, 구글, 인스타그램 전부 AI 사용</li>
+                <li><strong>눈에 안 보일 뿐</strong> - 백그라운드에서 작동해서 AI인 줄 모름</li>
+                <li><strong>세대 차이</strong> - 시리(구세대) vs ChatGPT(신세대), 둘 다 AI지만 수준이 다름</li>
+                <li><strong>확인법</strong> - "추천", "자동", "맞춤형" 같은 키워드가 있으면 AI</li>
+                <li><strong>대부분의 앱에 있다</strong> - 2024년 기준, AI 없으면 경쟁력 없음</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic01/">← 이전: ChatGPT, Midjourney... 원리는 같아?</a>
+            <a href="../topic03/">다음: 인공지능은 정말 '지능'이 있어? →</a>
+        </div>
+    </div>
+</body>
+</html>

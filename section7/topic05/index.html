@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>탐험과 활용이 뭐야? - Section 7</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+
+        .breadcrumb {
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF5722;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF5722;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #ffebe9;
+        }
+
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before {
+            content: "Q. ";
+            color: #e65100;
+            font-weight: 700;
+        }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #ffccbc;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #d84315;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #FF5722 0%, #FF7043 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .summary-box ul {
+            list-style: none;
+        }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #ffccbc;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #FF5722;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 7</a>
+            <span>/</span>
+            Topic 05
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 05</div>
+            <h1>탐험과 활용이 뭐야?</h1>
+            <p>Q. 새로운 걸 시도 vs 아는 걸 반복?</p>
+        </header>
+
+        <!-- Part 1: 탐험-활용 딜레마 -->
+        <div class="conversation">
+            <h2>Part 1. 탐험-활용 딜레마란?</h2>
+
+            <div class="chat">
+                <div class="q">탐험(Exploration)이랑 활용(Exploitation)이 뭐야?</div>
+                <div class="a">
+                    <p>강화학습의 가장 핵심적인 트레이드오프야.</p>
+                    <p><span class="key-point">탐험 = 새로운 것 시도하기 (혹시 더 좋을지도?)</span></p>
+                    <p><span class="key-point">활용 = 아는 것 중 최선 선택하기 (확실한 보상)</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 식당 선택
+
+상황: 저녁 먹으러 갈 식당 고르기
+
+활용 (Exploitation):
+→ 내가 알고 있는 맛집 중 가장 좋은 곳
+→ "저 식당은 항상 맛있어. 거기 가자."
+→ 확실한 만족도 보장
+
+탐험 (Exploration):
+→ 가본 적 없는 새로운 식당
+→ "새로 생긴 식당인데 혹시 더 맛있을까?"
+→ 위험하지만 더 좋을 수도 있음
+
+
+딜레마:
+→ 활용만 하면: 더 좋은 식당을 못 찾음
+→ 탐험만 하면: 확실한 만족을 못 얻음</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="highlight">둘 사이의 균형이 중요</span>해.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: 강화학습에서의 탐험-활용 -->
+        <div class="conversation">
+            <h2>Part 2. 강화학습에서는 어떻게 작동해?</h2>
+
+            <div class="chat">
+                <div class="q">게임 AI는 어떻게 탐험하고 활용해?</div>
+                <div class="a">
+                    <p>구체적인 예시로 보자.</p>
+                </div>
+            </div>
+
+            <div class="code-block">슈퍼마리오 예시:
+
+시작 단계 (탐험 필요):
+→ AI가 게임을 처음 배움
+→ 어떤 행동이 좋은지 모름
+→ 여러 행동을 랜덤하게 시도
+
+  시도 1: 오른쪽으로 걷기 → 코인 획득 (+10)
+  시도 2: 왼쪽으로 걷기 → 구멍에 빠짐 (-100)
+  시도 3: 점프 → 적 처치 (+50)
+
+학습 중간 (탐험 + 활용):
+→ 어느 정도 좋은 전략 발견
+→ 대부분은 아는 전략 사용
+→ 가끔 새로운 것 시도
+
+  90%: 점프로 적 처치 (확실한 방법)
+  10%: 새로운 루트 탐색 (혹시 지름길?)
+
+완전 학습 (주로 활용):
+→ 최적 전략 발견
+→ 거의 항상 최선의 행동
+→ 가끔만 새로운 시도
+
+  99%: 최적 경로로 플레이
+  1%: 여전히 가끔 탐험 (더 좋은 방법?)</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">학습 초반에는 탐험을 많이, 후반에는 활용을 많이</span>해.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: 탐험 전략들 -->
+        <div class="conversation">
+            <h2>Part 3. 어떻게 탐험할까?</h2>
+
+            <div class="chat">
+                <div class="q">탐험을 어떻게 구현하는데?</div>
+                <div class="a">
+                    <p>여러 가지 전략이 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">1. 엡실론-그리디 (ε-greedy)
+
+가장 간단한 방법:
+
+if random() < ε:
+    # 탐험: 랜덤 행동
+    action = random_action()
+else:
+    # 활용: 최선의 행동
+    action = best_action()
+
+예: ε = 0.1 (10%)
+→ 10% 확률로 랜덤 행동
+→ 90% 확률로 최선의 행동
+
+학습 중 ε를 감소시킴:
+초반: ε = 1.0 (100% 탐험)
+중반: ε = 0.1 (10% 탐험)
+후반: ε = 0.01 (1% 탐험)</div>
+
+            <div class="code-block">2. 볼츠만 탐험 (Softmax)
+
+확률적으로 행동 선택:
+
+각 행동의 가치에 비례해서 확률 부여
+
+행동 A 가치: 10 → 확률 50%
+행동 B 가치: 8  → 확률 40%
+행동 C 가치: 2  → 확률 10%
+
+→ 나쁜 행동도 가끔 시도
+→ 좋은 행동을 더 자주 시도</div>
+
+            <div class="code-block">3. UCB (Upper Confidence Bound)
+
+불확실성을 고려:
+
+action_score = 평균_보상 + 탐험_보너스
+
+탐험_보너스 = sqrt(log(총_시도횟수) / 이_행동_시도횟수)
+
+→ 안 해본 행동에 보너스 부여
+→ 자동으로 탐험-활용 균형</div>
+
+            <div class="code-block">4. 호기심 기반 탐험
+
+새로운 상태에 보너스:
+
+if 이_상태를_처음_봄:
+    reward += curiosity_bonus
+
+→ AI가 "새로운 것"을 탐험하도록 유도
+→ 미로 게임에 효과적</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">엡실론-그리디가 가장 많이 쓰여.</span></p>
+                    <p>간단하고 효과적이거든.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: 탐험이 부족하면? -->
+        <div class="conversation">
+            <h2>Part 4. 탐험이 부족하면 무슨 일이?</h2>
+
+            <div class="chat">
+                <div class="q">탐험을 안 하면 어떻게 돼?</div>
+                <div class="a">
+                    <p><span class="warning">지역 최적(Local Optimum)에 빠져.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">지역 최적 문제:
+
+예: 보물 찾기 게임
+
+맵 구조:
+지점 A: 보상 +50 (가까움)
+지점 B: 보상 +100 (멀고 위험한 경로)
+
+탐험 부족한 AI:
+→ 처음에 지점 A를 발견
+→ "오, 여기서 +50 받네! 계속 여기 가자"
+→ 지점 B를 영원히 발견 못함
+→ 최적이 아닌 전략에 갇힘
+
+탐험 충분한 AI:
+→ 지점 A도 가보고
+→ 지점 B도 가봄
+→ "아, B가 더 좋네!"
+→ 진짜 최적 전략 발견</div>
+
+            <div class="code-block">실제 사례:
+
+로봇 제어:
+탐험 부족 → 안전하지만 느린 움직임만 학습
+탐험 충분 → 빠르고 효율적인 움직임 발견
+
+게임 AI:
+탐험 부족 → 항상 같은 패턴으로 플레이
+탐험 충분 → 다양한 전략 발견, 창의적 플레이</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">탐험 없이는 진짜 최선을 찾을 수 없어.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: 활용이 부족하면? -->
+        <div class="conversation">
+            <h2>Part 5. 활용이 부족하면?</h2>
+
+            <div class="chat">
+                <div class="q">반대로 활용을 안 하면?</div>
+                <div class="a">
+                    <p><span class="warning">계속 헤매기만 하고 학습이 느려.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">과도한 탐험 문제:
+
+예: 슈퍼마리오
+
+과도한 탐험 (ε = 0.9):
+→ 90% 확률로 랜덤 행동
+→ 좋은 전략을 발견해도 계속 랜덤
+→ 게임을 절대 클리어 못함
+
+적절한 탐험 (ε = 0.1):
+→ 10% 확률로 랜덤 행동
+→ 90%는 학습한 전략 사용
+→ 점진적으로 실력 향상</div>
+
+            <div class="code-block">균형 잡힌 전략:
+
+학습 단계별 탐험률:
+
+Episode 1-100:    ε = 1.0 → 0.5  (많이 탐험)
+Episode 101-500:  ε = 0.5 → 0.1  (점점 활용)
+Episode 501-1000: ε = 0.1 → 0.01 (주로 활용)
+
+→ 초반: 세상을 배움
+→ 중반: 좋은 전략 찾음
+→ 후반: 최적 전략 다듬음</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">시간이 지날수록 탐험을 줄이고 활용을 늘려.</span></p>
+                    <p>이걸 <strong>탐험 스케줄링</strong>이라고 해.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 6: 실전 적용 -->
+        <div class="conversation">
+            <h2>Part 6. 실전에서는 어떻게 써?</h2>
+
+            <div class="chat">
+                <div class="q">실제 강화학습 코드에서는?</div>
+                <div class="a">
+                    <p>구체적인 예시를 보자.</p>
+                </div>
+            </div>
+
+            <div class="code-block">엡실론-그리디 구현:
+
+class Agent:
+    def __init__(self):
+        self.epsilon = 1.0  # 초기 탐험률
+        self.epsilon_min = 0.01
+        self.epsilon_decay = 0.995
+
+    def select_action(self, state):
+        # 탐험
+        if random() < self.epsilon:
+            return random_action()
+
+        # 활용
+        else:
+            return self.best_action(state)
+
+    def update_epsilon(self):
+        # 학습마다 탐험률 감소
+        self.epsilon = max(
+            self.epsilon_min,
+            self.epsilon * self.epsilon_decay
+        )
+
+
+# 학습 루프
+for episode in range(1000):
+    while not done:
+        action = agent.select_action(state)
+        next_state, reward = env.step(action)
+        agent.learn(state, action, reward, next_state)
+        state = next_state
+
+    agent.update_epsilon()  # 에피소드마다 ε 감소</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐지?</p>
+                    <p><span class="key-point">탐험-활용 균형이 강화학습 성공의 핵심</span>이야.</p>
+                    <p><strong>너무 보수적이어도, 너무 모험적이어도 안 돼.</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>탐험</strong> - 새로운 것 시도, 더 좋은 방법 찾기</li>
+                <li><strong>활용</strong> - 아는 것 중 최선 선택, 확실한 보상</li>
+                <li><strong>딜레마</strong> - 둘 사이의 균형이 중요함</li>
+                <li><strong>엡실론-그리디</strong> - 가장 흔한 탐험 전략</li>
+                <li><strong>스케줄링</strong> - 시간이 지날수록 탐험 줄이고 활용 늘림</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic04/">← 이전: 보상을 어떻게 설계해?</a>
+            <a href="../topic06/">다음: 정책이 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

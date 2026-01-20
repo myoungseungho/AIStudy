@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI, 머신러닝, 딥러닝 뭐가 달라? - Section 1</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #4CAF50;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e8f5e9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #c8e6c9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #2e7d32;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #c8e6c9; }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #4CAF50; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 1</a>
+            <span>/</span>
+            Topic 04
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 04</div>
+            <h1>AI, 머신러닝, 딥러닝 뭐가 달라?</h1>
+            <p>Q. 이 세 개는 같은 거 아니야?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 러시아 인형처럼 포함 관계야</h2>
+
+            <div class="chat">
+                <div class="q">AI, 머신러닝, 딥러닝... 다 비슷한 것 같은데 뭐가 달라?</div>
+                <div class="a">
+                    <p><span class="key-point">러시아 인형(마트료시카)을 떠올려봐.</span></p>
+                    <p>큰 인형 안에 중간 인형, 중간 인형 안에 작은 인형.</p>
+                </div>
+            </div>
+
+            <div class="code-block">포함 관계:
+
+┌─────────────────────────┐
+│   AI (인공지능)          │  ← 제일 큰 개념
+│  ┌───────────────────┐  │
+│  │ Machine Learning  │  │  ← 중간 개념
+│  │  ┌─────────────┐ │  │
+│  │  │ Deep Learning│ │  │  ← 제일 작은 개념
+│  │  └─────────────┘ │  │
+│  └───────────────────┘  │
+└─────────────────────────┘
+
+딥러닝 ⊂ 머신러닝 ⊂ AI
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">딥러닝은 머신러닝의 한 종류고, 머신러닝은 AI의 한 분야야.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. AI - 가장 큰 우산</h2>
+
+            <div class="chat">
+                <div class="q">AI가 뭔데?</div>
+                <div class="a">
+                    <p><span class="highlight">AI = 인간처럼 똑똑한 행동을 하는 모든 것</span></p>
+                    <p>방법은 상관없어. 결과만 "똑똑해 보이면" AI야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">AI의 예시들:
+
+✅ if-else 규칙 기반
+   → 체스 AI (1997년 딥블루)
+
+✅ 머신러닝
+   → 스팸 메일 필터
+
+✅ 딥러닝
+   → ChatGPT
+
+→ 전부 다 AI야.
+→ 방법이 다를 뿐.
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>비유:</strong></p>
+                    <p>AI = "교통수단"</p>
+                    <p>자전거, 자동차, 비행기 전부 교통수단이지?</p>
+                    <p>마찬가지로 규칙 기반, 머신러닝, 딥러닝 전부 AI야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 머신러닝 - 데이터로 배우기</h2>
+
+            <div class="chat">
+                <div class="q">그럼 머신러닝은 뭐야?</div>
+                <div class="a">
+                    <p><span class="highlight">머신러닝 = 데이터를 보고 스스로 학습하는 AI</span></p>
+                    <p><strong>사람이 규칙을 일일이 코딩하지 않아.</strong></p>
+                </div>
+            </div>
+
+            <div class="code-block">일반 프로그래밍 vs 머신러닝
+
+[일반 프로그래밍]
+사람: "스팸 메일 규칙 = '대출', '무료', '$$$' 포함하면 스팸"
+컴퓨터: "알겠습니다"
+
+문제: 새로운 스팸 패턴 나오면 또 추가해야 함
+
+
+[머신러닝]
+사람: "여기 스팸 1만 개, 정상 메일 1만 개 있어"
+컴퓨터: "패턴 분석 중... 규칙 찾았습니다!"
+
+장점: 새로운 패턴도 알아서 학습
+</div>
+
+            <div class="chat">
+                <div class="q">그럼 모든 AI가 머신러닝이야?</div>
+                <div class="a">
+                    <p><span class="warning">아니야!</span></p>
+                    <p>규칙 기반 AI는 머신러닝이 아니야.</p>
+                    <p>하지만 <strong>요즘 대부분의 AI는 머신러닝</strong>을 써.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 딥러닝 - 뇌를 흉내내기</h2>
+
+            <div class="chat">
+                <div class="q">딥러닝은 또 뭐야?</div>
+                <div class="a">
+                    <p><span class="highlight">딥러닝 = 뇌의 신경망을 흉내낸 머신러닝</span></p>
+                    <p><strong>인공 신경망(Neural Network)</strong>을 여러 층(Deep) 쌓은 거야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">머신러닝의 종류들:
+
+1. 의사결정 트리 (Decision Tree)
+2. 랜덤 포레스트 (Random Forest)
+3. SVM (Support Vector Machine)
+4. 신경망 (Neural Network) ← 이게 딥러닝
+
+→ 딥러닝은 머신러닝의 한 방법일 뿐이야.
+</div>
+
+            <div class="chat">
+                <div class="q">왜 "딥(Deep)"이야?</div>
+                <div class="a">
+                    <p><strong>층이 많아서.</strong></p>
+                </div>
+            </div>
+
+            <div class="code-block">신경망의 진화:
+
+1950년대: 퍼셉트론 (1층)
+1980년대: 다층 퍼셉트론 (3~5층)
+2010년대: 딥러닝 (수백 층!)
+
+ChatGPT: 96층
+ResNet: 152층
+
+→ 층이 깊어져서(Deep) "딥러닝"
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 실전 비교</h2>
+
+            <div class="chat">
+                <div class="q">실제로는 뭘 써?</div>
+                <div class="a">
+                    <p><span class="key-point">문제에 따라 다른 걸 써.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">상황별 선택:
+
+📊 간단한 데이터 분류 (키, 몸무게로 성별 예측)
+→ 머신러닝 (의사결정 트리)
+→ 딥러닝은 과함 (오버킬)
+
+🖼️ 이미지 인식 (고양이 vs 강아지)
+→ 딥러닝 (CNN)
+→ 머신러닝은 정확도 낮음
+
+💬 자연어 처리 (ChatGPT 같은)
+→ 딥러닝 (Transformer)
+→ 머신러닝으로는 불가능
+
+🎮 게임 AI (규칙이 명확)
+→ 규칙 기반 AI도 충분
+→ 딥러닝은 비효율
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>핵심:</strong></p>
+                    <p><span class="highlight">무조건 딥러닝이 좋은 게 아니야.</span></p>
+                    <p>간단한 문제에는 간단한 방법이 더 나아.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 왜 요즘 딥러닝이 핫해?</h2>
+
+            <div class="chat">
+                <div class="q">근데 요즘은 딥러닝 얘기만 나오는데?</div>
+                <div class="a">
+                    <p><strong>이유 3가지:</strong></p>
+                </div>
+            </div>
+
+            <div class="code-block">딥러닝이 주목받는 이유:
+
+1. 데이터가 많아짐
+   → 인터넷 발달로 데이터 폭발
+   → 딥러닝은 데이터 많을수록 강함
+
+2. 컴퓨팅 파워 증가
+   → GPU 발전
+   → 예전에는 계산 못 했던 걸 이제 가능
+
+3. 복잡한 문제 해결
+   → 이미지, 음성, 텍스트
+   → 머신러닝으로는 한계 있었음
+   → 딥러닝으로 돌파
+</div>
+
+            <div class="chat">
+                <div class="q">그럼 앞으로는 딥러닝만 쓰는 거야?</div>
+                <div class="a">
+                    <p><span class="warning">아니야.</span></p>
+                    <p><strong>상황에 맞게 섞어서 써.</strong></p>
+                </div>
+            </div>
+
+            <div class="code-block">실전 사례:
+
+자율주행차:
+- 신호등 인식 = 딥러닝 (CNN)
+- 경로 계획 = 전통 알고리즘
+- 장애물 회피 = 규칙 기반
+
+→ 하나만 쓰는 게 아니라 조합
+</div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>포함 관계</strong> - 딥러닝 ⊂ 머신러닝 ⊂ AI</li>
+                <li><strong>AI</strong> - 똑똑해 보이는 모든 것 (방법 무관)</li>
+                <li><strong>머신러닝</strong> - 데이터로 스스로 학습하는 AI</li>
+                <li><strong>딥러닝</strong> - 신경망을 여러 층 쌓은 머신러닝</li>
+                <li><strong>상황에 맞게</strong> - 간단한 문제는 간단한 방법, 복잡한 문제는 딥러닝</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic03/">← 이전: 인공지능은 정말 '지능'이 있어?</a>
+            <a href="../topic05/">다음: AI는 프로그래밍이랑 뭐가 다를까? →</a>
+        </div>
+    </div>
+</body>
+</html>

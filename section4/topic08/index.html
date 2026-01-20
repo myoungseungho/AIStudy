@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>역전파가 뭐야? - Section 4</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #9C27B0;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #9C27B0;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f3e5f5;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #f3e5f5;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #6a1b9a;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #9C27B0 0%, #BA68C8 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #f3e5f5;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #9C27B0; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 4</a>
+            <span>/</span>
+            Topic 08
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 08</div>
+            <h1>역전파가 뭐야?</h1>
+            <p>Q. 오차를 뒤로 전달한다는 게 무슨 뜻이야?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 역전파란?</h2>
+
+            <div class="chat">
+                <div class="q">역전파(Backpropagation)가 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">신경망이 학습하는 핵심 알고리즘</span>이야.</p>
+                    <p>정확히는 "오차를 뒤로 전파해서 가중치를 업데이트하는 방법"이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">전체 흐름:
+
+1. 순전파 (Forward Pass):
+   입력 → 층1 → 층2 → ... → 출력
+   예측값 생성
+
+2. 오차 계산:
+   오차 = 실제값 - 예측값
+
+3. 역전파 (Backward Pass):
+   출력 ← 층1 ← 층2 ← ... ← 입력
+   오차를 거슬러 올라가면서 각 가중치의 책임 계산
+
+4. 가중치 업데이트:
+   가중치 = 가중치 - 학습률 × 기울기</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="highlight">앞으로 가서 예측 → 뒤로 가서 학습</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 왜 "뒤로" 가야 해?</h2>
+
+            <div class="chat">
+                <div class="q">왜 거꾸로 가는 거야? 앞에서부터 고치면 안 돼?</div>
+                <div class="a">
+                    <p><span class="highlight">수학적으로 뒤에서부터 계산하는 게 효율적</span>이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 공장 라인
+
+상황:
+제품이 불량으로 나옴
+어느 공정에 문제가 있을까?
+
+비효율적 방법 (앞에서부터):
+1단계 검사 → 2단계 검사 → 3단계 검사 → ...
+→ 모든 단계를 독립적으로 검사
+
+효율적 방법 (뒤에서부터):
+최종 불량 확인 → 바로 전 단계 원인 추적 → 그 전 단계 추적 → ...
+→ 연쇄적으로 원인 추적
+
+
+신경망도 마찬가지:
+- 출력 오차부터 시작
+- 이 오차에 각 층이 얼마나 기여했는지 역산
+- 연쇄 법칙(Chain Rule)으로 효율적 계산</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 구체적인 예시</h2>
+
+            <div class="chat">
+                <div class="q">구체적으로 어떻게 작동하는데?</div>
+                <div class="a">
+                    <p>간단한 예시로 설명할게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">간단한 2층 신경망:
+
+구조:
+입력(x) → [w1] → 은닉층(h) → [w2] → 출력(y)
+
+순전파:
+x = 2
+w1 = 0.5
+h = x × w1 = 2 × 0.5 = 1
+w2 = 0.3
+y = h × w2 = 1 × 0.3 = 0.3
+
+실제값: 1.0
+오차: 1.0 - 0.3 = 0.7
+
+
+역전파:
+
+1. 출력층 기울기:
+   ∂Loss/∂w2 = ∂Loss/∂y × ∂y/∂w2
+   = 0.7 × h
+   = 0.7 × 1 = 0.7
+
+2. 은닉층 기울기:
+   ∂Loss/∂w1 = ∂Loss/∂y × ∂y/∂h × ∂h/∂w1
+   = 0.7 × w2 × x
+   = 0.7 × 0.3 × 2 = 0.42
+
+
+업데이트 (학습률 = 0.1):
+w2_new = w2 - 0.1 × 0.7 = 0.3 - 0.07 = 0.23
+w1_new = w1 - 0.1 × 0.42 = 0.5 - 0.042 = 0.458
+
+
+다음 순전파:
+h = 2 × 0.458 = 0.916
+y = 0.916 × 0.23 = 0.211
+
+오차 감소: 0.7 → 0.789 (조금 줄었네!)
+계속 반복하면 오차가 0에 가까워짐</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 연쇄 법칙 (Chain Rule)</h2>
+
+            <div class="chat">
+                <div class="q">연쇄 법칙이 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">미적분의 핵심 개념</span>이야.</p>
+                    <p>역전파의 수학적 기초지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">연쇄 법칙:
+
+함수의 합성:
+y = f(g(x))
+
+미분:
+dy/dx = dy/dg × dg/dx
+
+
+예시:
+y = (2x + 1)³
+
+u = 2x + 1
+y = u³
+
+dy/dx = dy/du × du/dx
+      = 3u² × 2
+      = 3(2x+1)² × 2
+      = 6(2x+1)²
+
+
+신경망에서:
+Loss = f(w₃(f(w₂(f(w₁(x))))))
+
+∂Loss/∂w₁ = ∂Loss/∂w₃ × ∂w₃/∂w₂ × ∂w₂/∂w₁
+
+→ 뒤에서부터 곱해가면서 계산!
+→ 이게 역전파!</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 왜 역전파가 혁명적이었어?</h2>
+
+            <div class="chat">
+                <div class="q">역전파 없이는 학습이 안 돼?</div>
+                <div class="a">
+                    <p><span class="warning">가능은 하지만 거의 불가능</span>해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">역전파 이전:
+
+1. 랜덤 탐색:
+   - 가중치를 무작위로 바꿔보기
+   - 좋아지면 유지, 나빠지면 되돌리기
+   - 파라미터가 많으면 사실상 불가능
+
+2. 수치 미분:
+   - 각 가중치를 아주 조금 바꿔보고
+   - 오차 변화량 측정
+   - 계산량이 엄청남
+   - 파라미터 1000개면 1000번 계산 필요
+
+
+역전파의 장점:
+
+1. 효율성:
+   - 한 번의 역전파로 모든 기울기 계산
+   - 순전파 1번 + 역전파 1번 = 끝
+
+2. 정확성:
+   - 수치 오차 없음
+   - 정확한 기울기
+
+3. 확장성:
+   - 층이 많아도 문제없음
+   - 수백만 파라미터도 가능
+
+
+비유:
+역전파 없음 = 눈 가리고 산 오르기
+역전파 있음 = 나침반 보고 산 오르기</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 실제 코드</h2>
+
+            <div class="code-block">import numpy as np
+
+class SimpleNN:
+    def __init__(self):
+        # 가중치 초기화
+        self.w1 = np.random.randn()
+        self.w2 = np.random.randn()
+
+    def forward(self, x):
+        """순전파"""
+        self.x = x
+        self.h = x * self.w1  # 은닉층
+        self.y = self.h * self.w2  # 출력
+        return self.y
+
+    def backward(self, true_y, learning_rate=0.01):
+        """역전파"""
+        # 오차
+        error = self.y - true_y
+
+        # 기울기 계산 (연쇄 법칙)
+        grad_w2 = error * self.h
+        grad_w1 = error * self.w2 * self.x
+
+        # 가중치 업데이트
+        self.w2 -= learning_rate * grad_w2
+        self.w1 -= learning_rate * grad_w1
+
+        return error ** 2  # 손실 반환
+
+
+# 학습
+nn = SimpleNN()
+X = [1, 2, 3, 4, 5]
+Y = [2, 4, 6, 8, 10]  # y = 2x 학습
+
+for epoch in range(100):
+    total_loss = 0
+    for x, y in zip(X, Y):
+        # 순전파
+        pred = nn.forward(x)
+        # 역전파
+        loss = nn.backward(y)
+        total_loss += loss
+
+    if epoch % 20 == 0:
+        print(f"Epoch {epoch}, Loss: {total_loss:.4f}")
+
+# 테스트
+print(f"\n예측: {nn.forward(6):.2f}, 정답: 12")</div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>역전파 = 학습의 핵심</strong> - 오차를 뒤로 전파하여 가중치 업데이트</li>
+                <li><strong>연쇄 법칙 활용</strong> - 미적분의 연쇄 법칙으로 효율적 계산</li>
+                <li><strong>순전파 → 역전파</strong> - 앞으로 예측, 뒤로 학습</li>
+                <li><strong>효율성</strong> - 모든 기울기를 한 번에 계산 가능</li>
+                <li><strong>딥러닝의 기초</strong> - 역전파 없이는 딥러닝 불가능</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic07/">← 이전: 딥러닝은 왜 '딥'이야?</a>
+            <a href="../topic09/">다음: 기울기 소실 문제는 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

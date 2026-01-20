@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT는 어떻게 대답을 만들어? - Section 1</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #4CAF50;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e8f5e9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #c8e6c9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #2e7d32;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #c8e6c9; }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #4CAF50; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 1</a>
+            <span>/</span>
+            Topic 09
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 09</div>
+            <h1>ChatGPT는 어떻게 대답을 만들어?</h1>
+            <p>Q. 답을 외우고 있는 거야, 생각하는 거야?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 외우는 것도, 생각하는 것도 아니야</h2>
+
+            <div class="chat">
+                <div class="q">ChatGPT는 답을 미리 외우고 있는 거야?</div>
+                <div class="a">
+                    <p><span class="warning">아니야!</span></p>
+                    <p><span class="key-point">ChatGPT는 "다음 단어를 예측"할 뿐이야.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">ChatGPT의 작동 방식:
+
+너: "하늘은 무슨 색이야?"
+
+ChatGPT 내부:
+1. "하늘은 무슨 색이야?" 입력 받음
+2. "다음에 올 단어는 뭘까?" 예측
+   → "파란" (확률 85%)
+   → "푸른" (확률 10%)
+   → "맑은" (확률 3%)
+3. 확률 높은 "파란" 선택
+4. "하늘은 무슨 색이야? 파란"
+5. 다시 예측
+   → "색" (확률 90%)
+   → "하늘" (확률 5%)
+6. "파란색" 완성
+7. 계속 반복...
+
+→ 한 단어씩 예측하면서 문장 완성
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>핵심:</strong></p>
+                    <p><span class="highlight">답을 "알고" 있는 게 아니라, "만들어내는" 거야.</span></p>
+                    <p>마치 자동완성 기능 같은 거지.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 확률적 앵무새</h2>
+
+            <div class="chat">
+                <div class="q">그럼 그냥 확률로 찍는 거야?</div>
+                <div class="a">
+                    <p>비유하면 <span class="highlight">"확률적 앵무새"</span>야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">앵무새 비유:
+
+일반 앵무새:
+→ "안녕" 들으면 → "안녕" 반복
+→ 똑같이만 따라함
+
+ChatGPT (확률적 앵무새):
+→ "안녕" 들으면 → "안녕하세요!" (70%)
+                   "반갑습니다" (20%)
+                   "좋은 아침" (10%)
+→ 패턴 학습해서 적절히 변형
+
+
+실제 예시:
+
+너: "오늘 날씨 어때?"
+
+ChatGPT 학습 내용:
+→ "날씨 어때" 뒤에는 보통
+   "좋아요", "맑아요", "흐려요" 같은 답변
+→ 하지만 실제 날씨는 모름
+→ 그냥 자연스러운 답변 패턴 생성
+
+ChatGPT: "저는 AI라서 실시간 날씨 정보는 모릅니다"
+→ 이것도 학습한 패턴이야
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. Token 단위 처리</h2>
+
+            <div class="chat">
+                <div class="q">한 단어씩 예측한다고? 정확히 어떻게?</div>
+                <div class="a">
+                    <p>ChatGPT는 <span class="highlight">"토큰(Token)"</span> 단위로 처리해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">토큰이란?
+
+단어보다 작은 단위:
+"ChatGPT" → "Chat" + "GPT" (2개 토큰)
+"unbelievable" → "un" + "believ" + "able" (3개 토큰)
+"안녕하세요" → "안녕" + "하세요" (2개 토큰)
+
+
+처리 과정:
+
+입력: "나는 학생이야"
+→ 토큰화: ["나는", "학생", "이야"]
+→ 숫자 변환: [1234, 5678, 9012] (각 토큰에 번호 부여)
+→ AI 처리
+→ 다음 토큰 예측: "." (확률 60%), "그리고" (확률 30%)
+→ "." 선택
+→ 다시 토큰 예측...
+
+→ 이렇게 토큰 하나씩 생성
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>왜 토큰으로?</strong></p>
+                    <p>• 모든 언어 처리 가능 (한글, 영어, 일본어...)</p>
+                    <p>• 새 단어도 처리 가능 ("크러쉬" 같은 신조어)</p>
+                    <p>• 효율적 (단어 전체보다 작은 단위)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 맥락(Context) 이해</h2>
+
+            <div class="chat">
+                <div class="q">그럼 이전 대화 내용은 어떻게 기억해?</div>
+                <div class="a">
+                    <p><span class="highlight">"Attention" 메커니즘</span>으로 맥락을 봐.</p>
+                </div>
+            </div>
+
+            <div class="code-block">맥락 이해 예시:
+
+너: "사과가 뭐야?"
+GPT: "사과는 과일입니다"
+
+너: "그게 왜 빨개?"
+GPT: "사과에 안토시아닌이라는 색소가 있어서..."
+
+→ "그게"가 "사과"를 가리킨다는 걸 어떻게 알았어?
+
+
+Attention:
+1. "그게" 보고 → 이전 대화 스캔
+2. "사과"에 집중 (Attention)
+3. "사과 + 빨간색" 관련 답변 생성
+
+
+비유:
+너: "철수가 학교에 갔어. 근데 지갑을 놓고 왔대."
+
+사람: "지갑을 놓고 왔다" = 철수가 놓고 왔다
+→ 자연스럽게 이해
+
+ChatGPT도 마찬가지:
+→ "지갑" 보고 → 이전 문장 확인 → "철수" 집중
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 실수하는 이유</h2>
+
+            <div class="chat">
+                <div class="q">그럼 왜 가끔 이상한 답을 해?</div>
+                <div class="a">
+                    <p><span class="warning">확률 기반이라서 완벽하지 않아.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">실수 사례:
+
+1. 환각 (Hallucination)
+   너: "명승호가 쓴 책이 뭐야?"
+   GPT: "명승호의 대표작은 'AI 입문'입니다"
+   → 없는 책 지어냄!
+
+   이유: 패턴상 "사람 이름 + 책" 뒤에 제목 와야 함
+        → 그럴듯한 제목 생성
+
+
+2. 계산 실수
+   너: "573 × 482 = ?"
+   GPT: "276,186입니다"
+   → 실제: 276,286 (틀림!)
+
+   이유: 계산기가 아니라 "패턴 예측기"
+        → 숫자 패턴은 약함
+
+
+3. 최신 정보 모름
+   너: "2024년 대통령은?"
+   GPT: "학습 데이터는 2023년 4월까지..."
+
+   이유: 학습 이후 데이터는 모름
+</code>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>왜 이럴까?</strong></p>
+                    <p><span class="highlight">ChatGPT는 "그럴듯한" 답을 만들 뿐, "진실"을 아는 게 아니야.</span></p>
+                    <p>패턴 학습기이지, 지식 데이터베이스가 아니야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 창의성의 정체</h2>
+
+            <div class="chat">
+                <div class="q">근데 창의적인 답도 잘 하던데?</div>
+                <div class="a">
+                    <p><span class="key-point">"창의성"도 패턴 조합일 뿐이야.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">창의성의 비밀:
+
+너: "AI를 과일로 비유하면?"
+
+ChatGPT: "사과와 같습니다. 겉은 단순해 보이지만
+          속에는 복잡한 씨앗(알고리즘)이 있죠."
+
+→ 창의적으로 보이지?
+
+
+실제 과정:
+1. "AI" + "비유" 패턴 검색
+2. "과일" 키워드 확인
+3. 학습 데이터에서:
+   - "AI는 복잡하다"
+   - "사과는 겉과 속이 다르다"
+   - "비유는 이렇게 연결..."
+4. 패턴 조합해서 답변 생성
+
+→ 새로운 지식 창조 ✗
+→ 기존 패턴 재조합 ✓
+</code>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>예측 기계</strong> - 답을 외운 게 아니라 다음 단어를 예측</li>
+                <li><strong>토큰 단위</strong> - 단어보다 작은 단위로 쪼개서 처리</li>
+                <li><strong>확률 기반</strong> - 가장 확률 높은 단어를 선택</li>
+                <li><strong>맥락 이해</strong> - Attention으로 이전 대화 참고</li>
+                <li><strong>패턴 조합</strong> - 창의성도 학습한 패턴의 재조합</li>
+                <li><strong>완벽하지 않음</strong> - 환각, 계산 실수 가능</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic08/">← 이전: 데이터가 왜 중요한 거야?</a>
+            <a href="../topic10/">다음: 이미지 생성 AI는 어떻게 그림을 그려? →</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자율주행은 어떻게 가능해? - Section 8</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+
+        .breadcrumb {
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #795548;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #795548;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #efebe9;
+        }
+
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before {
+            content: "Q. ";
+            color: #e65100;
+            font-weight: 700;
+        }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #d7ccc8;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #4e342e;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #795548 0%, #8D6E63 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .summary-box ul {
+            list-style: none;
+        }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #d7ccc8;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #795548;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 8</a>
+            <span>/</span>
+            Topic 03
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 03</div>
+            <h1>자율주행은 어떻게 가능해?</h1>
+            <p>Q. 카메라만으로 운전할 수 있어?</p>
+        </header>
+
+        <!-- Part 1: 자율주행 기초 -->
+        <div class="conversation">
+            <h2>Part 1. 자율주행 차는 어떻게 운전하지?</h2>
+
+            <div class="chat">
+                <div class="q">테슬라는 사람 없이 운전해. 어떻게 가능한 거야?</div>
+                <div class="a">
+                    <p><span class="key-point">센서 + AI 비전 + 의사결정 시스템</span>이 합쳐진 거야.</p>
+                    <p>사람이 운전할 때 뭘 하는지 생각해봐.</p>
+                    <p>1. 눈으로 본다 (주변 차, 신호등, 사람)</p>
+                    <p>2. 상황을 판단한다 (직진? 좌회전? 멈춤?)</p>
+                    <p>3. 행동한다 (핸들, 가속, 브레이크)</p>
+                    <p><strong>자율주행도 똑같아.</strong></p>
+                </div>
+            </div>
+
+            <div class="code-block">자율주행 3단계:
+
+1. 인식 (Perception)
+   센서로 주변 환경 파악
+   → "앞에 차가 있다", "신호등이 빨간불이다"
+
+2. 판단 (Planning)
+   AI가 다음 행동 결정
+   → "속도를 줄여야겠다", "차선을 바꿔야겠다"
+
+3. 제어 (Control)
+   차량을 실제로 조작
+   → 브레이크 작동, 핸들 조작</div>
+
+            <div class="chat">
+                <div class="q">센서는 뭘 써?</div>
+                <div class="a">
+                    <p><span class="highlight">크게 3가지</span>야.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>센서</th>
+                    <th>기능</th>
+                    <th>장점</th>
+                    <th>단점</th>
+                </tr>
+                <tr>
+                    <td><strong>카메라</strong></td>
+                    <td>이미지 인식</td>
+                    <td>신호등, 표지판 읽기</td>
+                    <td>날씨, 빛에 약함</td>
+                </tr>
+                <tr>
+                    <td><strong>라이다 (LiDAR)</strong></td>
+                    <td>레이저로 거리 측정</td>
+                    <td>정확한 3D 지도 생성</td>
+                    <td>비싸고, 비/눈에 약함</td>
+                </tr>
+                <tr>
+                    <td><strong>레이더 (Radar)</strong></td>
+                    <td>전파로 물체 감지</td>
+                    <td>날씨에 강함, 속도 측정</td>
+                    <td>해상도 낮음</td>
+                </tr>
+                <tr>
+                    <td><strong>GPS</strong></td>
+                    <td>위치 파악</td>
+                    <td>지도 매칭</td>
+                    <td>터널, 건물 사이에서 오차</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">보통 여러 센서를 조합</span>해서 써. (센서 퓨전, Sensor Fusion)</p>
+                    <p>카메라가 못 본 걸 라이다가 보고, 라이다가 헷갈리면 레이더가 확인하고.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: 테슬라 vs 웨이모 -->
+        <div class="conversation">
+            <h2>Part 2. 테슬라 방식 vs 웨이모 방식</h2>
+
+            <div class="chat">
+                <div class="q">테슬라는 카메라만 쓴다면서? 라이다 없이 가능해?</div>
+                <div class="a">
+                    <p>이게 업계의 큰 논쟁이야.</p>
+                    <p><span class="highlight">테슬라 (일론 머스크)</span>: "사람도 눈만으로 운전하잖아? 카메라면 충분해"</p>
+                    <p><span class="highlight">웨이모 (구글)</span>: "안전을 위해 모든 센서 다 써야 해"</p>
+                </div>
+            </div>
+
+            <div class="code-block">테슬라 방식 (Vision-Only):
+
+센서:
+- 카메라 8개 (360도 커버)
+- 레이더 (최근 모델에서 제거)
+- 라이다 ✖️ (안 씀)
+
+장점:
+✅ 비용 절감 (라이다는 대당 수천만 원)
+✅ 카메라 데이터가 더 풍부 (신호등, 표지판)
+✅ 대규모 데이터 수집 (실제 차량 200만대+)
+
+단점:
+❌ 날씨, 야간에 약함
+❌ 거리 측정 부정확 (카메라는 2D)
+❌ 안전성 논란
+
+--------------------------------------------------
+
+웨이모 방식 (Multi-Sensor):
+
+센서:
+- 카메라 다수
+- 라이다 5개
+- 레이더 다수
+- 초음파 센서
+
+장점:
+✅ 안전성 높음 (센서 하나 고장나도 OK)
+✅ 정확한 3D 인식
+✅ 날씨에 덜 민감
+
+단점:
+❌ 비용 비쌈 (대당 수천만~억 원)
+❌ 복잡한 시스템
+❌ 대중화 어려움</div>
+
+            <div class="chat">
+                <div class="q">누가 맞는 거야?</div>
+                <div class="a">
+                    <p><span class="warning">아직 정답은 없어.</span></p>
+                    <p>테슬라는 <strong>비용과 확장성</strong>을 선택했고,</p>
+                    <p>웨이모는 <strong>안전성과 신뢰성</strong>을 선택한 거지.</p>
+                    <p>시간이 지나야 알겠지만, 테슬라가 AI 발전으로 카메라만으로도 충분해질 수 있다고 보는 거야.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: 자율주행 레벨 -->
+        <div class="conversation">
+            <h2>Part 3. 자율주행 레벨: 0단계부터 5단계까지</h2>
+
+            <div class="chat">
+                <div class="q">완전 자율주행이랑 반자율주행이 다르다며?</div>
+                <div class="a">
+                    <p>맞아. <span class="key-point">SAE(미국 자동차공학회)가 6단계로 나눴어.</span></p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>레벨</th>
+                    <th>이름</th>
+                    <th>설명</th>
+                    <th>예시</th>
+                </tr>
+                <tr>
+                    <td><strong>Level 0</strong></td>
+                    <td>자동화 없음</td>
+                    <td>모든 걸 사람이 함</td>
+                    <td>일반 차량</td>
+                </tr>
+                <tr>
+                    <td><strong>Level 1</strong></td>
+                    <td>운전자 보조</td>
+                    <td>크루즈 컨트롤 정도</td>
+                    <td>속도 유지 기능</td>
+                </tr>
+                <tr>
+                    <td><strong>Level 2</strong></td>
+                    <td>부분 자율</td>
+                    <td>특정 상황에서 자동 (손은 핸들에)</td>
+                    <td>테슬라 오토파일럿, 현대 HDA</td>
+                </tr>
+                <tr>
+                    <td><strong>Level 3</strong></td>
+                    <td>조건부 자율</td>
+                    <td>특정 조건에서 완전 자율 (개입 가능)</td>
+                    <td>벤츠 Drive Pilot (독일)</td>
+                </tr>
+                <tr>
+                    <td><strong>Level 4</strong></td>
+                    <td>고도 자율</td>
+                    <td>특정 지역에서 완전 자율</td>
+                    <td>웨이모 택시 (미국 일부)</td>
+                </tr>
+                <tr>
+                    <td><strong>Level 5</strong></td>
+                    <td>완전 자율</td>
+                    <td>어디서든 사람 개입 불필요</td>
+                    <td>아직 없음</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="q">테슬라는 몇 레벨이야?</div>
+                <div class="a">
+                    <p>공식적으로는 <strong>Level 2</strong>야.</p>
+                    <p>FSD (Full Self-Driving)라는 이름이지만, <span class="warning">완전 자율은 아니야.</span></p>
+                    <p>운전자가 항상 핸들을 잡고 있어야 하고, 언제든 개입할 준비를 해야 해.</p>
+                    <p>일론 머스크는 "곧 Level 4~5 될 거야"라고 하지만... <strong>몇 년째 "내년에"라고 하고 있어.</strong></p>
+                </div>
+            </div>
+
+            <div class="code-block">현실 체크:
+
+테슬라 FSD 베타:
+- 이름: "Full Self-Driving" (완전 자율주행)
+- 실제: Level 2 (운전자 항상 주시 필요)
+- 사고 시 책임: 100% 운전자
+
+웨이모:
+- 샌프란시스코, 피닉스에서 Level 4 상용화
+- 진짜 무인 택시 (운전석에 사람 없음)
+- 하지만 특정 지역만 가능
+
+Level 5 (완전 자율):
+- 어디서든, 어떤 날씨든 OK
+- 핸들도 없는 차
+- 아직 먼 미래 (10~20년?)</div>
+        </div>
+
+        <!-- Part 4: AI가 하는 일 -->
+        <div class="conversation">
+            <h2>Part 4. AI는 자율주행에서 뭘 해?</h2>
+
+            <div class="chat">
+                <div class="q">센서로 본 걸 AI가 어떻게 처리해?</div>
+                <div class="a">
+                    <p><span class="highlight">컴퓨터 비전(Computer Vision)</span>으로 이미지를 분석해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">AI가 하는 일:
+
+1. 객체 인식 (Object Detection)
+   → "앞에 차가 있다", "사람이 건너간다"
+   → YOLO, Faster R-CNN 같은 모델 사용
+
+2. 차선 인식 (Lane Detection)
+   → "내가 지금 2차선에 있다"
+   → 차선 이탈 경고
+
+3. 신호등/표지판 인식
+   → "빨간불이다", "정지 표지판이다"
+   → OCR + 분류 모델
+
+4. 깊이 추정 (Depth Estimation)
+   → "저 차는 10m 앞에 있다"
+   → 카메라 2개로 거리 계산 (스테레오 비전)
+
+5. 경로 계획 (Path Planning)
+   → "좌회전하려면 지금 차선 변경해야 해"
+   → 강화학습으로 학습
+
+6. 행동 예측 (Behavior Prediction)
+   → "저 차가 끼어들 것 같다"
+   → RNN, Transformer로 예측</div>
+
+            <div class="chat">
+                <div class="q">이거 다 실시간으로 해?</div>
+                <div class="a">
+                    <p>그렇지. <span class="key-point">초당 30~60프레임</span>을 처리해야 해.</p>
+                    <p>그래서 <strong>엄청난 컴퓨팅 파워</strong>가 필요해.</p>
+                    <p>테슬라는 자체 AI 칩 (FSD Chip)을 만들었고,</p>
+                    <p>엔비디아는 자율주행 전용 GPU를 팔아.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: 데이터와 시뮬레이션 -->
+        <div class="conversation">
+            <h2>Part 5. 데이터 수집과 시뮬레이션</h2>
+
+            <div class="chat">
+                <div class="q">자율주행 AI는 어떻게 학습해?</div>
+                <div class="a">
+                    <p><span class="highlight">실제 주행 데이터 + 시뮬레이션</span>을 조합해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">테슬라의 데이터 전략:
+
+1. 실제 차량 데이터
+   - 전 세계 200만대+ 테슬라가 데이터 수집
+   - 운전자가 개입한 순간 = 학습 데이터
+   - "여기서 AI가 실수했네?" → 서버로 전송
+
+2. Shadow Mode (그림자 모드)
+   - AI가 예측만 하고 실제로는 사람이 운전
+   - AI 예측 vs 사람 행동 비교
+   - 차이가 있으면 학습
+
+3. 시뮬레이션
+   - 가상 환경에서 수억 마일 주행
+   - 사고 상황, 극단적 날씨 테스트
+   - 현실에서 하기 어려운 상황 학습
+
+→ 하루 수백만 마일치 데이터 수집</div>
+
+            <div class="chat">
+                <div class="q">웨이모는?</div>
+                <div class="a">
+                    <p>웨이모는 <strong>시뮬레이션에 더 집중</strong>해.</p>
+                    <p>"Carcraft"라는 가상 세계에서 테스트해.</p>
+                    <p>현실에서 1마일 주행하면, 가상에서 1만 마일 테스트.</p>
+                    <p><span class="key-point">안전성을 최우선</span>으로 하니까.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 6: 한계와 미래 -->
+        <div class="conversation">
+            <h2>Part 6. 자율주행의 한계와 미래</h2>
+
+            <div class="chat">
+                <div class="q">완전 자율주행은 언제쯤 가능해?</div>
+                <div class="a">
+                    <p><span class="warning">생각보다 오래 걸릴 거야.</span></p>
+                    <p><strong>기술적 한계:</strong></p>
+                    <p>- Edge Case (극단적 상황) 처리 어려움</p>
+                    <p>- 눈, 비, 안개에서 센서 성능 저하</p>
+                    <p>- 사람의 비합리적 행동 예측 어려움 (갑자기 뛰어드는 사람)</p>
+                    <p><strong>법적/윤리적 문제:</strong></p>
+                    <p>- 사고 시 책임은 누구? (제조사? 소유자?)</p>
+                    <p>- 트롤리 딜레마 (누구를 먼저 보호할 것인가?)</p>
+                    <p>- 보험, 법규 정비 필요</p>
+                </div>
+            </div>
+
+            <div class="code-block">자율주행의 미래:
+
+단기 (2025~2030):
+- Level 3 대중화 (고속도로, 단순 구간)
+- Level 4 로봇택시 확대 (특정 도시)
+- 물류, 배송에 먼저 적용
+
+중기 (2030~2040):
+- Level 4가 일반적
+- 도심에서도 자율주행 택시
+- 자율주행 전용 차선, 구역
+
+장기 (2040~):
+- Level 5 등장 (완전 자율)
+- 핸들 없는 차량 상용화
+- 차가 이동 수단이 아닌 "움직이는 공간"으로
+
+하지만 예측은 어려워.
+10년 전만 해도 "2020년엔 다 자율주행일 거야" 했는데...</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">자율주행은 점진적으로 발전할 거야.</span></p>
+                    <p>갑자기 완벽한 Level 5가 나오는 게 아니라,</p>
+                    <p>특정 상황에서부터 조금씩 확대되는 거지.</p>
+                    <p>먼저 고속도로, 그 다음 도심, 마지막으로 비포장도로.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>3단계 구조</strong> - 인식(센서) → 판단(AI) → 제어(액추에이터)</li>
+                <li><strong>센서</strong> - 카메라, 라이다, 레이더, GPS 조합 (센서 퓨전)</li>
+                <li><strong>테슬라 vs 웨이모</strong> - 카메라만 vs 모든 센서 (논쟁 중)</li>
+                <li><strong>자율주행 레벨</strong> - Level 0~5 (현재 대부분 Level 2)</li>
+                <li><strong>AI 역할</strong> - 객체 인식, 차선 인식, 경로 계획, 행동 예측</li>
+                <li><strong>데이터</strong> - 실제 주행 데이터 + 시뮬레이션으로 학습</li>
+                <li><strong>미래</strong> - 점진적 발전 (특정 상황부터 확대), Level 5는 먼 미래</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic02/">← 이전: 음성 인식은 어떻게 돼?</a>
+            <a href="../topic04/">다음: 의료 AI는 믿을 만해? →</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>행렬은 왜 쓰는 거야? - Section 2</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF9800;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF9800;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #fff3e0;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #fff3e0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #e65100;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #FF9800 0%, #FFB74D 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fff3e0;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #FF9800; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 2</a>
+            <span>/</span>
+            Topic 04
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 04</div>
+            <h1>행렬은 왜 쓰는 거야?</h1>
+            <p>Q. 표 형태로 쓰면 뭐가 좋은데?</p>
+        </header>
+
+        <!-- Part 1: 행렬이 뭔가 -->
+        <div class="conversation">
+            <h2>Part 1. 행렬이 뭔데?</h2>
+
+            <div class="chat">
+                <div class="q">행렬이 뭐야? 표 아니야?</div>
+                <div class="a">
+                    <p><span class="key-point">맞아. 행렬은 숫자를 표 형태로 배열한 거야.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">행렬 예시:
+
+A = | 1  2  3 |
+    | 4  5  6 |
+
+→ 2행 3열 행렬 (2×3)
+→ 가로줄 = 행(row)
+→ 세로줄 = 열(column)
+
+
+벡터 vs 행렬:
+벡터 = [1, 2, 3]          ← 1차원 배열
+행렬 = | 1  2  3 |        ← 2차원 배열
+       | 4  5  6 |</div>
+
+            <div class="chat">
+                <div class="q">벡터로 충분한데 왜 행렬이 필요해?</div>
+                <div class="a">
+                    <p><span class="highlight">여러 벡터를 한 번에 처리하려고.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: 왜 행렬을 쓰나 -->
+        <div class="conversation">
+            <h2>Part 2. AI에서 왜 행렬을 쓰는데?</h2>
+
+            <div class="chat">
+                <div class="q">구체적으로 어디에 쓰이는 거야?</div>
+                <div class="a">
+                    <p>AI에서 행렬은 <span class="key-point">모든 곳</span>에 쓰여.</p>
+                </div>
+            </div>
+
+            <div class="code-block">1. 데이터 저장
+
+학생 3명의 시험 점수 (국어, 영어, 수학)
+
+학생1: [80, 90, 85]
+학생2: [75, 88, 92]
+학생3: [90, 85, 88]
+
+행렬로 표현:
+     국어 영어 수학
+학생1 | 80  90  85 |
+학생2 | 75  88  92 |
+학생3 | 90  85  88 |
+
+→ 데이터를 구조화해서 한 번에 관리
+
+
+2. 이미지 데이터
+
+흑백 이미지 4×4 픽셀:
+
+| 0    50   100  255 |
+| 30   80   120  200 |
+| 60   110  150  180 |
+| 90   140  180  220 |
+
+→ 각 숫자가 픽셀의 밝기
+→ 이미지 전체가 하나의 행렬
+
+
+3. 가중치(Weight)
+
+뉴럴 네트워크의 연결 강도:
+
+입력층(3개) → 은닉층(2개)
+
+W = | 0.5  0.3  0.8 |
+    | 0.2  0.7  0.4 |
+
+→ 각 값이 연결의 강도를 나타냄
+→ AI 학습 = 이 행렬 값을 조정하는 것</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>보이지?</p>
+                    <p><span class="highlight">행렬은 AI의 핵심 데이터 구조야.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: 행렬의 장점 -->
+        <div class="conversation">
+            <h2>Part 3. 행렬이 뭐가 좋은데?</h2>
+
+            <div class="chat">
+                <div class="q">벡터 여러 개로 나눠서 저장하면 안 돼?</div>
+                <div class="a">
+                    <p><span class="warning">가능은 한데 엄청 비효율적이야.</span></p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>벡터 여러 개</th>
+                    <th>행렬 하나</th>
+                </tr>
+                <tr>
+                    <td>
+                        v1 = [80, 90, 85]<br>
+                        v2 = [75, 88, 92]<br>
+                        v3 = [90, 85, 88]<br>
+                        → 따로따로 관리
+                    </td>
+                    <td>
+                        M = | 80  90  85 |<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;| 75  88  92 |<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;| 90  85  88 |<br>
+                        → 한 번에 관리
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        for v in [v1, v2, v3]:<br>
+                        &nbsp;&nbsp;process(v)<br>
+                        → 루프 필요
+                    </td>
+                    <td>
+                        process(M)<br>
+                        → 한 번에 처리
+                    </td>
+                </tr>
+                <tr>
+                    <td>느림</td>
+                    <td>빠름 (GPU 가속)</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>핵심 장점:</strong></p>
+                    <p>1. <span class="key-point">병렬 처리 가능</span> - GPU로 한 번에 계산</p>
+                    <p>2. <span class="key-point">코드가 간결</span> - 루프 없이 한 줄로</p>
+                    <p>3. <span class="key-point">수학적으로 명확</span> - 이론과 구현이 일치</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: 행렬 연산 -->
+        <div class="conversation">
+            <h2>Part 4. 행렬로 뭘 할 수 있어?</h2>
+
+            <div class="chat">
+                <div class="q">행렬로 어떤 계산을 하는데?</div>
+                <div class="a">
+                    <p>기본 연산들을 볼게:</p>
+                </div>
+            </div>
+
+            <div class="code-block">1. 행렬 덧셈
+
+A = | 1  2 |    B = | 5  6 |
+    | 3  4 |        | 7  8 |
+
+A + B = | 1+5  2+6 | = | 6   8 |
+        | 3+7  4+8 |   | 10  12 |
+
+→ 같은 위치끼리 더함
+
+
+2. 스칼라 곱
+
+A = | 1  2 |
+    | 3  4 |
+
+2 × A = | 2   4 |
+        | 6   8 |
+
+→ 모든 원소에 2를 곱함
+
+
+3. 전치(Transpose)
+
+A = | 1  2  3 |
+    | 4  5  6 |
+
+A^T = | 1  4 |
+      | 2  5 |
+      | 3  6 |
+
+→ 행과 열을 바꿈
+→ (i,j) 위치가 (j,i)로 이동</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이것들은 기본이고, <strong>가장 중요한 건 행렬 곱셈</strong>이야.</p>
+                    <p>그건 다음 토픽에서 자세히 볼게.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: 실제 사용 예시 -->
+        <div class="conversation">
+            <h2>Part 5. 실제 AI 코드에서는?</h2>
+
+            <div class="chat">
+                <div class="q">실제로는 어떻게 쓰는 거야?</div>
+                <div class="a">
+                    <p>뉴럴 네트워크 예시를 볼게:</p>
+                </div>
+            </div>
+
+            <div class="code-block">뉴럴 네트워크 한 층:
+
+입력: 100개의 데이터, 각 데이터는 784차원 (28×28 이미지)
+
+X = 100×784 행렬 (데이터 100개를 행렬로 표현)
+W = 784×128 행렬 (가중치)
+
+출력 = X × W = 100×128 행렬
+
+→ 한 줄의 코드로 100개 데이터를 동시에 처리!
+
+
+코드:
+import numpy as np
+
+X = np.random.rand(100, 784)  # 입력 데이터
+W = np.random.rand(784, 128)  # 가중치
+
+output = X @ W  # 행렬 곱셈 (@ 연산자)
+# 결과: (100, 128) 행렬
+
+→ GPU가 있으면 엄청 빠름</div>
+
+            <div class="chat">
+                <div class="q">행렬 없이 하면 어떻게 돼?</div>
+                <div class="a">
+                    <p><span class="warning">루프를 100번 돌려야 해.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">행렬 없이 (비효율적):
+
+results = []
+for i in range(100):
+    result = []
+    for j in range(128):
+        sum = 0
+        for k in range(784):
+            sum += X[i][k] * W[k][j]
+        result.append(sum)
+    results.append(result)
+
+→ 3중 루프
+→ 엄청 느림
+→ GPU 못 씀
+
+
+행렬 사용 (효율적):
+
+output = X @ W
+
+→ 한 줄
+→ GPU로 병렬 처리
+→ 수백 배 빠름</div>
+        </div>
+
+        <!-- Part 6: 행렬의 형태 -->
+        <div class="conversation">
+            <h2>Part 6. 행렬 크기 맞추기</h2>
+
+            <div class="chat">
+                <div class="q">행렬 연산할 때 크기가 안 맞으면 어떻게 돼?</div>
+                <div class="a">
+                    <p><span class="warning">에러가 나.</span></p>
+                    <p>행렬 연산에는 <strong>크기 규칙</strong>이 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">덧셈/뺄셈:
+크기가 똑같아야 함
+
+| 1  2 | + | 5  6 | = OK ✓
+| 3  4 |   | 7  8 |
+
+| 1  2 | + | 5  6  7 | = 에러 ✗
+| 3  4 |   | 8  9  10|
+
+
+곱셈:
+A의 열 개수 = B의 행 개수
+
+(2×3) × (3×4) = (2×4) ✓
+(2×3) × (4×5) = 에러 ✗
+
+→ 중간 숫자(3)가 맞아야 함</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>AI 코딩할 때 <span class="highlight">가장 자주 나는 에러가 행렬 크기 불일치</span>야.</p>
+                    <p>항상 크기를 확인하는 습관을 들여야 해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">파이썬에서 크기 확인:
+
+import numpy as np
+
+A = np.random.rand(100, 784)
+print(A.shape)  # (100, 784)
+
+B = np.random.rand(784, 128)
+print(B.shape)  # (784, 128)
+
+C = A @ B
+print(C.shape)  # (100, 128)
+
+# 크기 안 맞으면
+D = np.random.rand(500, 128)
+E = A @ D  # 에러! 784 ≠ 500</div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>행렬은 2차원 숫자 배열</strong> - 표 형태로 데이터 저장</li>
+                <li><strong>여러 벡터를 한 번에 처리</strong> - 효율적 데이터 관리</li>
+                <li><strong>AI의 핵심 데이터 구조</strong> - 이미지, 가중치, 배치 데이터 전부</li>
+                <li><strong>병렬 처리 가능</strong> - GPU로 빠르게 계산</li>
+                <li><strong>행렬 곱셈이 가장 중요</strong> - 뉴럴 네트워크의 핵심 연산</li>
+                <li><strong>크기 규칙 중요</strong> - 연산마다 맞춰야 할 크기가 다름</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic03/">← 이전: 벡터로 단어를 표현한다고?</a>
+            <a href="../topic05/">다음: 행렬 곱셈은 왜 저렇게 복잡해? →</a>
+        </div>
+    </div>
+</body>
+</html>

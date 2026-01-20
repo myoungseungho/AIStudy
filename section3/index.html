@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section 3: 머신러닝 기초</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* 네비게이션 */
+        .breadcrumb {
+            margin-bottom: 40px;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb span {
+            color: #999;
+            margin: 0 8px;
+        }
+
+        /* 헤더 */
+        .header {
+            margin-bottom: 48px;
+        }
+
+        .header-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #111;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .section-badge {
+            display: inline-block;
+            background: #2196F3;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        /* 글 목록 */
+        .article-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .article-item {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #eee;
+            border-left: 4px solid #2196F3;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .article-item:hover {
+            border-color: #2196F3;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .article-number {
+            font-size: 0.75rem;
+            color: #2196F3;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .article-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #111;
+        }
+
+        .article-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../">AI 공부</a>
+            <span>/</span>
+            Section 3
+        </nav>
+
+        <header class="header">
+            <div class="section-badge">Section 3</div>
+            <div class="header-icon">🧠</div>
+            <h1>머신러닝 기초</h1>
+            <p>AI가 어떻게 학습하는지, 머신러닝의 핵심 개념 이해하기</p>
+        </header>
+
+        <div class="article-list">
+            <a href="./topic01/" class="article-item">
+                <div class="article-number">TOPIC 01</div>
+                <h3 class="article-title">머신러닝은 어떻게 배울까?</h3>
+                <p class="article-desc">Q. 예시를 보고 패턴을 찾는다는 게 뭐야?</p>
+            </a>
+
+            <a href="./topic02/" class="article-item">
+                <div class="article-number">TOPIC 02</div>
+                <h3 class="article-title">지도학습이 뭐야?</h3>
+                <p class="article-desc">Q. 선생님이 있다는 뜻이야?</p>
+            </a>
+
+            <a href="./topic03/" class="article-item">
+                <div class="article-number">TOPIC 03</div>
+                <h3 class="article-title">레이블이 뭐야?</h3>
+                <p class="article-desc">Q. 데이터에 정답을 달아준다는 게?</p>
+            </a>
+
+            <a href="./topic04/" class="article-item">
+                <div class="article-number">TOPIC 04</div>
+                <h3 class="article-title">비지도학습은 정답 없이 배워?</h3>
+                <p class="article-desc">Q. 레이블 없이 어떻게 학습해?</p>
+            </a>
+
+            <a href="./topic05/" class="article-item">
+                <div class="article-number">TOPIC 05</div>
+                <h3 class="article-title">분류와 회귀는 뭐가 달라?</h3>
+                <p class="article-desc">Q. 고양이/개 구분이랑 집값 예측이 달라?</p>
+            </a>
+
+            <a href="./topic06/" class="article-item">
+                <div class="article-number">TOPIC 06</div>
+                <h3 class="article-title">훈련 데이터와 테스트 데이터는 왜 나눠?</h3>
+                <p class="article-desc">Q. 시험 문제를 미리 보면 안 되는 이유는?</p>
+            </a>
+
+            <a href="./topic07/" class="article-item">
+                <div class="article-number">TOPIC 07</div>
+                <h3 class="article-title">과적합이 뭐야?</h3>
+                <p class="article-desc">Q. 훈련 데이터만 잘 맞추면 안 돼?</p>
+            </a>
+
+            <a href="./topic08/" class="article-item">
+                <div class="article-number">TOPIC 08</div>
+                <h3 class="article-title">일반화가 왜 중요해?</h3>
+                <p class="article-desc">Q. 처음 보는 데이터도 맞춰야 한다는 거야?</p>
+            </a>
+
+            <a href="./topic09/" class="article-item">
+                <div class="article-number">TOPIC 09</div>
+                <h3 class="article-title">검증 데이터는 왜 또 필요해?</h3>
+                <p class="article-desc">Q. 훈련/테스트 2개로 부족해?</p>
+            </a>
+
+            <a href="./topic10/" class="article-item">
+                <div class="article-number">TOPIC 10</div>
+                <h3 class="article-title">특징(Feature)이 뭐야?</h3>
+                <p class="article-desc">Q. 사진을 숫자로 어떻게 표현해?</p>
+            </a>
+
+            <a href="./topic11/" class="article-item">
+                <div class="article-number">TOPIC 11</div>
+                <h3 class="article-title">특징 공학은 왜 해?</h3>
+                <p class="article-desc">Q. AI한테 좋은 특징을 골라줘야 해?</p>
+            </a>
+
+            <a href="./topic12/" class="article-item">
+                <div class="article-number">TOPIC 12</div>
+                <h3 class="article-title">선형 회귀가 뭐야?</h3>
+                <p class="article-desc">Q. 점들 사이에 선 긋는 게 AI야?</p>
+            </a>
+
+            <a href="./topic13/" class="article-item">
+                <div class="article-number">TOPIC 13</div>
+                <h3 class="article-title">로지스틱 회귀는 왜 '회귀'야?</h3>
+                <p class="article-desc">Q. 분류 문제인데 왜 회귀라고 불러?</p>
+            </a>
+
+            <a href="./topic14/" class="article-item">
+                <div class="article-number">TOPIC 14</div>
+                <h3 class="article-title">의사결정나무는 어떻게 결정해?</h3>
+                <p class="article-desc">Q. 스무고개 게임이랑 비슷하다고?</p>
+            </a>
+
+            <a href="./topic15/" class="article-item">
+                <div class="article-number">TOPIC 15</div>
+                <h3 class="article-title">k-최근접 이웃은 뭐야?</h3>
+                <p class="article-desc">Q. 비슷한 것들끼리 묶는다는 거야?</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

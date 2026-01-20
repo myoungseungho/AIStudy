@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>파라미터가 많으면 뭐가 좋은데? - Section 1</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fafafa; color: #333; line-height: 1.9; }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number { display: inline-block; background: #4CAF50; color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-bottom: 16px; }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation { background: white; border-radius: 16px; padding: 32px; margin: 32px 0; border: 1px solid #e0e0e0; }
+        .conversation h2 { font-size: 1.3rem; color: #4CAF50; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid #e8f5e9; }
+        .chat { margin-bottom: 20px; }
+        .q { background: #fff3e0; border-left: 4px solid #ff9800; padding: 16px 20px; margin: 16px 0; border-radius: 0 12px 12px 0; font-weight: 500; }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight { background: #e3f2fd; padding: 2px 8px; border-radius: 4px; font-weight: 600; color: #1565c0; }
+        .key-point { background: #c8e6c9; padding: 2px 8px; border-radius: 4px; font-weight: 600; color: #2e7d32; }
+        .warning { background: #ffcdd2; padding: 2px 8px; border-radius: 4px; font-weight: 600; color: #c62828; }
+        .code-block { background: #263238; border-radius: 8px; padding: 16px 20px; margin: 16px 0; font-family: 'Consolas', monospace; font-size: 0.9rem; color: #eceff1; overflow-x: auto; line-height: 1.6; white-space: pre-wrap; }
+        .summary-box { background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%); border-radius: 16px; padding: 32px; color: white; margin: 32px 0; }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #c8e6c9; }
+        .nav-links { display: flex; justify-content: space-between; margin-top: 60px; padding-top: 24px; border-top: 1px solid #e0e0e0; }
+        .nav-links a { color: #4CAF50; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 1</a>
+            <span>/</span>
+            Topic 15
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 15</div>
+            <h1>파라미터가 많으면 뭐가 좋은데?</h1>
+            <p>Q. GPT-4는 파라미터가 몇 개야?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 파라미터가 뭔데?</h2>
+
+            <div class="chat">
+                <div class="q">파라미터가 뭐야? 자꾸 나오는데.</div>
+                <div class="a">
+                    <p><span class="key-point">파라미터 = 가중치(Weight)</span></p>
+                    <p>AI가 학습하면서 조정하는 숫자들이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 악기 연주
+
+피아노:
+→ 건반 88개
+→ 각 건반 = 파라미터
+→ 조합으로 무한한 곡 연주
+
+AI:
+→ 파라미터 수억~수천억 개
+→ 각 파라미터 = 숫자 하나 (0.342, -1.523...)
+→ 조합으로 무한한 답변 생성
+
+
+실제:
+
+GPT-3:
+→ 1750억 개 파라미터
+→ 각각이 하나의 "조정 가능한 값"
+→ 학습하면서 조금씩 조정됨
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 많으면 뭐가 좋아?</h2>
+
+            <div class="chat">
+                <div class="q">파라미터가 많으면 뭐가 달라져?</div>
+                <div class="a">
+                    <p><span class="highlight">복잡한 패턴을 더 잘 학습해.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">파라미터 수에 따른 능력:
+
+100만 개:
+→ 간단한 문장 이해
+→ "안녕" → "안녕하세요"
+
+1억 개:
+→ 문법 이해
+→ 번역 가능
+
+10억 개:
+→ 문맥 이해
+→ 요약, 질의응답
+
+1000억 개:
+→ 추론 능력
+→ 복잡한 대화, 코딩, 창작
+
+
+비유: 두뇌
+
+초파리 뇌: 10만 개 뉴런
+쥐 뇌: 7천만 개 뉴런
+사람 뇌: 860억 개 뉴런
+
+→ 뉴런 많을수록 복잡한 생각 가능
+→ AI 파라미터도 마찬가지
+</code>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>핵심:</strong></p>
+                    <p>파라미터 많다 = 표현력 높다 = 똑똑하다</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. GPT 시리즈 진화</h2>
+
+            <div class="chat">
+                <div class="q">GPT-4는 파라미터가 몇 개야?</div>
+                <div class="a">
+                    <p><span class="warning">OpenAI가 공개 안 함!</span></p>
+                    <p>하지만 추정치는 있어:</p>
+                </div>
+            </div>
+
+            <div class="code-block">GPT 시리즈 파라미터 수:
+
+GPT-1 (2018):
+→ 1.17억 개
+→ 간단한 텍스트 생성
+
+GPT-2 (2019):
+→ 15억 개 (13배)
+→ 그럴듯한 글 작성
+
+GPT-3 (2020):
+→ 1750억 개 (117배)
+→ ChatGPT 기반, 대화 가능
+
+GPT-4 (2023):
+→ 비공개 (추정 1조~1.7조?)
+→ 추론, 코딩, 창작 능력 ↑
+
+
+능력 비교:
+
+GPT-2: "고양이는 귀엽다"
+GPT-3: "고양이는 귀엽고, 털도 부드럽다"
+GPT-4: "고양이는 귀여운 외모와 독립적인 성격으로
+        전 세계적으로 사랑받는 반려동물입니다.
+        특히 집에서 키우기 편해..."
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 단점도 있어?</h2>
+
+            <div class="chat">
+                <div class="q">그럼 무조건 많을수록 좋은 거야?</div>
+                <div class="a">
+                    <p><span class="warning">아니야, 단점도 커.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">파라미터 많을 때 문제점:
+
+1. 비용 폭발
+   GPT-3 학습 비용: 약 460만 달러
+   GPT-4 학습 비용: 추정 수천만~수억 달러
+
+2. 시간 오래 걸림
+   GPT-3: 수주~수개월
+   GPT-4: 수개월
+
+3. 하드웨어 요구
+   작은 모델: CPU로 실행 가능
+   GPT-4: 수백~수천 개 GPU 필요
+
+4. 느린 응답
+   파라미터 많을수록 계산 많아짐
+   → 답변 느려짐
+
+5. 에너지 소비
+   GPT-3 한 번 학습 = 자동차 120대 평생 배출량
+   환경 문제
+
+
+→ 성능 vs 비용 트레이드오프
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 효율적인 모델</h2>
+
+            <div class="chat">
+                <div class="q">적은 파라미터로 똑똑하게 만들 수는 없어?</div>
+                <div class="a">
+                    <p><span class="key-point">있어! 효율화 연구 활발해.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">효율화 기법:
+
+1. 모델 압축 (Compression)
+   → 중요하지 않은 파라미터 제거
+   → 크기 50% 줄이고 성능 95% 유지
+
+2. 양자화 (Quantization)
+   → 숫자 정밀도 낮춤
+   → 32bit → 8bit
+   → 크기 1/4로 줄임
+
+3. 지식 증류 (Distillation)
+   → 큰 모델(선생)이 작은 모델(학생) 가르침
+   → DistilBERT: BERT의 60% 크기, 97% 성능
+
+4. MoE (Mixture of Experts)
+   → 파라미터 많지만 일부만 활성화
+   → GPT-4가 이 방식 사용 (추정)
+
+
+결과:
+→ LLaMA 2-7B: 70억 파라미터
+   → GPT-3.5 수준 성능
+   → 일반 GPU로 실행 가능
+</code>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 미래 트렌드</h2>
+
+            <div class="chat">
+                <div class="q">앞으로 더 커질까?</div>
+                <div class="a">
+                    <p>의견이 갈려:</p>
+                </div>
+            </div>
+
+            <div class="code-block">크기 경쟁파:
+
+"파라미터는 계속 증가할 것"
+→ GPT-5: 10조?
+→ GPT-6: 100조?
+→ 인간 뇌 뉴런(860억) 넘어서기
+
+
+효율화파:
+
+"이제 크기 경쟁은 끝"
+→ 효율이 더 중요
+→ 적은 파라미터로 높은 성능
+→ 환경, 비용 고려
+
+
+현실:
+
+둘 다 진행 중:
+- 거대 모델 (GPT-4, Gemini)
+  → 최고 성능 추구
+- 작은 모델 (LLaMA, Mistral)
+  → 효율성 추구
+
+→ 용도에 맞게 선택
+</code>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>추세:</strong></p>
+                    <p>• 거대 모델 = 연구용, 고성능 필요한 곳</p>
+                    <p>• 작은 모델 = 일반 사용자, 스마트폰</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>파라미터</strong> - AI가 학습하는 조정 가능한 숫자들</li>
+                <li><strong>많으면 좋다</strong> - 복잡한 패턴 학습, 추론 능력 향상</li>
+                <li><strong>GPT 진화</strong> - 1.17억 → 1750억 → 1조+</li>
+                <li><strong>단점</strong> - 비용, 시간, 에너지 소비 증가</li>
+                <li><strong>효율화</strong> - 압축, 양자화, 증류로 작고 똑똑하게</li>
+                <li><strong>미래</strong> - 거대 모델 vs 효율 모델 양립</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic14/">← 이전: 모델이 뭐야?</a>
+            <a href="../topic16/">다음: AI 개발자는 뭘 하는 사람이야? →</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>과적합이 뭐야? - Section 3</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #2196F3;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #2196F3;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e3f2fd;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #bbdefb;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #0d47a1;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #2196F3 0%, #42A5F5 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #bbdefb;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 3</a>
+            <span>/</span>
+            Topic 07
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 07</div>
+            <h1>과적합이 뭐야?</h1>
+            <p>Q. 훈련 데이터만 잘 맞추면 안 돼?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 시험 문제만 달달 외운 학생</h2>
+
+            <div class="chat">
+                <div class="q">과적합(Overfitting)이 뭐야? 이름만 들어도 뭔가 안 좋은 거 같은데</div>
+                <div class="a">
+                    <p><span class="warning">훈련 데이터만 너무 완벽하게 맞춰서, 새로운 데이터는 못 맞추는 현상</span>이야.</p>
+                    <p>학교 시험으로 비유해볼게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 기출문제만 외운 학생
+
+학생A (과적합):
+- 기출문제 100문제를 달달 외움
+- 기출문제: 100점
+- 새 문제: 40점 (응용 못함)
+
+
+학생B (적절한 학습):
+- 기출문제로 개념 이해
+- 기출문제: 90점
+- 새 문제: 85점 (응용 가능)
+
+→ 누가 더 잘 공부한 거야?
+→ 당연히 학생B지!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="key-point">과적합 = 훈련 데이터를 외워버린 거야. 패턴을 배운 게 아니라.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. AI의 과적합 예시</h2>
+
+            <div class="chat">
+                <div class="q">AI도 그렇게 되는 거야?</div>
+                <div class="a">
+                    <p>그럼. 똑같이 일어나.</p>
+                </div>
+            </div>
+
+            <div class="code-block">고양이/개 분류 AI
+
+훈련 데이터: 100장
+- 고양이 50장 (전부 실내에서 찍음)
+- 개 50장 (전부 야외에서 찍음)
+
+
+과적합된 AI:
+"배경이 집이면 → 고양이"
+"배경이 풀밭이면 → 개"
+
+→ 훈련 데이터: 100% 정확
+→ 테스트 데이터:
+   - 야외 고양이 사진 → "개" (틀림!)
+   - 실내 개 사진 → "고양이" (틀림!)
+
+→ AI가 "고양이/개"를 배운 게 아니라
+→ "실내/야외"를 배워버림!
+
+
+정상적인 AI:
+"귀가 뾰족하고 수염 있으면 → 고양이"
+"귀가 축 늘어지고 코가 길면 → 개"
+
+→ 어떤 배경이든 잘 맞춤</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">과적합은 "훈련 데이터의 노이즈까지 학습"하는 거야.</span></p>
+                    <p>진짜 패턴이 아니라 우연한 특징을 학습해버림.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 과적합을 어떻게 알아채?</h2>
+
+            <div class="chat">
+                <div class="q">과적합됐는지 어떻게 알아?</div>
+                <div class="a">
+                    <p><span class="key-point">훈련 성능과 테스트 성능의 차이</span>를 보면 돼.</p>
+                </div>
+            </div>
+
+            <div class="code-block">과적합 감지:
+
+정상 케이스:
+훈련 정확도: 92%
+테스트 정확도: 90%
+→ 차이: 2%p (괜찮음)
+
+
+약간 과적합:
+훈련 정확도: 95%
+테스트 정확도: 85%
+→ 차이: 10%p (경계 필요)
+
+
+심각한 과적합:
+훈련 정확도: 99%
+테스트 정확도: 60%
+→ 차이: 39%p (문제!)
+→ 훈련 데이터 외운 것
+
+
+과소적합:
+훈련 정확도: 50%
+테스트 정확도: 48%
+→ 둘 다 낮음
+→ 제대로 학습 못함</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="warning">훈련 성능만 보고 "잘됐다!"라고 착각하면 안 돼.</span></p>
+                    <p>반드시 테스트 성능과 비교해야 해.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 과적합은 왜 생겨?</h2>
+
+            <div class="chat">
+                <div class="q">과적합은 왜 일어나는 거야?</div>
+                <div class="a">
+                    <p>여러 원인이 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">과적합 원인:
+
+1. 데이터가 너무 적음
+→ 데이터 10개로 학습
+→ 10개 특징을 전부 외워버림
+
+
+2. 모델이 너무 복잡함
+→ 간단한 문제인데 너무 복잡한 AI 사용
+→ 필요 없는 세부사항까지 학습
+
+
+3. 학습을 너무 오래 함
+→ 1만 번 반복 학습
+→ 노이즈까지 완벽하게 암기
+
+
+4. 정규화를 안 함
+→ 제약 없이 자유롭게 학습
+→ 과하게 최적화됨</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>비유하면:</p>
+                    <p><strong>시험 문제 10개를 100번 반복해서 외우면</strong></p>
+                    <p><strong>문제 번호만 봐도 답을 알게 되는 것처럼,</strong></p>
+                    <p><strong>AI도 데이터를 너무 많이 보면 외워버려.</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 과적합을 막는 방법</h2>
+
+            <div class="chat">
+                <div class="q">그럼 과적합을 어떻게 막아?</div>
+                <div class="a">
+                    <p>여러 방법이 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">과적합 방지 방법:
+
+1. 데이터 더 모으기
+→ 10개 → 1000개로 늘리기
+→ 외우기 어려워짐
+
+
+2. 모델 단순화
+→ 너무 복잡한 모델 → 적당한 모델
+→ 필요한 것만 학습
+
+
+3. 조기 종료 (Early Stopping)
+→ 테스트 성능이 나빠지기 시작하면 멈춤
+→ 과하게 학습하는 걸 방지
+
+
+4. 정규화 (Regularization)
+→ "너무 복잡하게 하면 패널티"
+→ 단순한 패턴을 찾도록 유도
+
+
+5. 드롭아웃 (Dropout)
+→ 학습할 때 일부러 뉴런 끄기
+→ 특정 뉴런에 의존 못하게 함
+
+
+6. 데이터 증강 (Data Augmentation)
+→ 이미지 회전, 반전, 자르기
+→ 다양한 버전 만들어서 학습</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">핵심은 "외우지 못하게" 하는 거야.</span></p>
+                    <p>일부러 어렵게 만들어서, 본질적인 패턴만 배우게 하는 거지.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 과소적합 vs 과적합 vs 적절</h2>
+
+            <div class="chat">
+                <div class="q">그럼 적당한 지점은 어떻게 찾아?</div>
+                <div class="a">
+                    <p>학습 곡선을 보면서 조절해야 해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">학습 곡선 (Learning Curve):
+
+                    정확도
+                      ↑
+                100% |
+                     |              테스트 성능 (최적점!)
+                 80% |         ●
+                     |       ●   ●
+                 60% |     ●       ●  (과적합 시작)
+                     |   ●           ●
+                 40% | ●               ●
+                     |
+                   0 +--●--●--●--●--●--●--●→ 학습 횟수
+                         ↑       ↑       ↑
+                      과소적합   적절  과적합
+
+
+과소적합 (Underfitting):
+→ 둘 다 낮음
+→ 더 학습 필요
+
+
+적절 (Sweet Spot):
+→ 테스트 성능 최고
+→ 이 지점에서 멈춰야 함
+
+
+과적합 (Overfitting):
+→ 훈련은 올라가는데 테스트는 내려감
+→ 너무 많이 학습함</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">AI 학습의 핵심은 "적당한 지점"을 찾는 거야.</span></p>
+                    <p>너무 적게도, 너무 많이도 학습하면 안 돼.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>과적합 = 훈련 데이터 암기</strong> - 패턴이 아닌 데이터 자체를 외움</li>
+                <li><strong>감지 방법</strong> - 훈련과 테스트 성능 차이가 크면 과적합</li>
+                <li><strong>원인</strong> - 데이터 부족, 모델 복잡, 과도한 학습</li>
+                <li><strong>방지 방법</strong> - 데이터 증가, 모델 단순화, 조기 종료, 정규화</li>
+                <li><strong>적절한 균형</strong> - 과소적합과 과적합 사이의 최적점 찾기</li>
+                <li><strong>테스트가 중요</strong> - 훈련 성능만 보면 과적합을 못 찾음</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic06/">← 이전: 훈련 데이터와 테스트 데이터는 왜 나눠?</a>
+            <a href="../topic08/">다음: 일반화가 왜 중요해? →</a>
+        </div>
+    </div>
+</body>
+</html>

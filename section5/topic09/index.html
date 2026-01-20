@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>특징 맵이 뭐야? - Section 5</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #00BCD4;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #00BCD4;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e0f7fa;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #e0f7fa;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #00838f;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #00BCD4 0%, #26C6DA 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #b2ebf2;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #00BCD4; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 5</a>
+            <span>/</span>
+            Topic 09
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 09</div>
+            <h1>특징 맵이 뭐야?</h1>
+            <p>Q. 층을 거치면서 이미지가 어떻게 변해?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 특징 맵(Feature Map)이란?</h2>
+
+            <div class="chat">
+                <div class="q">특징 맵이 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">합성곱 연산의 결과물</span>이야.</p>
+                    <p>필터를 적용해서 나온 새로운 이미지를 특징 맵이라고 불러.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유:
+사진에 필터를 적용하는 것과 비슷해.
+
+원본 사진
+→ 흑백 필터 적용 → 흑백 이미지 (특징 맵 1)
+→ 엣지 필터 적용 → 윤곽선 이미지 (특징 맵 2)
+→ 블러 필터 적용 → 흐릿한 이미지 (특징 맵 3)
+
+각각이 하나의 특징 맵!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">하나의 필터 = 하나의 특징 맵</span></p>
+                    <p>64개 필터를 쓰면 64개 특징 맵이 나와.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 층을 거치면서 어떻게 변해?</h2>
+
+            <div class="chat">
+                <div class="q">CNN을 거치면서 이미지가 어떻게 변하는 거야?</div>
+                <div class="a">
+                    <p>점점 <strong>추상적</strong>으로 변해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">CNN의 특징 맵 변화:
+
+입력 이미지: (224, 224, 3)
+→ 사람 눈에 보이는 고양이 사진
+
+Layer 1: (224, 224, 64)
+→ 64개의 특징 맵
+→ 내용: 엣지, 색상 변화
+→ 여전히 "이미지"처럼 보임
+
+Layer 2: (112, 112, 128)
+→ 128개의 특징 맵
+→ 내용: 코너, 질감, 간단한 패턴
+→ 조금 추상적
+
+Layer 3: (56, 56, 256)
+→ 256개의 특징 맵
+→ 내용: 눈, 귀, 털 같은 부분
+→ 많이 추상적
+
+Layer 4: (28, 28, 512)
+→ 512개의 특징 맵
+→ 내용: 얼굴, 몸통
+→ 매우 추상적, 사람 눈엔 의미 없어 보임</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="key-point">깊어질수록: 구체적 → 추상적</span></p>
+                    <p><span class="key-point">공간 크기: 크다 → 작다</span></p>
+                    <p><span class="key-point">채널 수: 적다 → 많다</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 시각화하면 어떻게 보여?</h2>
+
+            <div class="chat">
+                <div class="q">실제로 특징 맵을 시각화하면 뭐가 보여?</div>
+                <div class="a">
+                    <p>고양이 사진을 CNN에 넣었다고 가정해보자.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Layer 1 특징 맵:
+→ 필터 1: 수직 엣지가 밝게 표시
+  (고양이 수염, 몸통 윤곽)
+→ 필터 2: 수평 엣지가 밝게 표시
+  (바닥선, 귀 윤곽)
+→ 필터 3: 주황색 부분이 밝게 표시
+  (고양이 털 색깔)
+→ ...
+→ 64개 필터 각각 다른 특징 강조
+
+
+Layer 3 특징 맵:
+→ 필터 1: 눈 모양이 있으면 활성화
+→ 필터 2: 귀 모양이 있으면 활성화
+→ 필터 3: 털 질감이 있으면 활성화
+→ ...
+→ 256개 필터
+
+
+Layer 5 특징 맵:
+→ 이미 너무 추상적
+→ 사람 눈엔 의미 없는 패턴
+→ 하지만 AI에게는 "고양이" 판단의 핵심 정보</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="warning">사람은 초반 층만 이해 가능</span>해.</p>
+                    <p>깊은 층은 AI만 해석할 수 있어.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 왜 채널이 늘어나?</h2>
+
+            <div class="chat">
+                <div class="q">왜 층이 깊어질수록 채널 수가 늘어나?</div>
+                <div class="a">
+                    <p><strong>더 다양한 특징을 표현</strong>하기 위해서야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">채널 수 증가 이유:
+
+초반 (3 → 64):
+→ RGB 3가지 → 엣지 방향 64가지
+→ 단순한 특징이지만 다양한 방향
+
+중반 (64 → 128 → 256):
+→ 조합 가능한 패턴이 기하급수적 증가
+→ "수직 엣지 + 곡선" 같은 복잡한 조합
+
+후반 (256 → 512):
+→ 객체의 부분들을 표현
+→ "왼쪽 귀", "오른쪽 눈", "털 질감" 등
+→ 각각 별도 채널로 표현
+
+
+트레이드오프:
+→ 공간 해상도 감소 (224 → 7)
+  = 위치 정보 감소
+→ 채널 수 증가 (3 → 512)
+  = 의미 정보 증가</code-block>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">"어디에 있는가"보다 "무엇인가"가 중요해지는 거야.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 활성화 맵 (Activation Map)</h2>
+
+            <div class="chat">
+                <div class="q">활성화 맵은 또 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">특징 맵 + 활성화 함수</span> 적용한 결과야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">특징 맵 vs 활성화 맵:
+
+특징 맵:
+→ 합성곱 바로 후
+→ 값 범위: -∞ ~ +∞
+→ 음수 값도 있음
+
+활성화 맵:
+→ ReLU 적용 후
+→ 값 범위: 0 ~ +∞
+→ 음수는 0으로
+
+의미:
+→ 특징 맵: "이 위치에 이 패턴이 얼마나 비슷한가"
+→ 활성화 맵: "이 패턴이 실제로 있는가" (Yes/No 느낌)</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>실무에서는 두 용어를 혼용해서 써.</p>
+                    <p>보통 ReLU까지 적용한 걸 특징 맵이라고 불러.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 특징 맵으로 디버깅하기</h2>
+
+            <div class="chat">
+                <div class="q">특징 맵을 왜 봐야 해?</div>
+                <div class="a">
+                    <p><span class="highlight">CNN이 무엇을 학습했는지 확인</span>하기 위해서야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">특징 맵 시각화 활용:
+
+문제: 고양이 분류가 안 됨
+
+특징 맵 확인:
+→ Layer 1: 엣지 잘 잡힘
+→ Layer 2: 코너 잘 잡힘
+→ Layer 3: 귀 모양 안 잡힘! ← 문제 발견
+→ 데이터에 다양한 각도의 귀가 부족
+
+해결책:
+→ 다양한 각도 고양이 사진 추가
+
+
+또 다른 예:
+→ 모든 특징 맵이 거의 0
+→ Vanishing Gradient 문제
+→ 해결: Batch Norm 추가</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">특징 맵 = CNN의 '생각'을 엿보는 창</span></p>
+                    <p>디버깅할 때 엄청 유용해.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>특징 맵 = 합성곱 결과</strong> - 필터 하나당 특징 맵 하나</li>
+                <li><strong>계층적 추상화</strong> - 층이 깊어질수록 구체적→추상적</li>
+                <li><strong>공간 감소, 채널 증가</strong> - 위치 정보→의미 정보</li>
+                <li><strong>초반만 시각적</strong> - 깊은 층은 사람이 해석 불가</li>
+                <li><strong>디버깅 도구</strong> - CNN이 무엇을 학습했는지 확인</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic08/">← 이전: 맥스 풀링과 평균 풀링은 뭐가 달라?</a>
+            <a href="../topic10/">다음: 전이 학습이 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

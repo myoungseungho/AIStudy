@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>행렬 곱셈은 왜 저렇게 복잡해? - Section 2</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF9800;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF9800;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #fff3e0;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #fff3e0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #e65100;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #FF9800 0%, #FFB74D 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fff3e0;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #FF9800; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 2</a>
+            <span>/</span>
+            Topic 05
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 05</div>
+            <h1>행렬 곱셈은 왜 저렇게 복잡해?</h1>
+            <p>Q. 그냥 같은 자리끼리 곱하면 안 돼?</p>
+        </header>
+
+        <!-- Part 1: 왜 복잡하게 -->
+        <div class="conversation">
+            <h2>Part 1. 같은 자리끼리 곱하면 안 돼?</h2>
+
+            <div class="chat">
+                <div class="q">덧셈은 같은 자리끼리 더하잖아. 곱셈도 그렇게 하면 안 돼?</div>
+                <div class="a">
+                    <p>좋은 질문이야.</p>
+                    <p><span class="warning">같은 자리끼리 곱하는 건 다른 이름이 있어.</span></p>
+                    <p><strong>원소별 곱셈(Element-wise multiplication)</strong>이라고 해. 실제로도 써.</p>
+                </div>
+            </div>
+
+            <div class="code-block">원소별 곱셈 (Hadamard product):
+
+A = | 1  2 |    B = | 5  6 |
+    | 3  4 |        | 7  8 |
+
+A ⊙ B = | 1×5  2×6 | = | 5   12 |
+        | 3×7  4×8 |   | 21  32 |
+
+→ 같은 위치끼리 곱함
+→ 간단함</div>
+
+            <div class="chat">
+                <div class="q">그럼 이걸 쓰면 되잖아?</div>
+                <div class="a">
+                    <p><span class="key-point">용도가 달라.</span></p>
+                    <p>행렬 곱셈은 <strong>변환(transformation)</strong>을 표현하는 거야.</p>
+                    <p>원소별 곱셈으로는 할 수 없는 일이 많아.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: 행렬 곱셈 규칙 -->
+        <div class="conversation">
+            <h2>Part 2. 행렬 곱셈은 어떻게 하는 거야?</h2>
+
+            <div class="chat">
+                <div class="q">그럼 정확히 어떻게 계산하는 건데?</div>
+                <div class="a">
+                    <p>천천히 볼게. <span class="key-point">행과 열을 내적하는 거야.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">예시:
+
+A = | 1  2  3 |    B = | 7   8  |
+    | 4  5  6 |        | 9   10 |
+                       | 11  12 |
+
+C = A × B = ?
+
+크기 확인:
+A는 (2×3), B는 (3×2)
+→ 결과 C는 (2×2)
+
+
+계산:
+C[0,0] = A의 1행 · B의 1열
+       = [1, 2, 3] · [7, 9, 11]
+       = 1×7 + 2×9 + 3×11
+       = 7 + 18 + 33 = 58
+
+C[0,1] = A의 1행 · B의 2열
+       = [1, 2, 3] · [8, 10, 12]
+       = 1×8 + 2×10 + 3×12
+       = 8 + 20 + 36 = 64
+
+C[1,0] = A의 2행 · B의 1열
+       = [4, 5, 6] · [7, 9, 11]
+       = 4×7 + 5×9 + 6×11
+       = 28 + 45 + 66 = 139
+
+C[1,1] = A의 2행 · B의 2열
+       = [4, 5, 6] · [8, 10, 12]
+       = 4×8 + 5×10 + 6×12
+       = 32 + 50 + 72 = 154
+
+
+결과:
+C = | 58   64  |
+    | 139  154 |</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>패턴 보이지?</p>
+                    <p><span class="highlight">i행 × j열 = 결과의 (i,j) 위치</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: 왜 이렇게 하나 -->
+        <div class="conversation">
+            <h2>Part 3. 왜 이렇게 복잡하게 하는 거야?</h2>
+
+            <div class="chat">
+                <div class="q">이유가 뭔데?</div>
+                <div class="a">
+                    <p><span class="key-point">선형 변환을 표현하기 위해서.</span></p>
+                    <p>예를 들어볼게:</p>
+                </div>
+            </div>
+
+            <div class="code-block">데이터 변환 예시:
+
+학생 3명의 점수 (국어, 영어):
+X = | 80  90 |  학생1
+    | 75  88 |  학생2
+    | 90  85 |  학생3
+
+가중치:
+국어는 60% (0.6)
+영어는 40% (0.4)
+
+W = | 0.6 |
+    | 0.4 |
+
+최종 점수 = X × W = ?
+
+계산:
+학생1: 80×0.6 + 90×0.4 = 48 + 36 = 84
+학생2: 75×0.6 + 88×0.4 = 45 + 35.2 = 80.2
+학생3: 90×0.6 + 85×0.4 = 54 + 34 = 88
+
+결과 = | 84   |
+       | 80.2 |
+       | 88   |
+
+→ 한 번의 행렬 곱셈으로 3명의 최종 점수 계산!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>보이지?</p>
+                    <p><span class="highlight">행렬 곱셈 = 여러 개의 가중합을 한 번에 계산</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: 뉴럴 네트워크에서 -->
+        <div class="conversation">
+            <h2>Part 4. AI에서는 어떻게 쓰여?</h2>
+
+            <div class="chat">
+                <div class="q">뉴럴 네트워크에서는 어떻게 쓰이는 거야?</div>
+                <div class="a">
+                    <p><span class="key-point">뉴럴 네트워크의 모든 층이 행렬 곱셈이야.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">뉴럴 네트워크 한 층:
+
+입력: 3개 뉴런 [x1, x2, x3]
+출력: 2개 뉴런 [y1, y2]
+
+연결:
+y1 = w11×x1 + w12×x2 + w13×x3
+y2 = w21×x1 + w22×x2 + w23×x3
+
+행렬로:
+X = [x1, x2, x3]  (1×3)
+
+W = | w11  w12  w13 |  (2×3)
+    | w21  w22  w23 |
+
+Y = X × W^T  (1×2)
+  = [y1, y2]
+
+
+배치로 여러 개 처리:
+
+X = | x1  x2  x3 |  ← 데이터 100개
+    | ... ...    |
+    (100×3)
+
+W = | w11  w12  w13 |  (2×3)
+    | w21  w22  w23 |
+
+Y = X × W^T  (100×2)
+
+→ 100개 데이터를 동시에 처리!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="highlight">행렬 곱셈 덕분에 병렬 처리가 가능해.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: 곱셈 순서 -->
+        <div class="conversation">
+            <h2>Part 5. A×B랑 B×A가 다른 거야?</h2>
+
+            <div class="chat">
+                <div class="q">곱셈은 순서 바꿔도 같잖아. 3×2 = 2×3</div>
+                <div class="a">
+                    <p><span class="warning">행렬 곱셈은 순서가 중요해!</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">예시:
+
+A = | 1  2 |    B = | 5  6 |
+    | 3  4 |        | 7  8 |
+
+A × B = | 1×5+2×7  1×6+2×8 | = | 19  22 |
+        | 3×5+4×7  3×6+4×8 |   | 43  50 |
+
+B × A = | 5×1+6×3  5×2+6×4 | = | 23  34 |
+        | 7×1+8×3  7×2+8×4 |   | 31  46 |
+
+A × B ≠ B × A
+→ 결과가 완전히 다름!
+
+
+크기가 다르면 아예 불가능:
+
+A = (2×3)
+B = (3×4)
+
+A × B = (2×4) ✓
+B × A = (3×3) 아니면 에러 ✗
+
+→ 순서를 바꾸면 계산조차 안 될 수 있음</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>교환법칙이 성립 안 해.</strong></p>
+                    <p><span class="key-point">행렬 곱셈은 순서를 꼭 지켜야 해.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 6: 실제 코드 -->
+        <div class="conversation">
+            <h2>Part 6. 파이썬에서는?</h2>
+
+            <div class="chat">
+                <div class="q">코드로는 어떻게 써?</div>
+                <div class="a">
+                    <p>NumPy로 간단하게:</p>
+                </div>
+            </div>
+
+            <div class="code-block">import numpy as np
+
+# 행렬 생성
+A = np.array([[1, 2, 3],
+              [4, 5, 6]])  # (2, 3)
+
+B = np.array([[7, 8],
+              [9, 10],
+              [11, 12]])   # (3, 2)
+
+# 행렬 곱셈
+C = A @ B  # 또는 np.dot(A, B)
+print(C)
+# [[58  64]
+#  [139 154]]
+
+print(C.shape)  # (2, 2)
+
+
+# 원소별 곱셈 (비교)
+A2 = np.array([[1, 2],
+               [3, 4]])
+B2 = np.array([[5, 6],
+               [7, 8]])
+
+hadamard = A2 * B2  # * 연산자는 원소별
+print(hadamard)
+# [[ 5 12]
+#  [21 32]]
+
+matrix_mult = A2 @ B2  # @ 연산자는 행렬 곱셈
+print(matrix_mult)
+# [[19 22]
+#  [43 50]]</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>중요:</strong></p>
+                    <p><span class="key-point">* 연산자 = 원소별 곱셈</span></p>
+                    <p><span class="key-point">@ 연산자 = 행렬 곱셈</span></p>
+                    <p>헷갈리지 말고 정확히 구분해서 써야 해!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>행렬 곱셈 ≠ 원소별 곱셈</strong> - 용도가 완전히 다름</li>
+                <li><strong>행과 열의 내적</strong> - i행 × j열 = 결과의 (i,j) 위치</li>
+                <li><strong>선형 변환을 표현</strong> - 여러 가중합을 한 번에 계산</li>
+                <li><strong>순서가 중요</strong> - A×B ≠ B×A (교환법칙 성립 안 함)</li>
+                <li><strong>크기 규칙</strong> - (m×n) × (n×p) = (m×p)</li>
+                <li><strong>뉴럴 네트워크의 핵심</strong> - 모든 층이 행렬 곱셈</li>
+                <li><strong>@ 연산자 사용</strong> - NumPy에서 행렬 곱셈</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic04/">← 이전: 행렬은 왜 쓰는 거야?</a>
+            <a href="../topic06/">다음: 차원이 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

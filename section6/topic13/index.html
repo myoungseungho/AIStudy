@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BERT는 어떻게 학습해? - Section 6</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #E91E63;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #E91E63;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #fce4ec;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #fce4ec;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c2185b;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #E91E63 0%, #EC407A 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fce4ec;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #E91E63; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 6</a>
+            <span>/</span>
+            Topic 13
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 13</div>
+            <h1>BERT는 어떻게 학습해?</h1>
+            <p>Q. 빈칸 채우기로 언어를 배운다고?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. BERT가 뭐야?</h2>
+
+            <div class="chat">
+                <div class="q">BERT가 뭔데 이렇게 유명해?</div>
+                <div class="a">
+                    <p><span class="key-point">Bidirectional Encoder Representations from Transformers</span>의 약자야.</p>
+                    <p>2018년 구글이 만든 모델인데, <span class="highlight">NLP 역사를 바꿨어</span>.</p>
+                </div>
+            </div>
+
+            <div class="code-block">BERT의 혁명:
+
+발표 전 (2018년 10월):
+NLP 태스크별로 다른 모델 필요
+→ 감정 분석용 모델 따로
+→ 질의응답용 모델 따로
+→ 번역용 모델 따로
+
+BERT 발표 후:
+하나의 BERT로 모든 태스크 해결
+→ 11개 NLP 벤치마크에서 SOTA 달성
+→ 전부 압도적 1등!
+
+성능 향상 예시:
+SQuAD (질의응답): 81% → 93% (+12%!)
+GLUE (종합): 68% → 80% (+12%!)
+
+→ AI 학계 충격
+</div>
+
+            <div class="chat">
+                <div class="q">왜 이렇게 잘해?</div>
+                <div class="a">
+                    <p><span class="highlight">양방향으로 문맥을 이해</span>하기 때문이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Bidirectional의 의미:
+
+기존 모델 (GPT 등):
+"The animal didn't cross the street because it was too tired"
+→ 왼쪽에서 오른쪽으로만 읽음 →
+→ "it" 볼 때 앞 단어들만 참고
+
+BERT:
+"The animal didn't cross the street because it was too tired"
+← 양방향으로 읽음 →
+→ "it" 볼 때 앞뒤 단어 모두 참고!
+
+효과:
+"it"이 "animal"인지 "street"인지 명확히 파악
+→ 문맥 이해력 대폭 향상
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. Masked Language Model (MLM)</h2>
+
+            <div class="chat">
+                <div class="q">BERT는 어떻게 학습해?</div>
+                <div class="a">
+                    <p><span class="key-point">빈칸 채우기 게임</span>으로 학습해!</p>
+                    <p>이걸 <span class="highlight">Masked Language Model (MLM)</span>이라고 불러.</p>
+                </div>
+            </div>
+
+            <div class="code-block">MLM 학습 방법:
+
+원본 문장:
+"나는 오늘 학교에 갔다"
+
+1단계: 랜덤으로 15% 단어 가리기
+"나는 [MASK] 학교에 갔다"
+
+2단계: BERT가 예측
+입력: "나는 [MASK] 학교에 갔다"
+출력: "오늘" (예측)
+
+3단계: 정답과 비교
+정답: "오늘"
+예측: "오늘" ✓
+→ 맞으면 보상, 틀리면 학습
+
+
+다른 예시:
+"고양이가 [MASK]를 잡았다"
+→ BERT 예측: "쥐" (가능성 높음)
+→ 정답: "쥐" ✓
+
+"고양이가 [MASK]를 먹었다"
+→ BERT 예측: "생선" (가능성 높음)
+→ 정답: "참치" ✓ (비슷함)
+
+→ 수십억 번 반복하면 언어 이해!
+</div>
+
+            <div class="chat">
+                <div class="q">단순한데 왜 효과적이야?</div>
+            </div>
+
+            <div class="code-block">MLM의 장점:
+
+1. 문맥 이해 학습
+   "[MASK]는 밤에 활동한다"
+   → 앞뒤 문맥 보고 "올빼미", "박쥐" 등 추론
+   → 문맥적 의미 학습
+
+2. 양방향 학습
+   "The [MASK] is cute"
+   → 앞의 "The"와 뒤의 "is cute" 모두 참고
+   → "dog", "cat" 등 추론
+
+3. Self-supervised
+   → 정답이 원본 텍스트에 있음
+   → 라벨링 불필요
+   → 무한한 데이터로 학습 가능
+
+4. 다양한 패턴 학습
+   → 문법, 의미, 상식 모두 학습
+   → 단순하지만 강력!
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. Next Sentence Prediction (NSP)</h2>
+
+            <div class="chat">
+                <div class="q">BERT가 배우는 게 또 있어?</div>
+                <div class="a">
+                    <p>응, <span class="key-point">Next Sentence Prediction (NSP)</span>도 학습해.</p>
+                    <p>두 문장이 연결되는지 판단하는 거야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">NSP 학습:
+
+예시 1:
+문장 A: "나는 배가 고프다"
+문장 B: "그래서 밥을 먹었다"
+질문: B가 A 다음에 올 문장인가?
+정답: Yes ✓ (논리적으로 연결)
+
+예시 2:
+문장 A: "나는 배가 고프다"
+문장 B: "고양이는 귀엽다"
+질문: B가 A 다음에 올 문장인가?
+정답: No ✗ (무관함)
+
+
+학습 데이터 만들기:
+
+50% IsNext (연결됨):
+실제로 연속된 문장 사용
+"오늘 날씨가 좋다. 산책하기 좋은 날이다."
+→ Label: IsNext
+
+50% NotNext (무관):
+랜덤 문장 조합
+"오늘 날씨가 좋다. 고양이는 동물이다."
+→ Label: NotNext
+
+
+왜 필요한가?
+→ 문장 간 관계 이해
+→ 질의응답, 요약 등에 유용
+</div>
+
+            <div class="chat">
+                <div class="q">NSP가 진짜 도움 돼?</div>
+            </div>
+
+            <div class="code-block">NSP 논란:
+
+초기 (BERT):
+NSP 중요하다고 주장
+→ 성능 향상에 기여
+
+후속 연구 (RoBERTa, 2019):
+NSP 제거해도 성능 비슷
+→ 오히려 때론 더 좋음
+→ MLM만으로 충분?
+
+현재 컨센서스:
+- NSP는 선택사항
+- 태스크에 따라 유무용
+- 질의응답: NSP 도움
+- 분류: NSP 불필요
+
+결론:
+MLM이 핵심, NSP는 보조
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. BERT 사용법</h2>
+
+            <div class="chat">
+                <div class="q">BERT를 어떻게 써?</div>
+                <div class="a">
+                    <p><span class="highlight">Pre-training + Fine-tuning</span> 방식이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">2단계 학습:
+
+1단계: Pre-training (사전 학습)
+→ 구글이 이미 해놨음!
+→ 위키피디아 + BookCorpus (33억 단어)
+→ MLM + NSP로 학습
+→ 며칠~몇 주 소요
+→ 비용: GPU 수십 개, 수천만 원
+
+2단계: Fine-tuning (미세 조정)
+→ 우리가 할 부분!
+→ 내 데이터로 추가 학습
+→ 몇 시간~하루 소요
+→ 비용: GPU 1개, 저렴
+
+
+비유:
+Pre-training = 대학교 교양 교육
+→ 일반적 지식 습득
+
+Fine-tuning = 전공 교육
+→ 특정 분야 전문화
+</div>
+
+            <div class="code-block">Fine-tuning 예시:
+
+감정 분석 태스크:
+
+1. Pre-trained BERT 로드
+from transformers import BertModel
+model = BertModel.from_pretrained('bert-base-uncased')
+
+2. Classification Head 추가
+classifier = nn.Linear(768, 2)  # 긍정/부정
+
+3. 내 데이터로 학습
+데이터: 영화 리뷰 + 라벨
+"This movie is great!" → 긍정
+"Terrible film" → 부정
+
+4. 몇 epoch 학습
+→ 몇 시간이면 완료!
+
+5. 사용
+"Amazing performance" → 긍정 (99%)
+
+
+장점:
+→ 적은 데이터로도 고성능
+→ 빠른 학습
+→ 누구나 사용 가능
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. BERT 변형들</h2>
+
+            <div class="chat">
+                <div class="q">BERT 이후로 더 좋은 모델 나왔어?</div>
+            </div>
+
+            <div class="code-block">BERT 계열 모델들:
+
+RoBERTa (Facebook, 2019)
+→ NSP 제거
+→ 더 많은 데이터
+→ BERT보다 2~3% 향상
+
+ALBERT (Google, 2019)
+→ 파라미터 공유
+→ 모델 크기 1/18로 축소
+→ 성능은 유지
+
+DistilBERT (Hugging Face, 2019)
+→ 지식 증류로 압축
+→ 크기 40% 감소
+→ 속도 60% 향상
+→ 성능 97% 유지
+
+ELECTRA (Google, 2020)
+→ MLM 대신 판별 학습
+→ 더 효율적
+→ 같은 계산으로 더 좋은 성능
+
+DeBERTa (Microsoft, 2020)
+→ Disentangled Attention
+→ 현재 SOTA 수준
+
+
+선택 기준:
+- 성능 최우선: DeBERTa
+- 속도 중요: DistilBERT
+- 균형: RoBERTa
+- 메모리 제한: ALBERT
+</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>하지만 텍스트 생성에는 <span class="key-point">GPT</span>가 더 좋아. 다음 토픽에서 배워볼게!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>BERT</strong> - 양방향 Transformer로 문맥 이해에 특화</li>
+                <li><strong>MLM</strong> - 빈칸 채우기로 언어 학습, 핵심 학습 방법</li>
+                <li><strong>NSP</strong> - 문장 간 관계 학습, 선택적 사용</li>
+                <li><strong>Fine-tuning</strong> - Pre-trained 모델을 내 태스크에 맞춰 조정</li>
+                <li><strong>영향</strong> - 11개 NLP 태스크 SOTA, NLP 표준 모델</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic12/">← 이전: 셀프 어텐션은 뭐야?</a>
+            <a href="../topic14/">다음: GPT는 BERT랑 뭐가 달라? →</a>
+        </div>
+    </div>
+</body>
+</html>

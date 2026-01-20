@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>차원이 뭐야? - Section 2</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF9800;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF9800;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #fff3e0;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #fff3e0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #e65100;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #FF9800 0%, #FFB74D 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fff3e0;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #FF9800; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 2</a>
+            <span>/</span>
+            Topic 06
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 06</div>
+            <h1>차원이 뭐야?</h1>
+            <p>Q. 3차원까지는 아는데 784차원은 뭐야?</p>
+        </header>
+
+        <!-- Part 1: 차원의 의미 -->
+        <div class="conversation">
+            <h2>Part 1. 차원이 뭔데?</h2>
+
+            <div class="chat">
+                <div class="q">1차원, 2차원, 3차원은 알겠는데 AI에서는 784차원이라는데?</div>
+                <div class="a">
+                    <p><span class="key-point">차원 = 정보를 나타내는 숫자의 개수</span></p>
+                    <p>물리적 공간하고는 좀 달라.</p>
+                </div>
+            </div>
+
+            <div class="code-block">물리적 차원:
+
+1차원 = 선 (x)
+2차원 = 평면 (x, y)
+3차원 = 공간 (x, y, z)
+
+→ 우리가 볼 수 있는 건 여기까지
+
+
+수학적 차원:
+
+4차원 = [x, y, z, w]
+5차원 = [a, b, c, d, e]
+784차원 = [x1, x2, x3, ..., x784]
+
+→ 그냥 숫자가 784개 있다는 뜻
+→ 시각화는 못해도 계산은 가능!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="highlight">AI에서 차원 = 벡터에 들어있는 숫자 개수</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: 왜 고차원 -->
+        <div class="conversation">
+            <h2>Part 2. 왜 차원이 이렇게 높아?</h2>
+
+            <div class="chat">
+                <div class="q">784차원은 왜 필요한 거야?</div>
+                <div class="a">
+                    <p>MNIST 손글씨 숫자 데이터셋 얘기야.</p>
+                    <p><span class="key-point">28×28 픽셀 이미지를 벡터로 펼친 거야.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">MNIST 이미지:
+
+28×28 = 784 픽셀
+
+원본 (행렬):
+| p1  p2  p3  ... p28 |
+| p29 p30 p31 ... p56 |
+| ...                 |
+| p757 ... p784       |
+
+벡터로 펼침:
+[p1, p2, p3, ..., p784]
+
+→ 784차원 벡터!
+→ 각 차원이 하나의 픽셀 값
+
+
+컬러 이미지면?
+28×28×3 (RGB) = 2352차원
+
+→ 더 많은 정보 = 더 높은 차원</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>원칙:</strong></p>
+                    <p><span class="key-point">표현하려는 정보가 많을수록 차원이 높아져.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: 차원의 저주 -->
+        <div class="conversation">
+            <h2>Part 3. 차원이 높으면 뭐가 문제야?</h2>
+
+            <div class="chat">
+                <div class="q">차원이 높으면 더 좋은 거 아니야? 정보가 많으니까</div>
+                <div class="a">
+                    <p><span class="warning">아니야. "차원의 저주"라는 게 있어.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">차원의 저주 (Curse of Dimensionality):
+
+1차원:
+선 위에 점 10개 → 빽빽함
+
+2차원:
+평면에 점 10개 → 듬성듬성
+
+3차원:
+공간에 점 10개 → 거의 빈 공간
+
+1000차원:
+점 10개 → 거의 모두가 외딴 섬
+
+
+문제:
+1. 데이터가 너무 희소해짐
+2. 거리 개념이 무의미해짐
+3. 필요한 데이터가 기하급수적으로 증가
+
+예시:
+- 1차원에서 10개 구간 채우기 → 10개 필요
+- 2차원에서 10×10 채우기 → 100개 필요
+- 3차원에서 10×10×10 채우기 → 1000개 필요
+- 784차원? → 10^784개 필요 (불가능!)</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">그래서 차원 축소 기법이 중요해.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: 차원 축소 -->
+        <div class="conversation">
+            <h2>Part 4. 차원을 줄일 수 있어?</h2>
+
+            <div class="chat">
+                <div class="q">차원을 줄이면 정보가 사라지잖아?</div>
+                <div class="a">
+                    <p><span class="key-point">중요한 정보만 남기고 줄이는 거야.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">예시: 학생 평가
+
+원본 데이터 (5차원):
+[국어, 영어, 수학, 과학, 사회]
+
+발견: 과목들이 상관관계가 높음
+→ 국어 잘하면 영어도 잘함
+→ 수학 잘하면 과학도 잘함
+
+차원 축소 (2차원):
+["언어 능력", "이과 능력"]
+
+→ 5차원 → 2차원
+→ 대부분의 정보는 유지하면서 차원 감소!
+
+
+방법:
+- PCA (주성분 분석)
+- t-SNE
+- UMAP
+- 오토인코더</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>실제 사용:</strong></p>
+                    <p>1. 시각화 - 고차원 데이터를 2D/3D로 줄여서 그림</p>
+                    <p>2. 전처리 - 학습 전에 불필요한 차원 제거</p>
+                    <p>3. 압축 - 저장 공간 절약</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: 임베딩 차원 -->
+        <div class="conversation">
+            <h2>Part 5. 워드 임베딩은 왜 300차원?</h2>
+
+            <div class="chat">
+                <div class="q">Word2Vec은 보통 300차원이라던데 왜 그 숫자야?</div>
+                <div class="a">
+                    <p><span class="key-point">경험적으로 찾은 적당한 크기야.</span></p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>차원</th>
+                    <th>장점</th>
+                    <th>단점</th>
+                </tr>
+                <tr>
+                    <td><strong>50차원</strong></td>
+                    <td>빠름, 가벼움</td>
+                    <td>표현력 부족</td>
+                </tr>
+                <tr>
+                    <td><strong>300차원</strong></td>
+                    <td>표현력 좋음, 속도 적당</td>
+                    <td>균형있음</td>
+                </tr>
+                <tr>
+                    <td><strong>1000차원</strong></td>
+                    <td>최고 표현력</td>
+                    <td>느림, 무거움</td>
+                </tr>
+            </table>
+
+            <div class="code-block">최신 모델들:
+
+Word2Vec: 300차원
+GloVe: 50~300차원
+BERT: 768차원
+GPT-2: 768~1536차원
+GPT-3: 12288차원 (큰 버전)
+
+→ 모델이 커질수록 차원도 증가
+→ 더 복잡한 의미 표현 가능</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">차원이 높을수록 성능은 좋지만 계산량도 증가해.</span></p>
+                    <p>적절한 균형을 찾는 게 중요해.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 6: 코드 예시 -->
+        <div class="conversation">
+            <h2>Part 6. 차원 다루기</h2>
+
+            <div class="chat">
+                <div class="q">파이썬에서 차원은 어떻게 확인해?</div>
+                <div class="a">
+                    <p>NumPy로 쉽게 확인할 수 있어:</p>
+                </div>
+            </div>
+
+            <div class="code-block">import numpy as np
+
+# 1차원 벡터
+v = np.array([1, 2, 3])
+print(v.shape)  # (3,) → 3차원 벡터
+
+# 2차원 행렬
+m = np.array([[1, 2, 3],
+              [4, 5, 6]])
+print(m.shape)  # (2, 3) → 2행 3열
+
+# 고차원 벡터
+img = np.random.rand(784)
+print(img.shape)  # (784,) → 784차원 벡터
+
+# 이미지를 벡터로 펼치기
+img_2d = np.random.rand(28, 28)  # 28×28 이미지
+img_flat = img_2d.flatten()      # 벡터로 펼침
+print(img_flat.shape)  # (784,)
+
+# 차원 축소 (간단한 예)
+from sklearn.decomposition import PCA
+
+data = np.random.rand(100, 784)  # 100개, 784차원
+pca = PCA(n_components=50)       # 50차원으로 축소
+reduced = pca.fit_transform(data)
+print(reduced.shape)  # (100, 50)</div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>차원 = 숫자 개수</strong> - 벡터에 들어있는 값의 개수</li>
+                <li><strong>고차원은 자연스러움</strong> - 이미지, 텍스트는 본질적으로 고차원</li>
+                <li><strong>차원의 저주</strong> - 차원이 높으면 데이터가 희소해짐</li>
+                <li><strong>차원 축소 필요</strong> - PCA 등으로 중요한 정보만 추출</li>
+                <li><strong>적절한 균형</strong> - 표현력 vs 계산량의 트레이드오프</li>
+                <li><strong>300차원이 표준</strong> - 많은 임베딩 모델의 기본값</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic05/">← 이전: 행렬 곱셈은 왜 저렇게 복잡해?</a>
+            <a href="../topic07/">다음: 미분이 AI에 왜 나와? →</a>
+        </div>
+    </div>
+</body>
+</html>

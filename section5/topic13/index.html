@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOLO는 왜 빨라? - Section 5</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #00BCD4;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #00BCD4;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e0f7fa;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #e0f7fa;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #00838f;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #00BCD4 0%, #26C6DA 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #b2ebf2;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #00BCD4; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 5</a>
+            <span>/</span>
+            Topic 13
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 13</div>
+            <h1>YOLO는 왜 빨라?</h1>
+            <p>Q. 실시간 탐지는 어떻게 가능해?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. YOLO가 뭐야?</h2>
+
+            <div class="chat">
+                <div class="q">YOLO가 뭔데 자꾸 얘기해?</div>
+                <div class="a">
+                    <p><span class="key-point">You Only Look Once</span>의 약자야.</p>
+                    <p>"한 번만 봐도 된다"는 뜻이지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">YOLO의 핵심 아이디어:
+
+기존 방식 (R-CNN):
+→ 후보 영역 2000개 생성
+→ 각 영역마다 CNN 실행
+→ 2000번 계산 필요
+→ 느림!
+
+YOLO:
+→ 이미지 전체를 1번만 CNN에 통과
+→ 한 번에 모든 박스 + 클래스 예측
+→ 계산 1번
+→ 빠름!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이름처럼 <span class="highlight">"한 번만 본다"</span>는 게 핵심이야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 어떻게 작동해?</h2>
+
+            <div class="chat">
+                <div class="q">구체적으로 어떻게 한 번에 처리해?</div>
+                <div class="a">
+                    <p><strong>그리드 시스템</strong>을 써.</p>
+                </div>
+            </div>
+
+            <div class="code-block">YOLO 작동 원리:
+
+Step 1: 이미지를 그리드로 나누기
+→ 예: 7×7 = 49개 셀
+
+Step 2: 각 셀이 예측
+→ "내 영역에 물체 중심이 있나?"
+→ 있으면 박스 좌표 + 클래스 예측
+
+Step 3: 각 셀마다 여러 개 앵커 박스
+→ 셀 하나당 2~3개 박스 예측
+→ 다양한 크기/비율 대응
+
+Step 4: NMS로 중복 제거
+→ 신뢰도 높은 것만 남김
+
+
+출력:
+→ 49개 셀 × 2개 박스 = 98개 예측
+→ NMS 후 최종 5~10개 박스</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="key-point">이미지를 격자로 나눠서, 각 칸이 동시에 예측</span>하는 거야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 왜 빠를까?</h2>
+
+            <div class="chat">
+                <div class="q">정확히 뭐가 빠르게 만들어?</div>
+                <div class="a">
+                    <p>여러 최적화가 결합됐어.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>방식</th>
+                    <th>R-CNN</th>
+                    <th>YOLO</th>
+                </tr>
+                <tr>
+                    <td><strong>CNN 실행 횟수</strong></td>
+                    <td>2000번</td>
+                    <td>1번</td>
+                </tr>
+                <tr>
+                    <td><strong>처리 시간</strong></td>
+                    <td>~1초/이미지</td>
+                    <td>~0.02초/이미지 (50 FPS)</td>
+                </tr>
+                <tr>
+                    <td><strong>파이프라인</strong></td>
+                    <td>여러 단계</td>
+                    <td>단일 네트워크</td>
+                </tr>
+                <tr>
+                    <td><strong>병렬화</strong></td>
+                    <td>어려움</td>
+                    <td>쉬움 (GPU 최적화)</td>
+                </tr>
+            </table>
+
+            <div class="code-block">속도 비교:
+
+Faster R-CNN:
+→ 7 FPS (초당 7프레임)
+→ 높은 정확도
+→ 자율주행 X
+
+YOLO v3:
+→ 30~60 FPS
+→ 괜찮은 정확도
+→ 실시간 가능!
+
+YOLO v5/v7/v8:
+→ 100+ FPS (경량 버전)
+→ 정확도도 향상
+→ 엣지 디바이스에서도 작동</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. YOLO의 발전</h2>
+
+            <div class="code-block">YOLO 버전 역사:
+
+YOLOv1 (2015):
+→ 최초 버전
+→ 속도 혁신, 정확도 낮음
+
+YOLOv2 (2016):
+→ Batch Normalization 추가
+→ 앵커 박스 도입
+→ 정확도 개선
+
+YOLOv3 (2018):
+→ FPN (Feature Pyramid Network)
+→ 다양한 크기 객체 잘 탐지
+→ 실무 표준
+
+YOLOv4 (2020):
+→ CSPNet, Mish 활성화 함수
+→ 정확도 대폭 향상
+
+YOLOv5 (2020):
+→ PyTorch 구현
+→ 사용 편의성 ↑
+→ 가장 인기
+
+YOLOv7/v8 (2022-2023):
+→ 최신 기술 집약
+→ 정확도 + 속도 모두 개선
+→ Transformer 요소 도입</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">YOLO는 계속 진화 중</span>이야.</p>
+                    <p>속도는 유지하면서 정확도는 계속 올라가고 있어.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. YOLO의 한계</h2>
+
+            <div class="chat">
+                <div class="q">YOLO도 단점이 있어?</div>
+                <div class="a">
+                    <p><span class="warning">당연히 있지.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">YOLO의 약점:
+
+1. 작은 객체 탐지
+→ 그리드 크기 때문에 작은 물체 놓침
+→ 예: 멀리 있는 사람
+
+2. 겹친 객체
+→ 한 셀에 물체 중심이 2개면?
+→ 하나만 탐지할 수 있음
+
+3. 새로운 종횡비
+→ 학습 때 안 본 비율의 물체
+→ 정확도 떨어짐
+
+
+해결책:
+→ YOLOv3 이후: 여러 스케일 탐지
+→ 더 작은 그리드 사용 (13×13, 26×26, 52×52)
+→ 많이 개선됐지만 완벽하진 않음</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 실전 활용</h2>
+
+            <div class="code-block">YOLO 활용 분야:
+
+자율주행:
+→ 실시간 차량, 보행자 탐지
+→ 30 FPS 이상 필수
+→ YOLO 최적
+
+스마트폰 앱:
+→ 제한된 하드웨어
+→ 경량 YOLO (Tiny-YOLO)
+→ 실시간 AR 가능
+
+드론:
+→ 비행 중 객체 추적
+→ 빠른 처리 필수
+
+스포츠 분석:
+→ 선수, 공 실시간 추적
+→ 60 FPS 영상 처리
+
+CCTV:
+→ 여러 대 동시 처리
+→ 효율성 중요
+
+
+코드 예시:
+from ultralytics import YOLO
+
+model = YOLO('yolov8n.pt')  # nano 버전
+results = model('image.jpg')
+# 한 줄로 탐지 완료!</code-block>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">실시간이 필요하면 YOLO</span>야.</p>
+                    <p>속도가 생명인 곳에서는 선택지가 아니라 필수지.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>You Only Look Once</strong> - 한 번만 봐서 모든 객체 탐지</li>
+                <li><strong>그리드 시스템</strong> - 이미지를 격자로 나눠 동시 예측</li>
+                <li><strong>압도적 속도</strong> - 50~100 FPS, 실시간 가능</li>
+                <li><strong>단일 네트워크</strong> - CNN 1번 실행으로 모든 예측</li>
+                <li><strong>계속 진화</strong> - v1~v8, 정확도도 크게 향상</li>
+                <li><strong>실시간 표준</strong> - 자율주행, 드론 등 필수 기술</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic12/">← 이전: 객체 탐지는 분류랑 뭐가 달라?</a>
+            <a href="../topic14/">다음: 세그멘테이션이 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

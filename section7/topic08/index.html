@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q-러닝이 뭐야? - Section 7</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF5722;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF5722;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #ffebe9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #ffccbc;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #d84315;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #FF5722 0%, #FF7043 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #ffccbc; }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #FF5722; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 7</a>
+            <span>/</span>
+            Topic 08
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 08</div>
+            <h1>Q-러닝이 뭐야?</h1>
+            <p>Q. 테이블로 학습한다는 거야?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. Q-러닝이란?</h2>
+
+            <div class="chat">
+                <div class="q">Q-러닝(Q-Learning)이 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">Q-러닝은 Q값(행동 가치)을 학습하는 가장 고전적인 강화학습 알고리즘</span>이야.</p>
+                    <p>1989년에 개발됐는데, 지금도 강화학습의 기본이 되는 알고리즘이지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Q-러닝 핵심 아이디어:
+
+1. Q 테이블을 만든다
+   → 모든 (상태, 행동) 쌍의 가치를 저장
+
+2. 환경과 상호작용한다
+   → 행동하고, 보상 받고, 새 상태 관찰
+
+3. Q값을 업데이트한다
+   → 벨만 방정식 사용
+
+4. 반복한다
+   → 점점 Q값이 정확해짐
+
+5. 최적 정책 획득
+   → Q값이 가장 큰 행동 선택</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">Q-러닝은 "테이블"에 Q값을 저장</span>해.</p>
+                    <p>그래서 <strong>상태가 적은 간단한 문제</strong>에 적합해.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. Q 테이블</h2>
+
+            <div class="chat">
+                <div class="q">Q 테이블이 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">모든 상태-행동 쌍의 Q값을 저장하는 표</span>야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Q 테이블 예시 (그리드월드):
+
+        행동: 위    아래   좌    우
+상태 1:  [0.5,  0.2,  0.1,  0.8]
+상태 2:  [0.3,  0.7,  0.4,  0.2]
+상태 3:  [0.9,  0.1,  0.6,  0.3]
+상태 4:  [0.0,  1.0,  0.0,  0.0]  ← 목표!
+
+→ 상태 1에서 "우"가 가장 좋음 (0.8)
+→ 상태 2에서 "아래"가 가장 좋음 (0.7)
+→ 상태 3에서 "위"가 가장 좋음 (0.9)</div>
+
+            <div class="code-block">초기화:
+
+# Q 테이블 생성
+Q = {}
+for state in all_states:
+    for action in all_actions:
+        Q[(state, action)] = 0.0  # 모두 0으로 시작
+
+# 또는 랜덤 초기화
+Q[(state, action)] = random()</div>
+
+            <div class="chat">
+                <div class="q">테이블 크기는?</div>
+                <div class="a">
+                    <p>크기 = 상태 수 × 행동 수</p>
+                    <p>상태 100개, 행동 4개 → 400칸 테이블</p>
+                    <p><span class="warning">상태가 많으면 테이블이 엄청 커짐!</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. Q-러닝 업데이트 공식</h2>
+
+            <div class="chat">
+                <div class="q">Q값을 어떻게 업데이트해?</div>
+                <div class="a">
+                    <p>핵심 공식은 이거야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Q-러닝 업데이트:
+
+Q(s, a) ← Q(s, a) + α × [R + γ × max Q(s', a') - Q(s, a)]
+                                    a'
+
+용어 설명:
+- s: 현재 상태
+- a: 선택한 행동
+- R: 받은 보상
+- s': 다음 상태
+- a': 다음 상태에서 가능한 행동
+- α: 학습률 (0~1)
+- γ: 할인 계수 (0~1)
+
+
+간단히:
+새 Q값 = 기존 Q값 + 학습률 × (목표 - 기존 Q값)
+
+목표 = 즉각 보상 + 할인된 최선의 미래 Q값</div>
+
+            <div class="code-block">예시 계산:
+
+현재:
+Q(s=1, a=우) = 0.5
+
+경험:
+→ "우"로 이동
+→ 보상 R = 10
+→ 다음 상태 s' = 2
+→ Q(s'=2, 위) = 0.3
+→ Q(s'=2, 아래) = 0.7  ← 최대
+→ Q(s'=2, 좌) = 0.4
+→ Q(s'=2, 우) = 0.2
+
+업데이트 (α=0.1, γ=0.9):
+Q(s=1, a=우) ← 0.5 + 0.1 × [10 + 0.9 × 0.7 - 0.5]
+            = 0.5 + 0.1 × [10 + 0.63 - 0.5]
+            = 0.5 + 0.1 × 10.13
+            = 0.5 + 1.013
+            = 1.513
+
+→ Q값이 0.5에서 1.513으로 증가!</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. Q-러닝 알고리즘</h2>
+
+            <div class="chat">
+                <div class="q">전체 알고리즘은 어떻게 돼?</div>
+                <div class="a">
+                    <p>단계별로 보자.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Q-러닝 알고리즘:
+
+# 초기화
+Q 테이블을 0으로 초기화
+하이퍼파라미터 설정: α, γ, ε
+
+# 학습 루프
+for episode in range(num_episodes):
+    state = env.reset()  # 초기 상태
+
+    while not done:
+        # 1. 행동 선택 (ε-greedy)
+        if random() < ε:
+            action = random_action()
+        else:
+            action = argmax Q(state, a)
+                     a
+
+        # 2. 행동 실행
+        next_state, reward, done = env.step(action)
+
+        # 3. Q값 업데이트
+        best_next = max Q(next_state, a')
+                    a'
+
+        Q(state, action) += α × (
+            reward + γ × best_next - Q(state, action)
+        )
+
+        # 4. 상태 전이
+        state = next_state
+
+    # ε 감소 (탐험 줄이기)
+    ε = max(ε_min, ε × ε_decay)</div>
+
+            <div class="code-block">파이썬 구현:
+
+import numpy as np
+
+class QLearning:
+    def __init__(self, n_states, n_actions):
+        self.Q = np.zeros((n_states, n_actions))
+        self.alpha = 0.1
+        self.gamma = 0.9
+        self.epsilon = 1.0
+
+    def select_action(self, state):
+        if np.random.random() < self.epsilon:
+            return np.random.randint(self.Q.shape[1])
+        else:
+            return np.argmax(self.Q[state])
+
+    def update(self, state, action, reward, next_state):
+        best_next = np.max(self.Q[next_state])
+        td_target = reward + self.gamma * best_next
+        td_error = td_target - self.Q[state, action]
+        self.Q[state, action] += self.alpha * td_error
+
+# 사용
+agent = QLearning(n_states=100, n_actions=4)
+for episode in range(1000):
+    state = env.reset()
+    while not done:
+        action = agent.select_action(state)
+        next_state, reward, done = env.step(action)
+        agent.update(state, action, reward, next_state)
+        state = next_state</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. Q-러닝의 특징</h2>
+
+            <div class="chat">
+                <div class="q">Q-러닝의 장단점은?</div>
+                <div class="a">
+                    <p>명확한 장단점이 있어.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>장점</th>
+                    <th>단점</th>
+                </tr>
+                <tr>
+                    <td><strong>Off-Policy</strong><br/>다른 정책으로 수집한 경험도 학습 가능</td>
+                    <td><strong>큰 상태 공간 불가</strong><br/>테이블 크기가 기하급수적 증가</td>
+                </tr>
+                <tr>
+                    <td><strong>간단함</strong><br/>이해하고 구현하기 쉬움</td>
+                    <td><strong>느린 수렴</strong><br/>모든 상태를 방문해야 함</td>
+                </tr>
+                <tr>
+                    <td><strong>최적 보장</strong><br/>무한히 학습하면 최적 정책 도달</td>
+                    <td><strong>연속 상태 불가</strong><br/>이산 상태만 가능</td>
+                </tr>
+                <tr>
+                    <td><strong>경험 재사용</strong><br/>과거 경험을 replay 가능</td>
+                    <td><strong>메모리 한계</strong><br/>대규모 문제 적용 어려움</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="q">그럼 언제 써?</div>
+                <div class="a">
+                    <p><span class="highlight">간단한 환경</span>에 적합해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Q-러닝 적용 가능:
+✅ 그리드 월드 (10×10)
+✅ 틱택토 게임
+✅ 간단한 미로
+✅ Frozen Lake
+
+Q-러닝 적용 불가:
+❌ 아타리 게임 (화면 픽셀이 상태)
+❌ 체스 (10^47 가지 상태)
+❌ 로봇 제어 (연속 상태)
+❌ 자율주행 (무한 상태)
+
+→ 이런 문제는 DQN, PPO 등 사용</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. Q-러닝 실습 예제</h2>
+
+            <div class="chat">
+                <div class="q">간단한 예제를 보여줘.</div>
+                <div class="a">
+                    <p>4×4 그리드 월드 예제야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">문제 설정:
+
+┌───┬───┬───┬───┐
+│ S │   │   │   │  S: 시작
+├───┼───┼───┼───┤
+│   │ X │   │   │  X: 함정 (-10)
+├───┼───┼───┼───┤
+│   │   │ X │   │  G: 목표 (+10)
+├───┼───┼───┼───┤
+│   │   │   │ G │
+└───┴───┴───┴───┘
+
+행동: 위, 아래, 좌, 우
+보상: 이동 -1, 함정 -10, 목표 +10</div>
+
+            <div class="code-block">학습 과정:
+
+에피소드 1:
+→ 랜덤 움직임
+→ Q 테이블 거의 0
+
+에피소드 100:
+→ 가끔 목표 도달
+→ 목표 근처 Q값 증가
+
+에피소드 500:
+→ 함정 회피 학습
+→ 최적 경로 발견
+
+에피소드 1000:
+→ 항상 최단 경로로 목표 도달
+→ Q 테이블 수렴</div>
+
+            <div class="code-block">최종 Q 테이블 (일부):
+
+상태 (0,0):
+  위: -5.2
+  아래: 3.8  ← 최선
+  좌: -5.0
+  우: 2.1
+
+상태 (3,2):
+  위: 4.5
+  아래: -10.0  ← 함정!
+  좌: 2.3
+  우: 8.9  ← 목표 가까움!
+
+→ AI가 최적 경로를 학습!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="key-point">Q-러닝은 경험을 통해 Q 테이블을 채우는 것</span>이야.</p>
+                    <p>테이블이 완성되면 <strong>최적 정책을 얻는 거지</strong>.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>Q-러닝</strong> - Q 테이블을 학습하는 고전 알고리즘</li>
+                <li><strong>Q 테이블</strong> - 모든 (상태, 행동) 쌍의 가치 저장</li>
+                <li><strong>업데이트</strong> - 벨만 방정식으로 점진적 개선</li>
+                <li><strong>Off-Policy</strong> - 탐험하면서도 최적 정책 학습</li>
+                <li><strong>한계</strong> - 큰 상태 공간에는 적용 불가 → DQN 필요</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic07/">← 이전: 가치 함수가 뭐야?</a>
+            <a href="../topic09/">다음: DQN은 뭐가 다를까? →</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImageNet은 뭐야? - Section 5</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #00BCD4;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #00BCD4;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e0f7fa;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #e0f7fa;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #00838f;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #00BCD4 0%, #26C6DA 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #b2ebf2;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #00BCD4; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 5</a>
+            <span>/</span>
+            Topic 11
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 11</div>
+            <h1>ImageNet은 뭐야?</h1>
+            <p>Q. AI 올림픽 같은 거야?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. ImageNet이 뭐야?</h2>
+
+            <div class="chat">
+                <div class="q">ImageNet이 뭔데 자꾸 나와?</div>
+                <div class="a">
+                    <p><span class="key-point">세계 최대 이미지 데이터셋 + AI 경진대회</span>야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">ImageNet 데이터셋:
+
+규모:
+→ 1,400만 장 이미지
+→ 22,000개 카테고리
+→ 사람이 직접 레이블 붙임
+
+내용:
+→ 동물, 식물, 물건, 장소...
+→ 거의 모든 사물 포함
+
+ILSVRC (ImageNet Large Scale Visual Recognition Challenge):
+→ 경진대회 버전
+→ 1,000개 카테고리
+→ 120만 장 학습, 5만 장 검증, 10만 장 테스트
+→ 2010~2017년 개최</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">ImageNet = 컴퓨터 비전의 올림픽</span></p>
+                    <p>여기서 성능 높은 모델이 업계 표준이 돼.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 왜 중요한 거야?</h2>
+
+            <div class="chat">
+                <div class="q">왜 ImageNet이 그렇게 중요해?</div>
+                <div class="a">
+                    <p><strong>딥러닝 혁명의 시작점</strong>이기 때문이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">ImageNet의 역사:
+
+2010-2011: 전통적 방법
+→ SIFT, HOG 같은 수작업 특징
+→ 정확도: ~74%
+→ 한계에 봉착
+
+2012: AlexNet (CNN) 등장
+→ Geoffrey Hinton 팀
+→ 정확도: 84.7% (에러율 15.3%)
+→ 2등보다 10%p 높음
+→ 충격적인 성능!
+
+이후:
+→ 2013: ZFNet (89%)
+→ 2014: VGGNet, GoogLeNet (93%)
+→ 2015: ResNet (96.4%)
+→ 2017: SENet (97.7%)
+→ 사람 수준(95%) 돌파!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>2012년 AlexNet 이후 <strong>모든 우승 모델이 CNN</strong>이 됐어.</p>
+                    <p>이게 <span class="key-point">딥러닝 시대의 시작</span>이야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. AlexNet의 충격</h2>
+
+            <div class="chat">
+                <div class="q">AlexNet이 뭘 그렇게 잘했길래?</div>
+                <div class="a">
+                    <p>여러 혁신을 결합했어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">AlexNet의 혁신 (2012):
+
+1. 깊은 CNN
+→ 8층 신경망 (당시로선 매우 깊음)
+→ 합성곱 5층 + 완전연결 3층
+
+2. ReLU 활성화 함수
+→ 기존: Sigmoid (느리고 그래디언트 소실)
+→ AlexNet: ReLU (빠르고 효과적)
+
+3. GPU 사용
+→ 2개의 GTX 580 GPU
+→ 병렬 처리로 학습 시간 단축
+
+4. Dropout
+→ 과적합 방지 기법
+→ 일부 뉴런 무작위로 꺼서 학습
+
+5. Data Augmentation
+→ 이미지 회전, 반전, 색상 변환
+→ 데이터 부족 문제 해결
+
+→ 이 모든 게 2012년엔 혁신!</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 주요 모델들</h2>
+
+            <div class="code-block">ImageNet 역대 우승 모델:
+
+AlexNet (2012):
+→ 8층, 6천만 파라미터
+→ 딥러닝의 시작
+
+VGGNet (2014):
+→ 16/19층
+→ 3×3 필터만 사용 (단순하지만 효과적)
+
+GoogLeNet (2014):
+→ Inception 모듈
+→ 파라미터 효율성 강조
+
+ResNet (2015):
+→ 152층! (당시 최심도)
+→ Residual Connection (잔차 연결)
+→ "층이 깊으면 더 좋다"를 증명
+
+DenseNet (2017):
+→ 모든 층이 연결됨
+→ 특징 재사용
+
+EfficientNet (2019):
+→ 효율성 최적화
+→ 적은 파라미터로 높은 성능</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">이 모델들이 지금도 실무에서 쓰여.</span></p>
+                    <p>특히 ResNet은 여전히 가장 인기 있는 백본이야.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 사전 학습의 표준</h2>
+
+            <div class="chat">
+                <div class="q">지금도 ImageNet을 써?</div>
+                <div class="a">
+                    <p><span class="key-point">경진대회는 끝났지만, 데이터셋은 여전히 중요해.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">ImageNet의 현재 역할:
+
+1. 사전 학습 표준
+→ 거의 모든 CV 모델이 ImageNet에서 시작
+→ "ImageNet pretrained" = 업계 표준
+
+2. 벤치마크
+→ 새 모델의 성능 비교 기준
+→ "ImageNet Top-1 accuracy"
+
+3. 전이 학습 베이스
+→ 의료, 자율주행, 위성 등
+→ 모두 ImageNet 모델에서 시작
+
+4. 연구 기준
+→ 논문 발표 시 필수 벤치마크
+→ ImageNet 성능 = 모델 신뢰도 지표
+
+
+하지만 한계도:
+→ 1000개 카테고리는 여전히 제한적
+→ 편향 문제 (서구 중심)
+→ 대안: JFT-300M (Google), IG-1B (Facebook)</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>그래도 <span class="highlight">ImageNet은 여전히 CV의 "헬로월드"</span>야.</p>
+                    <p>모든 게 여기서 시작해.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. ImageNet의 유산</h2>
+
+            <div class="chat">
+                <div class="q">ImageNet이 AI에 남긴 게 뭐야?</div>
+                <div class="a">
+                    <p>단순한 데이터셋 이상이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">ImageNet의 영향:
+
+1. 딥러닝 붐 촉발
+→ 2012년 이후 AI 투자 폭발
+→ 현재 AI 시대의 시작점
+
+2. 표준 벤치마크 확립
+→ 모든 CV 모델의 비교 기준
+→ 공정한 경쟁 환경
+
+3. 오픈소스 문화
+→ 우승 모델들이 모두 공개됨
+→ PyTorch, TensorFlow에 기본 탑재
+
+4. 전이 학습 패러다임
+→ "처음부터 학습"에서 "전이 학습"으로
+→ AI 민주화 (누구나 좋은 모델 사용 가능)
+
+5. 하드웨어 발전 촉진
+→ GPU 수요 폭발
+→ TPU, NPU 개발
+
+
+→ ImageNet 없었으면 지금의 AI도 없었을 거야!</div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>ImageNet = 1,400만 장 데이터셋</strong> - 22,000 카테고리</li>
+                <li><strong>ILSVRC = 경진대회</strong> - 2010~2017, CV의 올림픽</li>
+                <li><strong>2012년 AlexNet</strong> - 딥러닝 혁명의 시작점</li>
+                <li><strong>ResNet, VGG 등 탄생</strong> - 현재도 실무 표준</li>
+                <li><strong>사전 학습의 표준</strong> - 모든 CV 모델의 출발점</li>
+                <li><strong>AI 발전의 촉매</strong> - 딥러닝 시대를 연 데이터셋</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic10/">← 이전: 전이 학습이 뭐야?</a>
+            <a href="../topic12/">다음: 객체 탐지는 분류랑 뭐가 달라? →</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seq2Seq가 뭐야? - Section 6</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #E91E63;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #E91E63;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #fce4ec;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #fce4ec;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c2185b;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #E91E63 0%, #EC407A 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #fce4ec;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #E91E63; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 6</a>
+            <span>/</span>
+            Topic 09
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 09</div>
+            <h1>Seq2Seq가 뭐야?</h1>
+            <p>Q. 번역은 어떻게 하는 거야?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 시퀀스를 시퀀스로 변환</h2>
+
+            <div class="chat">
+                <div class="q">Seq2Seq이 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">Sequence-to-Sequence</span>의 약자야.</p>
+                    <p><span class="highlight">하나의 시퀀스를 받아서 다른 시퀀스를 만들어내는</span> 모델이지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 통역사
+
+영어 → 한국어 통역:
+
+1. 영어를 듣고 이해 (Encoding)
+   "I love you"
+   → 머릿속에서 의미 파악: [사랑 표현]
+
+2. 한국어로 표현 (Decoding)
+   [사랑 표현]
+   → "나는 너를 사랑해"
+
+Seq2Seq도 마찬가지:
+입력 시퀀스 → 의미 추출 → 출력 시퀀스 생성
+</div>
+
+            <div class="chat">
+                <div class="q">어디에 써?</div>
+            </div>
+
+            <div class="code-block">Seq2Seq 활용:
+
+1. 기계 번역
+   입력: "I love you"
+   출력: "나는 너를 사랑해"
+
+2. 챗봇
+   입력: "오늘 날씨 어때?"
+   출력: "오늘은 맑고 화창해요"
+
+3. 요약
+   입력: "긴 뉴스 기사 전문..."
+   출력: "핵심 요약 2줄"
+
+4. 질문-답변
+   입력: "파이썬에서 리스트는?"
+   출력: "순서가 있는 데이터 집합입니다"
+
+5. 코드 생성
+   입력: "리스트 정렬하는 함수"
+   출력: "def sort_list(lst): return sorted(lst)"
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. Encoder-Decoder 구조</h2>
+
+            <div class="chat">
+                <div class="q">Seq2Seq은 어떻게 작동해?</div>
+                <div class="a">
+                    <p>두 개의 RNN(또는 LSTM)으로 구성돼.</p>
+                    <p><span class="key-point">Encoder(인코더)</span>와 <span class="key-point">Decoder(디코더)</span>야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">구조:
+
+[Encoder]              [Decoder]
+입력 처리              출력 생성
+   ↓                      ↓
+RNN/LSTM    →    Context Vector    →    RNN/LSTM
+   ↓                      ↓                  ↓
+"I love you"      [의미 벡터]      "나는 너를 사랑해"
+
+
+상세 과정:
+
+1. Encoder가 입력 시퀀스 읽기
+   t=1: "I" 입력
+   t=2: "love" 입력
+   t=3: "you" 입력
+   → 최종 hidden state = Context Vector
+   → [0.5, 0.8, 0.3, ...] (문장 전체 의미)
+
+2. Context Vector를 Decoder에 전달
+   → Decoder의 초기 상태로 사용
+
+3. Decoder가 출력 생성
+   t=1: Context → "나는" 생성
+   t=2: "나는" → "너를" 생성
+   t=3: "너를" → "사랑해" 생성
+   → <END> 토큰 나올 때까지 반복
+</div>
+
+            <div class="chat">
+                <div class="q">Context Vector가 뭐야?</div>
+                <div class="a">
+                    <p><span class="highlight">입력 문장 전체의 의미를 담은 고정 크기 벡터</span>야.</p>
+                    <p>Encoder의 마지막 hidden state가 Context Vector가 돼.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Context Vector 예시:
+
+입력: "I love you"
+
+Encoder 처리:
+t=1: "I" → h₁ = [0.1, 0.2, 0.3]
+t=2: "love" → h₂ = [0.3, 0.5, 0.4]
+t=3: "you" → h₃ = [0.5, 0.8, 0.3]
+
+Context Vector = h₃ = [0.5, 0.8, 0.3]
+→ "나는 당신을 사랑한다"는 의미를 함축
+
+
+이 벡터 하나에 문장 전체 의미가 압축됨!
+→ "사랑 표현"이라는 개념을 담고 있음
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 학습 방법</h2>
+
+            <div class="chat">
+                <div class="q">Seq2Seq은 어떻게 학습해?</div>
+                <div class="a">
+                    <p><span class="key-point">Teacher Forcing</span>이라는 방법을 써.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Teacher Forcing:
+
+학습 시:
+정답을 알려주면서 학습
+
+입력: "I love you"
+정답: "나는 너를 사랑해"
+
+Decoder 학습:
+t=1: <START> → "나는" 예측 → 정답: "나는" ✓
+t=2: "나는" → "너를" 예측 → 정답: "너를" ✓
+     ↑
+   정답을 입력으로 사용!
+
+t=3: "너를" → "사랑해" 예측 → 정답: "사랑해" ✓
+     ↑
+   역시 정답 사용
+
+→ 이전 단계의 정답을 다음 입력으로 사용
+→ 학습이 빠르고 안정적
+
+
+실제 사용 시 (추론):
+t=1: <START> → "나는" 예측
+t=2: "나는" → "너를" 예측
+     ↑
+   이번엔 예측값 사용!
+
+t=3: "너를" → "사랑해" 예측
+
+→ 자신의 예측을 입력으로 사용
+</div>
+
+            <div class="chat">
+                <div class="q">문제점은 없어?</div>
+            </div>
+
+            <div class="code-block">Seq2Seq의 문제:
+
+1. Bottleneck 문제
+   긴 문장: "어제 나는 친구와 함께 영화관에 가서..."
+   → Context Vector 하나에 모든 정보 압축
+   → 정보 손실 발생!
+
+   비유:
+   책 한 권을 한 문장으로 요약하기
+   → 많은 내용이 사라짐
+
+2. 정보 소실
+   Encoder의 중간 정보들이 버려짐
+   → 마지막 hidden state만 사용
+   → 앞부분 정보 희미해짐
+
+3. 길이 제한
+   긴 문장일수록 성능 급격히 떨어짐
+   10단어: 좋음
+   30단어: 괜찮음
+   50단어: 나쁨
+   100단어: 매우 나쁨
+
+
+→ 이 문제를 해결한 게 Attention!
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 실전 사용</h2>
+
+            <div class="chat">
+                <div class="q">Seq2Seq을 어떻게 써?</div>
+            </div>
+
+            <div class="code-block">Python 예시 (간단 버전):
+
+from tensorflow.keras.layers import LSTM, Dense
+from tensorflow.keras.models import Model
+
+# Encoder
+encoder_input = Input(shape=(None, vocab_size))
+encoder_lstm = LSTM(256, return_state=True)
+encoder_outputs, state_h, state_c = encoder_lstm(encoder_input)
+encoder_states = [state_h, state_c]  # Context Vector
+
+# Decoder
+decoder_input = Input(shape=(None, vocab_size))
+decoder_lstm = LSTM(256, return_sequences=True, return_state=True)
+decoder_outputs, _, _ = decoder_lstm(
+    decoder_input,
+    initial_state=encoder_states  # Encoder의 상태 사용
+)
+decoder_dense = Dense(vocab_size, activation='softmax')
+decoder_outputs = decoder_dense(decoder_outputs)
+
+# 모델
+model = Model([encoder_input, decoder_input], decoder_outputs)
+
+# 학습
+model.compile(optimizer='adam', loss='categorical_crossentropy')
+model.fit([input_texts, target_texts], target_texts_shifted,
+          epochs=100)
+</div>
+
+            <div class="chat">
+                <div class="q">실제 성능은?</div>
+            </div>
+
+            <div class="code-block">Seq2Seq 성능 (기계 번역):
+
+짧은 문장 (5~15 단어):
+BLEU Score: 40~50
+→ 번역 품질: 꽤 괜찮음
+
+중간 문장 (15~30 단어):
+BLEU Score: 30~40
+→ 번역 품질: 쓸만함
+
+긴 문장 (30단어 이상):
+BLEU Score: 20 이하
+→ 번역 품질: 나쁨
+
+
+개선 버전 (Attention 추가):
+긴 문장에서도 BLEU 40+ 달성!
+→ 다음 토픽에서 배울 Attention이 핵심
+
+
+현재:
+→ 순수 Seq2Seq은 거의 안 씀
+→ Attention + Seq2Seq가 표준
+→ 최신은 Transformer (Attention only)
+</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. Seq2Seq의 변형</h2>
+
+            <div class="chat">
+                <div class="q">Seq2Seq 변형 버전이 있어?</div>
+            </div>
+
+            <div class="code-block">Seq2Seq 변형들:
+
+1. Bidirectional Encoder
+   - 앞→뒤, 뒤→앞 둘 다 읽기
+   - 문맥을 더 잘 파악
+   - 성능 5~10% 향상
+
+2. Stacked LSTM
+   - LSTM 여러 층 쌓기
+   - 더 복잡한 패턴 학습
+   - 2~4층이 적당
+
+3. Attention Mechanism (중요!)
+   - Context Vector 하나 대신
+   - 각 시점마다 다른 부분에 집중
+   - 성능 크게 향상 (다음 토픽)
+
+4. Beam Search
+   - 여러 후보 동시에 탐색
+   - 더 나은 번역 찾기
+   - 추론 시 사용
+
+
+조합:
+Bidirectional + Stacked + Attention
+→ 가장 강력한 Seq2Seq
+→ 2017년까지 SOTA (최고 성능)
+</div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>Seq2Seq</strong> - 시퀀스를 입력받아 다른 시퀀스를 출력하는 모델</li>
+                <li><strong>Encoder-Decoder</strong> - 입력을 이해하고(Encoder) 출력을 생성(Decoder)</li>
+                <li><strong>Context Vector</strong> - 입력 문장 전체 의미를 담은 고정 크기 벡터</li>
+                <li><strong>활용</strong> - 번역, 챗봇, 요약 등 다양한 NLP 작업</li>
+                <li><strong>한계</strong> - 긴 문장에서 정보 손실, Attention으로 해결</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic08/">← 이전: LSTM은 뭐가 다를까?</a>
+            <a href="../topic10/">다음: 어텐션이 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenAI Five는 어떻게 학습했어? - Section 7</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF5722;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF5722;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #ffebe9;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a { padding: 8px 0 8px 20px; border-left: 4px solid #e0e0e0; margin: 12px 0; }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #ffccbc;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #d84315;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #FF5722 0%, #FF7043 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li { padding: 8px 0; padding-left: 24px; position: relative; }
+        .summary-box li::before { content: "→"; position: absolute; left: 0; color: #ffccbc; }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #FF5722; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 7</a>
+            <span>/</span>
+            Topic 14
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 14</div>
+            <h1>OpenAI Five는 어떻게 학습했어?</h1>
+            <p>Q. 게임 AI는 며칠 학습하면 돼?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. Dota 2의 난이도</h2>
+
+            <div class="chat">
+                <div class="q">Dota 2가 뭐야? 왜 어려워?</div>
+                <div class="a">
+                    <p><span class="key-point">Dota 2는 세계에서 가장 복잡한 e스포츠 게임 중 하나</span>야.</p>
+                    <p>바둑보다 훨씬 복잡해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">Dota 2 복잡도:
+
+플레이어:
+→ 5 vs 5 팀 게임
+→ 10명이 동시에 플레이
+
+영웅:
+→ 선택 가능한 영웅 117개
+→ 각각 고유한 스킬 4개
+
+아이템:
+→ 구매 가능한 아이템 200개 이상
+→ 조합 가능
+
+게임 길이:
+→ 평균 45분
+→ 실시간 전략 필요
+
+행동 공간:
+→ 매 순간 20,000가지 이상 가능한 행동
+→ 0.1초마다 결정</div>
+
+            <div class="code-block">바둑 vs Dota 2:
+
+바둑:
+→ 1 vs 1
+→ 턴제 (천천히 생각 가능)
+→ 완전 정보 (모든 것 보임)
+→ 결정적 (같은 행동 = 같은 결과)
+
+Dota 2:
+→ 5 vs 5 (팀워크 필요)
+→ 실시간 (0.1초마다 결정)
+→ 불완전 정보 (안개)
+→ 확률적 (같은 행동 ≠ 같은 결과)
+
+→ 훨씬 복잡!</div>
+
+            <div class="chat">
+                <div class="q">그래서 AI가 이길 수 있었어?</div>
+                <div class="a">
+                    <p><span class="highlight">2018년, OpenAI Five가 프로 팀을 이겼어.</span></p>
+                    <p><strong>강화학습 역사의 또 다른 이정표</strong>였지.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. OpenAI Five의 구조</h2>
+
+            <div class="chat">
+                <div class="q">OpenAI Five는 어떻게 만들어졌어?</div>
+                <div class="a">
+                    <p>PPO (Proximal Policy Optimization) 알고리즘을 썼어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">OpenAI Five 아키텍처:
+
+입력 (관측):
+→ 게임 상태 (16,000차원)
+  - 자기 영웅 상태
+  - 팀원 4명 상태
+  - 적 5명 위치
+  - 미니언, 타워 상태
+  - 아이템, 골드 등
+
+신경망:
+→ LSTM (Long Short-Term Memory)
+  - 과거 정보 기억
+  - 장기 전략 수립
+
+출력:
+→ 8,000가지 가능한 행동
+  - 이동 방향
+  - 스킬 사용
+  - 공격 대상
+  - 아이템 구매
+  - ...
+
+→ 각 에이전트마다 독립적인 네트워크</div>
+
+            <div class="code-block">팀 구조:
+
+5명의 에이전트:
+Agent 1 (영웅 1)
+Agent 2 (영웅 2)
+Agent 3 (영웅 3)
+Agent 4 (영웅 4)
+Agent 5 (영웅 5)
+
+각각:
+→ 독립적인 정책 (분산 실행)
+→ 팀 보상 공유 (협력 학습)
+→ 통신 없이도 협력
+
+→ "창발적 팀워크"</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 엄청난 학습 규모</h2>
+
+            <div class="chat">
+                <div class="q">학습에 얼마나 걸렸어?</div>
+                <div class="a">
+                    <p><span class="warning">상상을 초월하는 양</span>이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">학습 규모 (2018년 버전):
+
+학습 시간:
+→ 10개월 (실시간)
+→ 하루 900년치 게임 플레이
+→ 총 180년치 게임 경험
+
+컴퓨팅 파워:
+→ 256개 GPU
+→ 128,000개 CPU 코어
+→ Kubernetes로 관리
+
+게임 수:
+→ 매일 180,000 게임 플레이
+→ 총 4,500만 게임
+
+에피소드:
+→ 1분마다 모델 업데이트
+→ 총 400만 번 업데이트
+
+비용:
+→ 추정 수백만 달러</div>
+
+            <div class="code-block">비교:
+
+알파고:
+→ 학습 시간: 몇 주
+→ 컴퓨팅: TPU 수백 개
+
+OpenAI Five:
+→ 학습 시간: 10개월
+→ 컴퓨팅: GPU 256개 + CPU 128,000개
+
+왜 더 오래?
+1. 게임이 더 복잡 (실시간, 팀플레이)
+2. 탐험 공간이 거대
+3. 협력 전략 학습 어려움
+4. 긴 게임 길이 (45분)</div>
+
+            <div class="chat">
+                <div class="q">그렇게나 많이?</div>
+                <div class="a">
+                    <p><span class="highlight">복잡한 게임일수록 경험이 많이 필요</span>해.</p>
+                    <p><strong>인간은 수천 시간, AI는 수백 년치</strong>가 필요해.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 학습 과정</h2>
+
+            <div class="chat">
+                <div class="q">처음부터 강했어?</div>
+                <div class="a">
+                    <p>아니야. 단계적으로 발전했어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">학습 단계:
+
+1주차: 완전 초보
+→ 랜덤하게 돌아다님
+→ 타워에 자살
+→ 아이템 안 삼
+
+1개월: 초보 수준
+→ 기본 행동 학습
+→ 미니언 처치
+→ 아이템 구매 시작
+
+3개월: 중급 수준
+→ 레인 관리
+→ 팀파이트 참여
+→ 기본 전략
+
+6개월: 고급 수준
+→ 복잡한 콤보
+→ 팀워크 발현
+→ 프로 아마추어 이김
+
+10개월: 프로 수준
+→ 프로 팀 격파
+→ 창의적 전략
+→ 인간보다 빠른 반응</div>
+
+            <div class="code-block">커리큘럼 학습:
+
+단계 1: 제한된 환경
+→ 영웅 5개만
+→ 아이템 제한
+→ 맵 축소
+
+단계 2: 점진적 확장
+→ 영웅 추가
+→ 아이템 추가
+→ 전체 맵
+
+단계 3: 전체 게임
+→ 117개 영웅 모두
+→ 모든 아이템
+→ 프로 규칙
+
+→ 쉬운 것부터 어려운 것으로</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. 창발적 전략</h2>
+
+            <div class="chat">
+                <div class="q">인간처럼 플레이해?</div>
+                <div class="a">
+                    <p><span class="highlight">인간과 다른 독특한 전략</span>을 개발했어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">OpenAI Five의 특징:
+
+1. 완벽한 팀워크
+   → 명시적 소통 없이 협력
+   → 정확한 타이밍
+   → 동시다발적 갱킹
+
+2. 극도의 공격성
+   → 위험 감수
+   → 과감한 다이브
+   → 인간보다 공격적
+
+3. 비인간적 반응속도
+   → 0.1초 반응
+   → 완벽한 스킬샷
+   → 인간보다 빠른 판단
+
+4. 독특한 아이템 빌드
+   → 메타를 벗어난 선택
+   → 효율 최적화
+   → 인간이 안 쓰는 조합</div>
+
+            <div class="code-block">역사적 대결:
+
+2018년 8월:
+OpenAI Five vs 프로 팀 (paiN Gaming)
+→ OpenAI Five 2-1 승리
+
+2019년 4월:
+OpenAI Five vs 세계 챔피언팀 (OG)
+→ OpenAI Five 2-0 승리
+
+관중 대결:
+→ 온라인으로 일반인 도전
+→ 7,257 게임 플레이
+→ OpenAI Five 승률: 99.4%
+
+→ 인간을 압도적으로 능가</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 배운 교훈</h2>
+
+            <div class="chat">
+                <div class="q">OpenAI Five에서 뭘 배웠어?</div>
+                <div class="a">
+                    <p>강화학습의 가능성과 한계를 동시에 보여줬어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">가능성:
+
+1. 복잡한 협력 학습 가능
+   → 다중 에이전트 협력
+   → 명시적 프로그래밍 없이
+   → 창발적 팀워크
+
+2. 실시간 전략 가능
+   → 긴 시간 지평 (45분)
+   → 실시간 의사결정
+   → 불확실성 속 계획
+
+3. 인간 초월 가능
+   → 특정 도메인에서
+   → 충분한 시뮬레이션
+   → 초인적 성능</div>
+
+            <div class="code-block">한계:
+
+1. 엄청난 컴퓨팅 필요
+   → 256 GPU, 10개월
+   → 일반인은 불가능
+   → 환경 비용 문제
+
+2. 시뮬레이터 필수
+   → 실제 환경은 어려움
+   → Dota는 게임이라 가능
+   → 현실은 시뮬 불가능
+
+3. 전이 학습 어려움
+   → 다른 게임은 처음부터
+   → 학습 내용 재사용 불가
+   → 특화된 AI
+
+4. 보상 설계 중요
+   → 잘못 설계하면 이상 행동
+   → 인간의 개입 필수</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">OpenAI Five는 강화학습의 현재 수준을 보여줘</span>.</p>
+                    <p><strong>가능한 것도, 어려운 것도 명확</strong>해졌지.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>Dota 2</strong> - 바둑보다 복잡한 5vs5 실시간 게임</li>
+                <li><strong>학습 규모</strong> - 10개월, 180년치 게임 경험, 256 GPU</li>
+                <li><strong>PPO + LSTM</strong> - 정책 경사법 + 장기 기억</li>
+                <li><strong>창발적 협력</strong> - 명시적 통신 없이 팀워크 발현</li>
+                <li><strong>프로 격파</strong> - 세계 챔피언 팀 2-0 승리 (2019)</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic13/">← 이전: Actor-Critic이 뭐야?</a>
+            <a href="../topic15/">다음: 로봇도 강화학습으로 배워? →</a>
+        </div>
+    </div>
+</body>
+</html>

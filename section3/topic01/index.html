@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>머신러닝은 어떻게 배울까? - Section 3</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+
+        /* 네비게이션 */
+        .breadcrumb {
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #2196F3;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+
+        /* 대화 스타일 */
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #2196F3;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e3f2fd;
+        }
+
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before {
+            content: "Q. ";
+            color: #e65100;
+            font-weight: 700;
+        }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #bbdefb;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #0d47a1;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+
+        /* 코드 블록 */
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        /* 핵심 정리 박스 */
+        .summary-box {
+            background: linear-gradient(135deg, #2196F3 0%, #42A5F5 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .summary-box ul {
+            list-style: none;
+        }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #bbdefb;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 3</a>
+            <span>/</span>
+            Topic 01
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 01</div>
+            <h1>머신러닝은 어떻게 배울까?</h1>
+            <p>Q. 예시를 보고 패턴을 찾는다는 게 뭐야?</p>
+        </header>
+
+        <!-- Part 1: 사람은 어떻게 배울까? -->
+        <div class="conversation">
+            <h2>Part 1. 사람은 어떻게 배울까?</h2>
+
+            <div class="chat">
+                <div class="q">머신러닝이 "기계가 배운다"는 건데, 기계는 어떻게 배우는 거야?</div>
+                <div class="a">
+                    <p>먼저 <span class="key-point">사람이 어떻게 배우는지</span> 생각해보자.</p>
+                    <p>예를 들어, 너는 어떻게 "사과"를 구분할 수 있게 됐을까?</p>
+                </div>
+            </div>
+
+            <div class="code-block">어렸을 때 학습 과정:
+
+1. 엄마가 빨간 과일을 보여주며 "사과"라고 알려줌
+2. 여러 번 다양한 사과를 보면서 패턴 파악
+   - 빨간색이다
+   - 둥글다
+   - 손바닥만 하다
+   - 꼭지가 있다
+
+3. 이제 처음 보는 사과도 "사과"라고 알아봄
+
+→ 누가 일일이 "사과는 빨간색이고..."라고 설명하지 않았어.
+→ 예시를 보고 스스로 패턴을 찾은 거야.</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어? <span class="highlight">머신러닝도 똑같은 방식이야.</span></p>
+                    <p>컴퓨터에게 "사과의 정의"를 코드로 짜주는 게 아니라,</p>
+                    <p><strong>사과 사진을 엄청 많이 보여주고, 스스로 패턴을 찾게 하는 거지.</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: 규칙 vs 패턴 -->
+        <div class="conversation">
+            <h2>Part 2. 규칙을 짜는 것 vs 패턴을 찾는 것</h2>
+
+            <div class="chat">
+                <div class="q">그럼 일반 프로그래밍이랑 뭐가 다른 거야?</div>
+                <div class="a">
+                    <p>좋은 질문이야. 비교해볼게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">일반 프로그래밍 (규칙 기반):
+
+if 색깔 == 빨강:
+    if 모양 == 둥글다:
+        if 크기 == 손바닥:
+            return "사과"
+
+→ 개발자가 모든 규칙을 미리 정해줌
+→ 녹색 사과가 나오면? 깨짐
+
+
+머신러닝 (패턴 학습):
+
+# 사과 사진 1000장을 보여줌
+# 컴퓨터가 스스로 패턴 파악
+# "아, 이런 특징이 있으면 사과구나"
+
+→ 녹색 사과도 다른 특징(모양, 질감)으로 판단 가능
+→ 처음 보는 종류의 사과도 맞출 수 있음</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>차이가 보이지?</p>
+                    <p><span class="key-point">규칙을 정해주는 게 아니라, 예시를 보여주고 스스로 규칙을 찾게 하는 거야.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: 패턴 찾기 과정 -->
+        <div class="conversation">
+            <h2>Part 3. 컴퓨터는 어떻게 패턴을 찾아?</h2>
+
+            <div class="chat">
+                <div class="q">근데 컴퓨터가 어떻게 "패턴"을 알아내?</div>
+                <div class="a">
+                    <p><span class="highlight">숫자로 바꿔서 계산해.</span></p>
+                    <p>예를 들어볼게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">사과 판별 학습 과정:
+
+1단계: 데이터 준비
+사과1: 빨강(0.9), 둥글다(0.8), 크기(15cm) → 정답: 사과
+사과2: 빨강(0.8), 둥글다(0.9), 크기(14cm) → 정답: 사과
+배1:   노랑(0.3), 긴타원(0.3), 크기(18cm) → 정답: 배
+배2:   노랑(0.4), 긴타원(0.2), 크기(17cm) → 정답: 배
+
+2단계: 패턴 찾기 (학습)
+"빨강 수치가 높고, 둥글기가 높으면 → 사과"
+"노랑 수치가 높고, 둥글기가 낮으면 → 배"
+
+3단계: 검증
+새로운 과일: 빨강(0.85), 둥글다(0.75), 크기(16cm)
+→ 패턴 적용 → "사과다!"</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p>컴퓨터는 <strong>숫자로 변환 → 패턴 계산 → 새로운 데이터에 적용</strong> 하는 거야.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: 왜 예시가 많이 필요해? -->
+        <div class="conversation">
+            <h2>Part 4. 왜 데이터가 많이 필요한 거야?</h2>
+
+            <div class="chat">
+                <div class="q">사과 사진 1000장이나 봐야 해? 10장이면 안 돼?</div>
+                <div class="a">
+                    <p><span class="warning">10장으로는 부족해.</span></p>
+                    <p>왜 그런지 설명해줄게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">데이터가 적을 때:
+
+사과 10장: 전부 빨간 사과
+→ 컴퓨터 학습 결과: "사과는 무조건 빨갛다"
+→ 청사과 나옴 → "이건 사과가 아닌데?" (실패)
+
+
+데이터가 많을 때:
+
+사과 1000장: 빨간 사과, 청사과, 반쪽 사과, 흠집 사과...
+→ 컴퓨터 학습 결과: "색은 다양할 수 있지만, 모양과 질감이 핵심이구나"
+→ 청사과 나옴 → "모양이 사과네!" (성공)</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐지?</p>
+                    <p><span class="key-point">다양한 예시를 많이 볼수록, 더 정확한 패턴을 찾을 수 있어.</span></p>
+                    <p>사람도 마찬가지잖아. 한 번 본 것보다 여러 번 본 게 더 확실하지.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: 실전 예시 -->
+        <div class="conversation">
+            <h2>Part 5. 실제로는 어떻게 써?</h2>
+
+            <div class="chat">
+                <div class="q">그래서 실생활에서는 뭘 배우는 거야?</div>
+                <div class="a">
+                    <p>엄청 다양해. 예시 몇 개만 봐보자.</p>
+                </div>
+            </div>
+
+            <div class="code-block">실전 머신러닝 예시:
+
+스팸 메일 필터
+- 데이터: 스팸 메일 10만 개, 정상 메일 10만 개
+- 학습: "무료", "당첨", "클릭" 같은 단어 패턴 파악
+- 결과: 새 메일 오면 자동으로 스팸 판별
+
+넷플릭스 추천
+- 데이터: 내가 본 영화 목록, 평점
+- 학습: "이 사람은 액션 장르를 좋아하는구나"
+- 결과: 내가 좋아할 만한 영화 추천
+
+자율주행 차
+- 데이터: 도로 사진 수백만 장
+- 학습: "이건 사람이야", "이건 신호등이야"
+- 결과: 실시간으로 도로 상황 인식</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>보이지?</p>
+                    <p><span class="highlight">머신러닝은 "예시를 보고 패턴을 찾는 기술"이야.</span></p>
+                    <p>규칙을 일일이 코딩하기 어려운 문제에 엄청 유용하지.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>머신러닝은 패턴 학습</strong> - 규칙을 정해주는 게 아니라 예시에서 스스로 패턴을 찾음</li>
+                <li><strong>숫자로 변환</strong> - 모든 데이터를 숫자로 바꿔서 계산 가능하게 만듦</li>
+                <li><strong>데이터가 많을수록 좋다</strong> - 다양한 예시를 볼수록 정확한 패턴을 찾을 수 있음</li>
+                <li><strong>일반화가 목표</strong> - 처음 보는 데이터도 잘 판별할 수 있어야 함</li>
+                <li><strong>사람처럼 배운다</strong> - 사람이 예시를 보고 배우는 것과 같은 원리</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../">← 목록으로</a>
+            <a href="../topic02/">다음: 지도학습이 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

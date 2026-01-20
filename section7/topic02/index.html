@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>에이전트와 환경이 뭐야? - Section 7</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+
+        .breadcrumb {
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #FF5722;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #FF5722;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #ffebe9;
+        }
+
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before {
+            content: "Q. ";
+            color: #e65100;
+            font-weight: 700;
+        }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #ffccbc;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #d84315;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #FF5722 0%, #FF7043 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .summary-box ul {
+            list-style: none;
+        }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #ffccbc;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #FF5722;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 7</a>
+            <span>/</span>
+            Topic 02
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 02</div>
+            <h1>에이전트와 환경이 뭐야?</h1>
+            <p>Q. 게임 캐릭터랑 게임 세계?</p>
+        </header>
+
+        <!-- Part 1: 강화학습의 두 주인공 -->
+        <div class="conversation">
+            <h2>Part 1. 강화학습의 두 주인공</h2>
+
+            <div class="chat">
+                <div class="q">에이전트(Agent)랑 환경(Environment)이 뭐야?</div>
+                <div class="a">
+                    <p>강화학습을 이해하려면 이 두 개념을 꼭 알아야 해.</p>
+                    <p><span class="key-point">에이전트 = 학습하는 주체 (AI)</span></p>
+                    <p><span class="key-point">환경 = 에이전트가 상호작용하는 세계</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">비유로 이해하기:
+
+게임으로 비유하면:
+- 에이전트 = 플레이어가 조종하는 캐릭터
+- 환경 = 게임 세계 (맵, 적, 아이템, 규칙 등)
+
+예: 슈퍼마리오
+- 에이전트 = 마리오
+- 환경 = 게임 맵, 굼바, 코인, 깃발 등 모든 것
+
+예: 바둑
+- 에이전트 = 바둑 AI (알파고)
+- 환경 = 바둑판 + 게임 규칙</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><strong>에이전트는 "행동"하고, 환경은 "반응"해.</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: 상호작용 -->
+        <div class="conversation">
+            <h2>Part 2. 에이전트와 환경은 어떻게 상호작용해?</h2>
+
+            <div class="chat">
+                <div class="q">둘이 어떻게 소통하는데?</div>
+                <div class="a">
+                    <p>순환 구조로 작동해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">강화학습 상호작용 사이클:
+
+┌─────────────┐
+│   에이전트   │
+│   (Agent)   │
+└──────┬──────┘
+       │
+       │ (1) 행동 (Action)
+       ↓
+┌─────────────┐
+│    환경      │
+│ (Environment)│
+└──────┬──────┘
+       │
+       │ (2) 상태 + 보상 (State + Reward)
+       ↓
+┌─────────────┐
+│   에이전트   │
+└─────────────┘
+
+반복...</div>
+
+            <div class="chat">
+                <div class="q">구체적인 예시로 설명해줘.</div>
+                <div class="a">
+                    <p>팩맨 게임으로 보자.</p>
+                </div>
+            </div>
+
+            <div class="code-block">팩맨 게임 예시:
+
+시작:
+환경 → 에이전트에게 현재 상태 전달
+      "팩맨 위치: (5, 3), 유령 위치: (7, 3), 점수: 0"
+
+에이전트 → 환경에 행동 전달
+          "오른쪽으로 이동"
+
+환경 → 게임 규칙에 따라 상태 업데이트
+      팩맨이 오른쪽으로 이동함
+      점을 먹음 → 점수 +10
+
+환경 → 에이전트에게 새로운 상태 + 보상 전달
+      "팩맨 위치: (6, 3), 유령 위치: (7, 3), 점수: 10"
+      보상: +10
+
+에이전트 → 다시 행동 결정
+          "계속 오른쪽?" vs "방향 전환?"
+
+반복...</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이게 <span class="highlight">강화학습의 핵심 메커니즘</span>이야.</p>
+                    <p><strong>에이전트와 환경이 끊임없이 주고받으면서 학습</strong>하는 거지.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: 에이전트는 뭘 하는 애야? -->
+        <div class="conversation">
+            <h2>Part 3. 에이전트는 정확히 뭘 해?</h2>
+
+            <div class="chat">
+                <div class="q">에이전트의 역할이 뭐야?</div>
+                <div class="a">
+                    <p>에이전트는 두 가지 일을 해.</p>
+                    <p><span class="key-point">1. 관찰 - 환경의 상태를 본다</span></p>
+                    <p><span class="key-point">2. 결정 - 어떤 행동을 할지 선택한다</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">에이전트의 사고 과정:
+
+1단계: 관찰
+"지금 상황이 어떤가?"
+→ 현재 위치, 주변 장애물, 점수 등 파악
+
+2단계: 결정
+"어떤 행동을 해야 보상을 최대화할 수 있을까?"
+→ 가능한 행동들 평가
+→ 최선의 행동 선택
+
+3단계: 학습
+"내가 한 행동이 좋았나, 나빴나?"
+→ 보상을 보고 판단
+→ 정책(행동 전략) 업데이트</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">에이전트의 목표는 단 하나</span>야.</p>
+                    <p><strong>"장기적으로 가장 많은 보상을 받는 것"</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: 환경은 뭘 하는 애야? -->
+        <div class="conversation">
+            <h2>Part 4. 환경은 정확히 뭘 해?</h2>
+
+            <div class="chat">
+                <div class="q">환경의 역할은?</div>
+                <div class="a">
+                    <p>환경은 세 가지 일을 해.</p>
+                    <p><span class="key-point">1. 상태 제공 - 현재 상황 정보를 줌</span></p>
+                    <p><span class="key-point">2. 전이 - 행동에 따라 상태를 변경</span></p>
+                    <p><span class="key-point">3. 보상 - 행동에 대한 피드백을 줌</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">환경의 역할:
+
+상태 제공:
+→ "현재 게임 화면은 이렇습니다"
+→ 에이전트가 의사결정에 필요한 정보 전달
+
+전이 (Transition):
+→ 에이전트가 "점프" 행동을 하면
+→ 물리 법칙에 따라 캐릭터 위치 변경
+→ 충돌 체크, 아이템 획득 등 처리
+
+보상:
+→ 좋은 일 발생: +보상
+→ 나쁜 일 발생: -보상
+→ 에이전트에게 피드백 제공</div>
+
+            <div class="chat">
+                <div class="q">환경은 AI가 아니야?</div>
+                <div class="a">
+                    <p><span class="warning">아니야. 환경은 그냥 규칙에 따라 작동하는 시스템</span>이야.</p>
+                    <p>게임 엔진, 시뮬레이터, 또는 실제 세계일 수도 있어.</p>
+                    <p><strong>학습하는 건 에이전트만</strong>이야.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: 다양한 환경 -->
+        <div class="conversation">
+            <h2>Part 5. 환경에는 어떤 종류가 있어?</h2>
+
+            <div class="chat">
+                <div class="q">환경도 종류가 다양해?</div>
+                <div class="a">
+                    <p>엄청 다양해. 환경의 특성에 따라 학습 난이도가 달라져.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>환경 유형</th>
+                    <th>설명</th>
+                    <th>예시</th>
+                </tr>
+                <tr>
+                    <td><strong>결정적 환경</strong></td>
+                    <td>같은 행동 → 항상 같은 결과</td>
+                    <td>체스, 바둑</td>
+                </tr>
+                <tr>
+                    <td><strong>확률적 환경</strong></td>
+                    <td>같은 행동 → 다른 결과 가능</td>
+                    <td>주사위 게임, 포커</td>
+                </tr>
+                <tr>
+                    <td><strong>완전 관측 환경</strong></td>
+                    <td>모든 정보를 볼 수 있음</td>
+                    <td>바둑판 전체 보임</td>
+                </tr>
+                <tr>
+                    <td><strong>부분 관측 환경</strong></td>
+                    <td>일부 정보만 볼 수 있음</td>
+                    <td>포커 (상대 패 모름)</td>
+                </tr>
+                <tr>
+                    <td><strong>에피소드 환경</strong></td>
+                    <td>게임이 끝나는 환경</td>
+                    <td>체스 게임 (승/패로 끝)</td>
+                </tr>
+                <tr>
+                    <td><strong>연속 환경</strong></td>
+                    <td>끝이 없는 환경</td>
+                    <td>주식 거래, 추천 시스템</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">환경이 복잡할수록 학습이 어려워.</span></p>
+                    <p>확률적이고, 부분 관측이고, 연속적인 환경일수록 난이도가 높아지는 거지.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 6: 실제 예시 -->
+        <div class="conversation">
+            <h2>Part 6. 실제 사례로 이해하기</h2>
+
+            <div class="chat">
+                <div class="q">실제 강화학습 시스템에서는 어떻게 구현돼?</div>
+                <div class="a">
+                    <p>구체적인 예시로 보자.</p>
+                </div>
+            </div>
+
+            <div class="code-block">자율주행 자동차:
+
+에이전트:
+- 자율주행 AI
+- 센서 데이터를 받아 운전 결정
+
+환경:
+- 도로, 다른 차량, 신호등, 보행자
+- 물리 법칙, 교통 법규
+
+상호작용:
+에이전트 → "핸들 5도 왼쪽으로"
+환경 → 차량이 좌회전함
+       차선 유지 성공 → 보상 +1
+       다른 차량과 충돌 → 보상 -1000
+
+
+로봇 팔:
+
+에이전트:
+- 로봇 제어 AI
+- 관절 각도 조정 결정
+
+환경:
+- 물리 세계
+- 물체, 중력, 마찰력
+
+상호작용:
+에이전트 → "관절 1을 20도 회전"
+환경 → 로봇 팔이 움직임
+       물체를 잡음 → 보상 +10
+       물체를 놓침 → 보상 -5</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐지?</p>
+                    <p><span class="key-point">에이전트와 환경은 분리된 개념</span>이야.</p>
+                    <p><strong>에이전트만 학습하고, 환경은 그냥 반응</strong>해.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>에이전트</strong> - 학습하는 주체, 행동을 결정하는 AI</li>
+                <li><strong>환경</strong> - 에이전트가 상호작용하는 세계, 규칙에 따라 반응</li>
+                <li><strong>상호작용 순환</strong> - 행동 → 상태 변화 + 보상 → 다음 행동</li>
+                <li><strong>에이전트의 목표</strong> - 장기적 보상 최대화</li>
+                <li><strong>환경의 역할</strong> - 상태 제공, 전이, 보상 제공</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic01/">← 이전: 강화학습은 뭐가 다를까?</a>
+            <a href="../topic03/">다음: 상태, 행동, 보상이 뭐야? →</a>
+        </div>
+    </div>
+</body>
+</html>

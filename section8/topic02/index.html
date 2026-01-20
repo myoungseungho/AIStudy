@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>음성 인식은 어떻게 돼? - Section 8</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+
+        .breadcrumb {
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #795548;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #795548;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #efebe9;
+        }
+
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before {
+            content: "Q. ";
+            color: #e65100;
+            font-weight: 700;
+        }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #d7ccc8;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #4e342e;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #795548 0%, #8D6E63 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .summary-box ul {
+            list-style: none;
+        }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #d7ccc8;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #795548;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 8</a>
+            <span>/</span>
+            Topic 02
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 02</div>
+            <h1>음성 인식은 어떻게 돼?</h1>
+            <p>Q. 시리는 내 목소리를 어떻게 이해해?</p>
+        </header>
+
+        <!-- Part 1: 음성 인식의 원리 -->
+        <div class="conversation">
+            <h2>Part 1. 시리는 어떻게 내 말을 알아듣지?</h2>
+
+            <div class="chat">
+                <div class="q">"시리야, 날씨 알려줘" 하면 바로 알아듣잖아. 어떻게 돼?</div>
+                <div class="a">
+                    <p><span class="key-point">음성 인식(Speech Recognition)</span>이라는 기술이야.</p>
+                    <p>핵심은 <strong>음파를 텍스트로 변환</strong>하는 거지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">음성 인식 과정:
+
+1. 음성 입력
+   "시리야, 날씨 알려줘"
+   → 마이크로 소리 감지
+
+2. 음파 분석
+   → 음파를 디지털 신호로 변환
+   → 주파수, 강도, 패턴 추출
+
+3. 음향 모델 (Acoustic Model)
+   → 소리가 어떤 음소(phoneme)인지 판단
+   → "ㅅ", "ㅣ", "ㄹ", "ㅣ", "야" 인식
+
+4. 언어 모델 (Language Model)
+   → 음소를 단어로 조합
+   → "시리야 날씨 알려줘" 텍스트 생성
+
+5. 의미 이해
+   → NLU (자연어 이해)로 의도 파악
+   → "날씨 정보 요청" 인식</div>
+
+            <div class="chat">
+                <div class="q">그럼 모든 소리를 다 글자로 바꿀 수 있어?</div>
+                <div class="a">
+                    <p><span class="warning">아니, 어려운 경우가 많아.</span></p>
+                    <p><strong>음성 인식이 어려운 이유:</strong></p>
+                    <p>- 억양, 발음 차이 (사투리, 외국인 억양)</p>
+                    <p>- 배경 소음 (카페, 거리, 음악)</p>
+                    <p>- 빠른 말, 속삭임, 웅얼거림</p>
+                    <p>- 동음이의어 ("배"가 과일인지 교통수단인지)</p>
+                    <p>그래서 AI는 <span class="key-point">맥락(context)을 활용</span>해서 정확도를 높여.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: 딥러닝이 음성 인식을 혁신 -->
+        <div class="conversation">
+            <h2>Part 2. 딥러닝 이전 vs 이후</h2>
+
+            <div class="chat">
+                <div class="q">옛날에도 음성 인식 있었잖아? 뭐가 달라진 거야?</div>
+                <div class="a">
+                    <p><span class="highlight">정확도가 엄청 올라갔어.</span></p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>시기</th>
+                    <th>기술</th>
+                    <th>정확도</th>
+                    <th>특징</th>
+                </tr>
+                <tr>
+                    <td><strong>~2010년대</strong></td>
+                    <td>통계 기반 (HMM, GMM)</td>
+                    <td>~70%</td>
+                    <td>조용한 환경에서만, 천천히 말해야 함</td>
+                </tr>
+                <tr>
+                    <td><strong>2012~</strong></td>
+                    <td>딥러닝 (DNN, RNN)</td>
+                    <td>~90%</td>
+                    <td>소음 환경에서도 작동, 자연스러운 말 가능</td>
+                </tr>
+                <tr>
+                    <td><strong>2017~</strong></td>
+                    <td>Transformer 기반</td>
+                    <td>~95%</td>
+                    <td>실시간, 다국어, 맥락 이해</td>
+                </tr>
+                <tr>
+                    <td><strong>2023~</strong></td>
+                    <td>Whisper (OpenAI)</td>
+                    <td>~99%</td>
+                    <td>사람 수준, 68개 언어 지원</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="a">
+                    <p>보이지? <span class="key-point">딥러닝 덕분에 폭발적으로 정확해졌어.</span></p>
+                    <p>이제는 거의 사람만큼 잘 알아듣지.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유:
+
+옛날 음성 인식:
+"천천히... 또박또박... 말씀해... 주세요"
+→ 외국어 배우는 초보자처럼
+
+지금 음성 인식 (딥러닝):
+"편하게 말씀하세요~ 빨리 말해도, 사투리 써도 OK"
+→ 원어민처럼 자연스럽게 이해</div>
+        </div>
+
+        <!-- Part 3: Whisper - 혁신적 모델 -->
+        <div class="conversation">
+            <h2>Part 3. Whisper: OpenAI의 음성 인식 혁명</h2>
+
+            <div class="chat">
+                <div class="q">Whisper가 뭐야? 진짜 그렇게 좋아?</div>
+                <div class="a">
+                    <p>OpenAI가 2022년에 공개한 <span class="highlight">음성 인식 모델</span>이야.</p>
+                    <p><strong>특징:</strong></p>
+                    <p>- 68만 시간의 음성 데이터로 학습 (엄청난 규모)</p>
+                    <p>- 68개 언어 지원</p>
+                    <p>- 번역 기능 내장 (영어→한국어 자동 번역)</p>
+                    <p>- <span class="key-point">무료 오픈소스</span> (누구나 사용 가능)</p>
+                </div>
+            </div>
+
+            <div class="code-block">Whisper 사용 예시:
+
+[유튜브 자막 생성]
+1. 영상에서 음성 추출
+2. Whisper로 텍스트 변환
+3. 자막 파일(.srt) 생성
+→ 10분짜리 영상도 1분 안에 처리
+
+[회의록 자동 작성]
+1. 줌(Zoom) 회의 녹음
+2. Whisper로 텍스트 변환
+3. ChatGPT로 요약
+→ 1시간 회의가 A4 1장 요약으로
+
+[팟캐스트 스크립트]
+1. 음성 파일 업로드
+2. Whisper가 화자 구분까지
+3. 텍스트 편집 후 블로그 업로드</div>
+
+            <div class="chat">
+                <div class="q">그럼 완벽해?</div>
+                <div class="a">
+                    <p><span class="warning">아니, 여전히 한계는 있어.</span></p>
+                    <p>- 전문 용어 (의학, 법률)는 틀릴 수 있음</p>
+                    <p>- 여러 사람이 동시에 말하면 정확도 떨어짐</p>
+                    <p>- 극심한 소음 환경에서는 어려움</p>
+                    <p>하지만 일반적인 상황에서는 <strong>거의 사람 수준</strong>이야.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: 음성 합성 (TTS) -->
+        <div class="conversation">
+            <h2>Part 4. 음성 합성: AI가 말을 한다</h2>
+
+            <div class="chat">
+                <div class="q">음성 인식 반대로, AI가 말하는 것도 있잖아?</div>
+                <div class="a">
+                    <p>맞아. 그게 <span class="highlight">음성 합성(Text-to-Speech, TTS)</span>이야.</p>
+                    <p><strong>텍스트 → 음성 변환</strong></p>
+                </div>
+            </div>
+
+            <div class="code-block">음성 합성 과정:
+
+입력: "안녕하세요, 반갑습니다"
+
+1. 텍스트 분석
+   → 문장 구조, 강조할 부분 파악
+
+2. 음소 변환
+   → 각 글자를 발음 기호로 변환
+
+3. 억양/리듬 생성
+   → 자연스러운 억양, 속도 계산
+
+4. 음파 생성
+   → 디지털 음성 신호 생성
+
+출력: 자연스러운 음성</div>
+
+            <div class="chat">
+                <div class="q">옛날 네비게이션 목소리는 왜 그렇게 로봇 같았어?</div>
+                <div class="a">
+                    <p>옛날에는 <strong>녹음된 단어들을 이어붙이는</strong> 방식이었어.</p>
+                    <p>"100미터", "앞에서", "좌회전" → 각각 녹음해서 조합</p>
+                    <p>그래서 부자연스럽고 어색했지.</p>
+                    <p>지금은 <span class="key-point">딥러닝으로 실시간 생성</span>해서 훨씬 자연스러워.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>기술</th>
+                    <th>예시</th>
+                    <th>특징</th>
+                </tr>
+                <tr>
+                    <td><strong>ElevenLabs</strong></td>
+                    <td>음성 클로닝</td>
+                    <td>1분 샘플로 목소리 복제</td>
+                </tr>
+                <tr>
+                    <td><strong>Google TTS</strong></td>
+                    <td>구글 번역 음성</td>
+                    <td>40개 언어, 다양한 목소리</td>
+                </tr>
+                <tr>
+                    <td><strong>Azure TTS</strong></td>
+                    <td>MS의 음성 합성</td>
+                    <td>감정 표현, 억양 조절 가능</td>
+                </tr>
+                <tr>
+                    <td><strong>Vall-E (MS)</strong></td>
+                    <td>초실감 음성</td>
+                    <td>3초 샘플로 완벽 복제</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Part 5: 실생활 응용 -->
+        <div class="conversation">
+            <h2>Part 5. 음성 AI는 어디에 쓰여?</h2>
+
+            <div class="chat">
+                <div class="q">실제로 어떻게 활용돼?</div>
+                <div class="a">
+                    <p><span class="key-point">거의 모든 곳에 쓰여.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">실전 사례:
+
+1. 음성 비서
+   - 시리, 빅스비, 구글 어시스턴트
+   - "알람 맞춰줘", "메시지 보내줘"
+
+2. 자동 자막 생성
+   - 유튜브 실시간 자막
+   - Zoom 회의 자막
+   - 영화 자막 제작 (수작업 → AI 자동화)
+
+3. 고객 센터
+   - AI 상담원 (STT + ChatGPT + TTS)
+   - "주문 조회해줘" → 자동 처리
+
+4. 의료
+   - 의사 진료 기록 자동화
+   - 말로 차트 작성 (타이핑 안 해도 됨)
+
+5. 접근성
+   - 시각 장애인용 스크린 리더
+   - 청각 장애인용 실시간 자막
+
+6. 콘텐츠 제작
+   - 오디오북 자동 생성
+   - 팟캐스트 편집
+   - 유튜브 더빙 (다국어)</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>음성 AI는 <strong>접근성을 높이는 데</strong> 특히 중요해.</p>
+                    <p>키보드 못 쓰는 사람도, 글 못 읽는 사람도 AI를 쓸 수 있게 되는 거지.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 6: 미래와 한계 -->
+        <div class="conversation">
+            <h2>Part 6. 음성 AI의 미래와 윤리적 문제</h2>
+
+            <div class="chat">
+                <div class="q">더 발전할 수 있어?</div>
+                <div class="a">
+                    <p>당연하지. <span class="highlight">트렌드를 알려줄게.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">음성 AI의 미래:
+
+1. 실시간 통역
+   - 대화 중 실시간으로 다른 언어로 번역
+   - 구글의 "통역 모드" 이미 가능
+
+2. 감정 인식
+   - 목소리 톤으로 감정 파악
+   - "화났네?", "기분 좋아 보여" 인식
+
+3. 화자 분리 (Speaker Diarization)
+   - 회의에서 누가 말했는지 자동 구분
+   - "철수: ...", "영희: ..."
+
+4. 소음 제거
+   - 시끄러운 곳에서도 정확한 인식
+   - 카페, 거리, 공사장에서도 OK
+
+5. 개인화
+   - 너의 말투, 억양 학습
+   - 점점 더 너를 잘 이해</div>
+
+            <div class="chat">
+                <div class="q">근데 목소리 복제는 위험하지 않아?</div>
+                <div class="a">
+                    <p><span class="warning">맞아. 큰 문제야.</span></p>
+                    <p><strong>음성 딥페이크 (Voice Cloning)</strong></p>
+                    <p>- 3초만 있으면 누구든 목소리 복제 가능</p>
+                    <p>- 부모님 목소리로 "돈 보내줘" 사기</p>
+                    <p>- 유명인 목소리 도용</p>
+                    <p>그래서 <span class="key-point">음성 워터마크</span> 기술도 개발 중이야.</p>
+                    <p>"이건 AI가 만든 음성입니다"를 식별할 수 있게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">음성 AI 윤리 이슈:
+
+1. 프라이버시
+   - 스마트 스피커가 항상 듣고 있음
+   - 대화 내용이 서버로 전송됨
+
+2. 음성 복제 악용
+   - 보이스 피싱
+   - 딥페이크 스캠
+
+3. 편향
+   - 특정 억양, 사투리를 못 알아듣는 경우
+   - 외국인 발음 차별
+
+4. 일자리 대체
+   - 성우, 상담원 일자리 감소
+
+그래서 규제와 기술 발전이 함께 가야 해.</div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>📌 핵심 정리</h3>
+            <ul>
+                <li><strong>음성 인식 (STT)</strong> - 음파를 텍스트로 변환 (시리, 구글)</li>
+                <li><strong>음성 합성 (TTS)</strong> - 텍스트를 음성으로 변환 (네비, AI 목소리)</li>
+                <li><strong>딥러닝 혁신</strong> - 정확도가 70% → 99%로 급증</li>
+                <li><strong>Whisper</strong> - OpenAI의 무료 음성 인식 모델, 68개 언어 지원</li>
+                <li><strong>실생활 활용</strong> - 자막, 회의록, 고객 상담, 접근성 향상</li>
+                <li><strong>음성 복제</strong> - 3초 샘플로 목소리 복제 가능 (딥페이크 위험)</li>
+                <li><strong>미래</strong> - 실시간 통역, 감정 인식, 화자 분리, 개인화</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic01/">← 이전: 추천 시스템은 어떻게 작동해?</a>
+            <a href="../topic03/">다음: 자율주행은 어떻게 가능해? →</a>
+        </div>
+    </div>
+</body>
+</html>

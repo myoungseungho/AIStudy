@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>비지도학습은 정답 없이 배워? - Section 3</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+
+        .breadcrumb {
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #2196F3;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #2196F3;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e3f2fd;
+        }
+
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before {
+            content: "Q. ";
+            color: #e65100;
+            font-weight: 700;
+        }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #bbdefb;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #0d47a1;
+        }
+
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #2196F3 0%, #42A5F5 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .summary-box ul {
+            list-style: none;
+        }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #bbdefb;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a {
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 3</a>
+            <span>/</span>
+            Topic 04
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 04</div>
+            <h1>비지도학습은 정답 없이 배워?</h1>
+            <p>Q. 레이블 없이 어떻게 학습해?</p>
+        </header>
+
+        <!-- Part 1: 비지도학습이란? -->
+        <div class="conversation">
+            <h2>Part 1. 정답 없이도 배울 수 있어</h2>
+
+            <div class="chat">
+                <div class="q">비지도학습(Unsupervised Learning)은 정답이 없다고? 그럼 어떻게 배워?</div>
+                <div class="a">
+                    <p><span class="key-point">데이터 자체에서 패턴을 찾아내.</span></p>
+                    <p>사람으로 비유하면 이렇게 배우는 거야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 책장 정리하기
+
+지도학습 방식:
+엄마: "이건 '소설'이야, 여기 꽂아"
+엄마: "이건 '만화'야, 저기 꽂아"
+→ 누가 일일이 카테고리를 알려줌
+
+
+비지도학습 방식:
+나 혼자 책 100권 보면서:
+"어? 이 책들은 그림이 많네 → 한 묶음"
+"이 책들은 글만 있고 두껍네 → 한 묶음"
+"이 책들은 얇고 사진이 많네 → 한 묶음"
+→ 스스로 비슷한 것들을 묶음</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="highlight">정답을 주지 않아도, 스스로 "비슷한 것끼리" 그룹을 만들어.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: 왜 비지도학습을 써? -->
+        <div class="conversation">
+            <h2>Part 2. 왜 정답 없이 배우는 걸 써?</h2>
+
+            <div class="chat">
+                <div class="q">지도학습이 더 정확하지 않아? 왜 굳이 비지도학습을 써?</div>
+                <div class="a">
+                    <p>좋은 질문이야. <strong>현실적인 이유</strong>가 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">지도학습의 문제:
+
+고양이/개 분류 AI 만들기
+→ 이미지 10만 장에 사람이 "고양이", "개" 레이블 달기
+→ 시간: 몇 달
+→ 비용: 수천만원
+
+
+비지도학습의 장점:
+
+이미지 10만 장 그냥 넣기
+→ AI가 스스로 "이런 특징끼리 비슷하네" 그룹 만듦
+→ 시간: 몇 시간~며칠
+→ 비용: 거의 0원
+
+→ 레이블 비용을 아낄 수 있음!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">핵심은 "레이블링 비용"이야.</span></p>
+                    <p>데이터는 많은데 레이블 달 돈이 없을 때 비지도학습을 써.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 3: 대표적인 비지도학습 -->
+        <div class="conversation">
+            <h2>Part 3. 비지도학습으로 뭘 할 수 있어?</h2>
+
+            <div class="chat">
+                <div class="q">정답 없이 뭘 배울 수 있는데?</div>
+                <div class="a">
+                    <p>크게 두 가지를 할 수 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">1. 클러스터링 (Clustering) - 그룹 나누기
+
+예시:
+고객 데이터 10만 명
+→ AI가 자동으로 그룹 분류
+→ "10대 여성 그룹", "30대 남성 그룹" 등
+
+뉴스 기사 1만 개
+→ AI가 자동으로 주제별 분류
+→ "정치", "경제", "스포츠" 등
+(사람이 주제를 안 알려줘도 됨!)
+
+
+2. 차원 축소 (Dimensionality Reduction) - 압축하기
+
+예시:
+이미지 1000x1000 픽셀 (100만 개 숫자)
+→ 핵심 특징 100개로 압축
+→ 용량 줄이고 학습 빠르게
+
+→ "중요한 것만 남기기"</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>보이지?</p>
+                    <p><span class="highlight">정답은 모르지만, 데이터의 숨겨진 구조를 찾는 거야.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 4: 클러스터링 예시 -->
+        <div class="conversation">
+            <h2>Part 4. 클러스터링은 어떻게 작동해?</h2>
+
+            <div class="chat">
+                <div class="q">그룹을 어떻게 나눠?</div>
+                <div class="a">
+                    <p>간단한 예시로 보여줄게.</p>
+                </div>
+            </div>
+
+            <div class="code-block">K-Means 클러스터링 (가장 기본적인 방법)
+
+데이터:
+학생1: 키 180cm, 몸무게 70kg
+학생2: 키 160cm, 몸무게 50kg
+학생3: 키 175cm, 몸무게 68kg
+학생4: 키 155cm, 몸무게 48kg
+...
+
+과정:
+1. "3개 그룹으로 나눠줘" 라고 요청
+2. AI가 랜덤하게 3개 중심점 선택
+3. 각 학생을 가장 가까운 중심점 그룹으로 배정
+4. 그룹의 평균으로 중심점 다시 계산
+5. 3-4 반복 (안정될 때까지)
+
+결과:
+그룹1: 키 크고 무거운 학생들
+그룹2: 키 작고 가벼운 학생들
+그룹3: 중간 학생들
+
+→ 누가 "이 학생은 그룹1"이라고 안 알려줘도
+→ 스스로 비슷한 애들끼리 묶음!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="key-point">"거리가 가까운 애들끼리" 그룹을 만드는 거야.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: 비지도학습의 한계 -->
+        <div class="conversation">
+            <h2>Part 5. 비지도학습의 문제점은?</h2>
+
+            <div class="chat">
+                <div class="q">그럼 비지도학습이 더 좋은 거 아니야? 레이블도 필요 없고</div>
+                <div class="a">
+                    <p>아니, <strong>큰 단점</strong>이 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">비지도학습의 한계:
+
+1. 결과를 보장할 수 없음
+지도학습: "고양이"라고 정확히 맞춤
+비지도학습: "그룹A"를 만들긴 하는데, 그게 고양이인지는 몰라
+
+
+2. 해석이 어려움
+AI가 고객을 3개 그룹으로 나눴는데
+→ 그룹1이 뭘 의미하는지 사람이 봐야 알 수 있음
+
+
+3. 얼마나 나눠야 하는지 모름
+"몇 개 그룹으로 나눌까?" 를 사람이 정해줘야 함
+→ 2개? 5개? 10개? 정답이 없음
+
+
+4. 품질 평가가 어려움
+지도학습: "정확도 95%!"
+비지도학습: "이게 잘된 건가?" (측정하기 어려움)</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">비지도학습은 "탐색용"이야.</span></p>
+                    <p>데이터에 어떤 패턴이 있는지 대충 보려고 쓰지,</p>
+                    <p>정확한 예측이 필요하면 결국 지도학습을 써야 해.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 6: 실전 활용 -->
+        <div class="conversation">
+            <h2>Part 6. 실제로는 어디에 써?</h2>
+
+            <div class="chat">
+                <div class="q">그래서 실생활에서는 어떻게 쓰여?</div>
+                <div class="a">
+                    <p>생각보다 많이 쓰여.</p>
+                </div>
+            </div>
+
+            <div class="code-block">실전 비지도학습 사례:
+
+고객 세분화 (마케팅)
+- 고객 100만 명 데이터
+- 비지도학습으로 자동 그룹 분류
+- "이 그룹한테는 이런 광고를" 전략 수립
+
+추천 시스템 (넷플릭스, 유튜브)
+- 비슷한 영상끼리 그룹 묶기
+- "이 영화 본 사람은 이것도 좋아할 것"
+
+이상 탐지 (보안)
+- 정상 패턴 학습
+- 이상한 패턴 발견하면 경고
+- 해킹, 사기 거래 탐지
+
+이미지 압축
+- 고화질 사진을 용량 줄이면서도 품질 유지
+- JPEG, PNG 같은 압축 알고리즘</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>보이지?</p>
+                    <p><span class="highlight">정답은 모르지만, 패턴을 찾아야 할 때 비지도학습을 써.</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 핵심 정리 -->
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>비지도학습 = 정답 없이 학습</strong> - 레이블 없이 데이터에서 패턴 찾기</li>
+                <li><strong>왜 쓰나?</strong> - 레이블링 비용이 너무 비싸거나 불가능할 때</li>
+                <li><strong>클러스터링</strong> - 비슷한 것들끼리 자동으로 그룹 나누기</li>
+                <li><strong>차원 축소</strong> - 데이터를 압축하면서 핵심 특징만 남기기</li>
+                <li><strong>한계</strong> - 정확도 보장 안 됨, 해석 어려움, 평가 어려움</li>
+                <li><strong>활용</strong> - 고객 세분화, 추천 시스템, 이상 탐지, 데이터 탐색</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic03/">← 이전: 레이블이 뭐야?</a>
+            <a href="../topic05/">다음: 분류와 회귀는 뭐가 달라? →</a>
+        </div>
+    </div>
+</body>
+</html>

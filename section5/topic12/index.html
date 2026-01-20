@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>객체 탐지는 분류랑 뭐가 달라? - Section 5</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.9;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; }
+        .breadcrumb { margin-bottom: 24px; font-size: 0.9rem; }
+        .breadcrumb a { color: #666; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { color: #999; margin: 0 8px; }
+        .header { margin-bottom: 48px; }
+        .topic-number {
+            display: inline-block;
+            background: #00BCD4;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 12px; }
+        .header p { color: #666; font-size: 1.1rem; }
+        .conversation {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .conversation h2 {
+            font-size: 1.3rem;
+            color: #00BCD4;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e0f7fa;
+        }
+        .chat { margin-bottom: 20px; }
+        .q {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 12px 12px 0;
+            font-weight: 500;
+        }
+        .q::before { content: "Q. "; color: #e65100; font-weight: 700; }
+        .a {
+            padding: 8px 0 8px 20px;
+            border-left: 4px solid #e0e0e0;
+            margin: 12px 0;
+        }
+        .a p { margin-bottom: 12px; }
+        .a p:last-child { margin-bottom: 0; }
+        .highlight {
+            background: #e3f2fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+        .key-point {
+            background: #e0f7fa;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #00838f;
+        }
+        .warning {
+            background: #ffcdd2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #c62828;
+        }
+        .code-block {
+            background: #263238;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #eceff1;
+            overflow-x: auto;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .compare-table th, .compare-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+        .compare-table th { background: #f5f5f5; font-weight: 600; }
+        .summary-box {
+            background: linear-gradient(135deg, #00BCD4 0%, #26C6DA 100%);
+            border-radius: 16px;
+            padding: 32px;
+            color: white;
+            margin: 32px 0;
+        }
+        .summary-box h3 { font-size: 1.2rem; margin-bottom: 20px; }
+        .summary-box ul { list-style: none; }
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .summary-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #b2ebf2;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-links a { color: #00BCD4; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../../">AI 공부</a>
+            <span>/</span>
+            <a href="../">Section 5</a>
+            <span>/</span>
+            Topic 12
+        </nav>
+
+        <header class="header">
+            <div class="topic-number">TOPIC 12</div>
+            <h1>객체 탐지는 분류랑 뭐가 달라?</h1>
+            <p>Q. 사진 속에서 물체 위치까지 찾는다고?</p>
+        </header>
+
+        <div class="conversation">
+            <h2>Part 1. 분류 vs 탐지</h2>
+
+            <div class="chat">
+                <div class="q">객체 탐지(Object Detection)가 뭐야? 이미지 분류랑 뭐가 달라?</div>
+                <div class="a">
+                    <p><span class="key-point">분류는 "무엇", 탐지는 "무엇 + 어디"</span>야.</p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th>작업</th>
+                    <th>이미지 분류</th>
+                    <th>객체 탐지</th>
+                </tr>
+                <tr>
+                    <td><strong>질문</strong></td>
+                    <td>이 사진은 뭐야?</td>
+                    <td>어디에 뭐가 있어?</td>
+                </tr>
+                <tr>
+                    <td><strong>출력</strong></td>
+                    <td>레이블 1개<br>"고양이"</td>
+                    <td>박스 + 레이블 여러 개<br>"고양이 (100,50,200,150)"<br>"개 (300,200,400,350)"</td>
+                </tr>
+                <tr>
+                    <td><strong>객체 수</strong></td>
+                    <td>1개 (전체 이미지)</td>
+                    <td>여러 개</td>
+                </tr>
+                <tr>
+                    <td><strong>위치 정보</strong></td>
+                    <td>없음</td>
+                    <td>있음 (Bounding Box)</td>
+                </tr>
+            </table>
+
+            <div class="code-block">예시:
+
+사진: 공원에서 강아지 2마리, 고양이 1마리
+
+이미지 분류:
+→ "동물"
+
+객체 탐지:
+→ 강아지 (50, 100, 200, 300)
+→ 강아지 (400, 150, 550, 320)
+→ 고양이 (250, 200, 350, 280)</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">탐지가 훨씬 어려워.</span></p>
+                    <p>"뭔지" 알아내는 것도 어려운데, "어디에 있는지"까지 찾아야 하니까.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 2. 바운딩 박스(Bounding Box)</h2>
+
+            <div class="chat">
+                <div class="q">바운딩 박스가 뭐야?</div>
+                <div class="a">
+                    <p><span class="key-point">객체를 감싸는 사각형</span>이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">바운딩 박스 표현:
+
+방법 1: (x1, y1, x2, y2)
+→ 왼쪽 위 모서리 + 오른쪽 아래 모서리
+→ (100, 50, 200, 150)
+
+방법 2: (x, y, w, h)
+→ 왼쪽 위 모서리 + 너비 + 높이
+→ (100, 50, 100, 100)
+
+방법 3: (cx, cy, w, h)
+→ 중심점 + 너비 + 높이
+→ (150, 100, 100, 100)
+
+
++ 클래스 레이블 + 신뢰도
+→ "고양이, 0.95" (95% 확신)</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>AI는 이 박스를 <strong>예측</strong>해야 해.</p>
+                    <p>"여기쯤에 고양이가 있을 것 같은데... 95% 확신!"</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 3. 어떻게 탐지해?</h2>
+
+            <div class="chat">
+                <div class="q">AI는 어떻게 위치를 찾아?</div>
+                <div class="a">
+                    <p>크게 두 가지 방식이 있어.</p>
+                </div>
+            </div>
+
+            <div class="code-block">방식 1: Two-Stage (R-CNN 계열)
+
+Step 1: Region Proposal
+→ "여기 뭔가 있을 것 같은데?" 후보 영역 2000개 생성
+
+Step 2: Classification + Box Refinement
+→ 각 영역을 CNN으로 분류
+→ 박스 위치 미세 조정
+
+대표 모델:
+→ R-CNN (2014)
+→ Fast R-CNN (2015)
+→ Faster R-CNN (2015)
+
+장점: 정확도 높음
+단점: 느림 (영역마다 CNN 돌려야 함)
+
+
+방식 2: One-Stage (YOLO, SSD)
+
+Step 1: 전체 이미지를 한 번에 처리
+→ CNN으로 특징 추출
+→ 동시에 박스 + 클래스 예측
+
+대표 모델:
+→ YOLO (You Only Look Once)
+→ SSD (Single Shot Detector)
+
+장점: 빠름 (실시간 가능)
+단점: Two-Stage보다 정확도 낮음 (요즘은 거의 비슷)</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 4. 어떻게 학습해?</h2>
+
+            <div class="chat">
+                <div class="q">박스 위치를 어떻게 학습시켜?</div>
+                <div class="a">
+                    <p><strong>손실 함수</strong>가 두 가지야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">객체 탐지 손실:
+
+1. Classification Loss (분류 손실)
+→ "고양이다" vs "강아지다"
+→ CrossEntropy Loss
+→ 일반 분류와 동일
+
+2. Localization Loss (위치 손실)
+→ 예측 박스 vs 정답 박스
+→ 얼마나 떨어져 있는지
+→ L1 Loss 또는 Smooth L1 Loss
+
+Total Loss = Classification Loss + Localization Loss
+
+
+학습 과정:
+→ 정답: "고양이 (100, 50, 200, 150)"
+→ 예측: "고양이 (110, 55, 195, 145)" (95% 확신)
+
+분류 손실: 낮음 (고양이 맞춤)
+위치 손실: 약간 있음 (10픽셀 차이)
+
+→ 위치를 조금씩 조정하며 학습</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 5. IoU (교집합/합집합 비율)</h2>
+
+            <div class="chat">
+                <div class="q">박스가 얼마나 정확한지는 어떻게 측정해?</div>
+                <div class="a">
+                    <p><span class="key-point">IoU (Intersection over Union)</span>를 써.</p>
+                </div>
+            </div>
+
+            <div class="code-block">IoU 계산:
+
+정답 박스: A
+예측 박스: B
+
+IoU = (A와 B의 교집합 영역) / (A와 B의 합집합 영역)
+
+
+예시:
+정답: [0, 0, 100, 100] (넓이 10,000)
+예측: [50, 50, 150, 150] (넓이 10,000)
+
+교집합: [50, 50, 100, 100] (넓이 2,500)
+합집합: 10,000 + 10,000 - 2,500 = 17,500
+
+IoU = 2,500 / 17,500 = 0.14 (14%)
+
+
+평가 기준:
+→ IoU > 0.5: 보통 "맞춤"으로 인정
+→ IoU > 0.75: 높은 정확도
+→ IoU > 0.9: 거의 완벽</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. NMS (Non-Maximum Suppression)</h2>
+
+            <div class="chat">
+                <div class="q">한 객체에 박스가 여러 개 그려지면 어떡해?</div>
+                <div class="a">
+                    <p><span class="highlight">NMS로 중복 제거</span>해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">문제:
+고양이 하나에 박스 3개 예측
+→ Box A: 신뢰도 0.95
+→ Box B: 신뢰도 0.87
+→ Box C: 신뢰도 0.92
+→ 거의 비슷한 위치
+
+
+NMS 알고리즘:
+
+1. 신뢰도 순으로 정렬
+   → A (0.95), C (0.92), B (0.87)
+
+2. 가장 높은 것 선택
+   → A 선택
+
+3. A와 IoU가 높은 박스 제거
+   → B, C는 A와 IoU > 0.5
+   → B, C 제거
+
+4. 다음으로 높은 것 처리
+   → 반복
+
+
+결과: 박스 하나만 남음!</div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 7. 실전 활용</h2>
+
+            <div class="code-block">객체 탐지 활용 사례:
+
+자율주행:
+→ 차, 사람, 신호등 탐지
+→ 실시간 처리 필수 (YOLO)
+
+보안 CCTV:
+→ 침입자, 수상한 행동 탐지
+→ 24시간 작동
+
+공장 자동화:
+→ 불량품 탐지
+→ 높은 정확도 필요 (Faster R-CNN)
+
+스포츠 분석:
+→ 선수, 공 추적
+→ 실시간 + 정확도
+
+의료:
+→ X-ray에서 병변 찾기
+→ 정밀도 최우선</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">분류보다 훨씬 실용적</span>이야.</p>
+                    <p>"뭐가 있는지"만 아는 것보다 "어디에 있는지"까지 알아야 행동할 수 있으니까.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-box">
+            <h3>핵심 정리</h3>
+            <ul>
+                <li><strong>분류 vs 탐지</strong> - "무엇" vs "무엇 + 어디"</li>
+                <li><strong>바운딩 박스</strong> - 객체를 감싸는 사각형 좌표</li>
+                <li><strong>Two-Stage vs One-Stage</strong> - 정확도 vs 속도</li>
+                <li><strong>두 가지 손실</strong> - 분류 손실 + 위치 손실</li>
+                <li><strong>IoU</strong> - 박스 정확도 측정 지표</li>
+                <li><strong>NMS</strong> - 중복 박스 제거</li>
+            </ul>
+        </div>
+
+        <div class="nav-links">
+            <a href="../topic11/">← 이전: ImageNet은 뭐야?</a>
+            <a href="../topic13/">다음: YOLO는 왜 빨라? →</a>
+        </div>
+    </div>
+</body>
+</html>
