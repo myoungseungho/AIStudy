@@ -309,7 +309,231 @@ AI는 "요약이 뭔지" 의미는 몰라.
         </div>
 
         <div class="conversation">
-            <h2>Part 5. 튜링 테스트</h2>
+            <h2>Part 5. 그런데 2024 AI vs 2026 AI, 패턴만 늘린 거야?</h2>
+
+            <div class="chat">
+                <div class="q">근데 궁금한 게, 2024년 ChatGPT랑 요즘 Claude/GPT는 완전 다른 레벨인데? 단지 패턴을 더 많이 학습시킨 것뿐이야?</div>
+                <div class="a">
+                    <p><span class="warning">아니야. 이게 핵심이야!</span></p>
+                    <p><strong>"단순히 데이터만 늘린 게 아니라, 질적으로 다른 변화가 일어났어."</strong></p>
+                </div>
+            </div>
+
+            <div class="code-block">2024 vs 2026 AI 비교:
+
+2024 GPT-4:
+├─ 코딩: 간단한 함수 작성 가능
+├─ 추론: 1-2단계 논리만 가능
+└─ 실수: 자주 틀림
+
+2026 Claude Sonnet 4.5 / GPT-4.5:
+├─ 코딩: 복잡한 시스템 설계 가능
+├─ 추론: 5단계 이상 연결 가능
+└─ 정확도: 훨씬 높아짐
+
+→ 뭐가 바뀐 거야?</div>
+
+            <div class="chat">
+                <div class="q">그럼 패턴 데이터를 10배 늘렸어?</div>
+                <div class="a">
+                    <p>데이터는 2-3배 정도 늘었어.</p>
+                    <p><span class="key-point">하지만 능력은 10배 이상 좋아졌어.</span></p>
+                    <p>이게 어떻게 가능할까?</p>
+                </div>
+            </div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>5가지 핵심 변화:</strong></p>
+                </div>
+            </div>
+
+            <div class="code-block">변화 1️⃣: Scaling Law (창발적 능력)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+모델 크기가 일정 임계점을 넘으면
+"갑자기" 새로운 능력이 생긴다!
+
+작은 모델 (100억 개)
+└─ 간단한 문장 완성만 가능
+
+중간 모델 (500억 개)
+└─ 문맥 이해 가능
+
+거대 모델 (1조+ 개) ← 임계점 돌파!
+├─ 다단계 추론 (갑자기 생김!)
+├─ 수학 문제 풀이 (안 가르쳤는데!)
+├─ 코드 디버깅 (왜 되지?)
+└─ 창의적 문제 해결
+
+→ 이걸 "창발(Emergence)"이라고 해.
+→ 단순 패턴 증가로는 설명 안 됨!</div>
+
+            <div class="chat">
+                <div class="q">창발이 뭔데?</div>
+                <div class="a">
+                    <p><span class="highlight">부분의 합보다 전체가 더 큰 현상</span></p>
+                    <p>예를 들어볼게:</p>
+                </div>
+            </div>
+
+            <div class="code-block">비유: 물과 얼음
+
+물 분자 1개: 그냥 H2O
+물 분자 10개: 여전히 그냥 물
+물 분자 1조 개: ...
+
+0°C 이하가 되면?
+→ 갑자기 딱딱해짐 (얼음)
+→ 분자는 똑같은데 "고체"라는 새 속성 출현!
+
+AI도 똑같아:
+
+파라미터 100억 개: 문장 완성
+파라미터 1000억 개: 문맥 이해
+파라미터 1조 개: ...
+
+일정 크기 넘으면?
+→ 갑자기 추론 능력 생김
+→ 코딩 능력 생김
+→ 수학 능력 생김
+
+→ "창발적 능력"!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>변화 2️⃣: Chain-of-Thought (사고 과정)</strong></p>
+                </div>
+            </div>
+
+            <table class="compare-table">
+                <tr>
+                    <th></th>
+                    <th>2024 AI</th>
+                    <th>2026 AI</th>
+                </tr>
+                <tr>
+                    <td><strong>질문</strong></td>
+                    <td colspan="2">23 × 47은?</td>
+                </tr>
+                <tr>
+                    <td><strong>과정</strong></td>
+                    <td>패턴 매칭<br>→ 틀리거나 암기한 답</td>
+                    <td>단계별 사고:<br>23 × 40 = 920<br>23 × 7 = 161<br>920 + 161 = 1081</td>
+                </tr>
+                <tr>
+                    <td><strong>결과</strong></td>
+                    <td>자주 틀림</td>
+                    <td>정확함</td>
+                </tr>
+            </table>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="key-point">2026 AI는 "중간 과정"을 거친다!</span></p>
+                    <p>패턴 매칭만이 아니라 "추론 과정"처럼 보이는 걸 한다.</p>
+                </div>
+            </div>
+
+            <div class="code-block">변화 3️⃣: In-Context Learning (즉석 학습)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2024 AI:
+└─ 학습한 것만 가능
+└─ 새로운 건 못 함
+
+2026 AI:
+└─ 대화 중에 배운다!
+
+예시:
+
+User: 이건 새로운 언어야.
+      "zorp" = 안녕
+      "flim" = 세상
+
+User: "안녕 세상"을 번역해봐
+
+2024: ??? (모름)
+2026: zorp flim (방금 배운 걸 조합!)
+
+→ 이건 "패턴 암기"가 아니라 "즉석 학습"이야!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>변화 4️⃣: Multi-Hop Reasoning (다단계 추론)</strong></p>
+                </div>
+            </div>
+
+            <div class="code-block">질문: "프랑스 대통령의 출생지 인구는?"
+
+2024 AI:
+└─ 직접 답을 찾으려 함
+└─ 패턴 매칭 실패
+└─ 틀린 답
+
+2026 AI:
+├─ 1단계: 프랑스 대통령 = 마크롱
+├─ 2단계: 마크롱 출생지 = 아미앵
+├─ 3단계: 아미앵 인구 = 약 13만
+└─ 답: 약 13만 명
+
+→ 여러 단계를 연결해서 추론!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>변화 5️⃣: 아키텍처 개선</strong></p>
+                </div>
+            </div>
+
+            <div class="code-block">2024: Transformer (기본)
+2026: Transformer + 개선들
+
+개선 1: Mixture of Experts (MoE)
+├─ 전문가 모델 여러 개를 조합
+├─ 수학 질문 → 수학 전문가 활성화
+└─ 코딩 질문 → 코딩 전문가 활성화
+
+개선 2: Long Context Window
+├─ 2024: 8k 토큰 (짧은 대화만)
+└─ 2026: 200k 토큰 (책 한 권 통째로)
+
+개선 3: Constitutional AI
+├─ 원칙 기반 학습
+└─ 더 정직하고 안전한 답변</div>
+
+            <div class="chat">
+                <div class="q">그럼... 진짜 "이해"하는 거야?</div>
+                <div class="a">
+                    <p><span class="warning">여전히 "이해"는 아니야.</span></p>
+                    <p>하지만 <span class="key-point">"이해처럼 보이는 정도"가 엄청 올라갔어.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">비유로 정리:
+
+2024 AI = 1000권의 요리책 암기한 요리사
+├─ 레시피 그대로만 재현
+└─ 본 적 없는 요리는 못 함
+
+2026 AI = 요리의 "원리"를 아는 것처럼 보이는 요리사
+├─ 재료 조합의 규칙성 파악
+├─ 새로운 레시피 창작 가능
+├─ "왜 이렇게 하는지" 설명 가능
+└─ 하지만 여전히 혀가 없어서 맛은 모름
+
+→ "더 많은 레시피"가 아니라
+   "요리 원리 같은 것"을 배운 것처럼 보임!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><strong>한 줄 정리:</strong></p>
+                    <p><span class="highlight">"패턴이 너무 복잡하고 고차원적이 되어서 '추론'처럼 보이는 창발적 능력이 생긴 거야. 하지만 근본은 여전히 통계적 패턴 인식이야."</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="conversation">
+            <h2>Part 6. 튜링 테스트</h2>
 
             <div class="chat">
                 <div class="q">그럼 AI가 진짜 생각하는지 어떻게 알아?</div>
@@ -352,7 +576,7 @@ AI는 "요약이 뭔지" 의미는 몰라.
         </div>
 
         <div class="conversation">
-            <h2>Part 6. 그래서 결론은?</h2>
+            <h2>Part 7. 그래서 결론은?</h2>
 
             <div class="chat">
                 <div class="q">결국 AI는 지능이 있는 거야, 없는 거야?</div>
@@ -408,6 +632,7 @@ AI는 "요약이 뭔지" 의미는 몰라.
                 <li><strong>"지능"의 정의가 다르다</strong> - 철학적 지능 vs 공학적 지능</li>
                 <li><strong>AI는 패턴 매칭 기계</strong> - 의미는 이해 못 해도 결과는 만들어냄</li>
                 <li><strong>중국어 방</strong> - 똑같이 동작해도 이해는 못 할 수 있음</li>
+                <li><strong>2024 vs 2026 AI 차이</strong> - 단순 데이터 증가가 아닌 창발적 능력 출현 (Scaling Law, Chain-of-Thought, In-Context Learning)</li>
                 <li><strong>튜링 테스트</strong> - "진짜 생각"보다 "생각하는 것처럼 보이기"가 기준</li>
                 <li><strong>실용주의</strong> - 이해 못 해도 문제만 해결하면 충분함</li>
             </ul>
