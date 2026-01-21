@@ -193,187 +193,415 @@ df/dx  또는  f'(x)
             </div>
         </div>
 
-        <!-- Part 2: AI에서 왜 필요 -->
+        <!-- Part 2: AI 학습이 뭔가 -->
         <div class="conversation">
-            <h2>Part 2. AI 학습에 왜 필요해?</h2>
+            <h2>Part 2. AI가 "학습한다"는 게 뭐야?</h2>
 
             <div class="chat">
-                <div class="q">AI 학습이랑 기울기가 무슨 상관이야?</div>
+                <div class="q">AI가 학습한다는 게 구체적으로 뭘 하는 거야?</div>
                 <div class="a">
-                    <p><span class="key-point">AI 학습 = 오차를 줄이는 방향 찾기</span></p>
-                    <p>미분이 그 방향을 알려줘.</p>
+                    <p><span class="key-point">숫자를 조정하는 거야.</span></p>
+                    <p>AI 안에는 수백만 개의 <strong>숫자(가중치)</strong>가 있어.</p>
+                    <p>이 숫자들을 조금씩 바꿔가면서 <strong>정답에 가까워지도록</strong> 만드는 게 학습이야.</p>
                 </div>
             </div>
 
-            <div class="code-block">AI 학습 과정:
+            <div class="code-block">비유로 이해하기:
 
-1. 예측 만들기
-   예측: 5
-   정답: 10
-   오차: (10-5)² = 25
+자전거 타기 배우기:
+• 핸들을 왼쪽으로 5도? 10도? 15도?
+• 몸을 얼마나 기울여야 해?
+→ 넘어지면서 "아, 너무 많이 틀었구나" 배움
+→ 각도를 조금씩 조정
 
-2. 오차를 줄이려면?
-   → 가중치를 어느 방향으로 조정해야 할까?
-   → 미분으로 알아냄!
+AI 학습:
+• 가중치 w1 = 0.5? 0.7? 1.2?
+• 가중치 w2는 얼마?
+→ 틀리면 "아, 이 숫자가 잘못됐구나" 배움
+→ 숫자를 조금씩 조정</div>
 
-3. 미분 계산
-   오차 함수: L = (예측 - 정답)²
+            <div class="chat">
+                <div class="q">그럼 가중치가 정확히 뭐야?</div>
+                <div class="a">
+                    <p>간단한 예를 봐.</p>
+                </div>
+            </div>
+        </div>
 
-   미분: dL/dw
-   → w를 증가시키면 오차가 증가하나 감소하나?
+        <!-- Part 3: 가중치가 뭔가 -->
+        <div class="conversation">
+            <h2>Part 3. 가중치가 뭔데?</h2>
 
-   - 양수: w 증가 → 오차 증가 (w를 줄여야 함)
-   - 음수: w 증가 → 오차 감소 (w를 늘려야 함)
+            <div class="chat">
+                <div class="q">가중치가 뭔지 예를 들어줘</div>
+                <div class="a">
+                    <p>집값을 예측하는 AI를 만든다고 해봐.</p>
+                </div>
+            </div>
 
-4. 가중치 업데이트
-   w_new = w_old - 학습률 × (dL/dw)
+            <div class="code-block">집값 예측:
 
-   → 미분값의 반대 방향으로 이동!</div>
+입력: 집 크기 (평수)
+출력: 집값 (억원)
+
+가장 단순한 공식:
+집값 = w × 평수 + b
+
+w = 가중치 (평당 가격)
+b = 편향 (기본 가격)
+
+
+예시:
+• 30평 집의 실제 가격: 10억
+• 현재 w=0.2, b=2
+
+예측 = 0.2 × 30 + 2 = 8억
+→ 틀렸네! (실제는 10억)
+
+w를 어떻게 조정해야 10억에 가까워질까?
+→ 이걸 알아내는 게 미분의 역할!</div>
 
             <div class="chat">
                 <div class="a">
                     <p>이해됐어?</p>
-                    <p><span class="highlight">미분 = 개선 방향의 나침반</span></p>
+                    <p><span class="highlight">가중치 = AI가 조정해야 하는 숫자들</span></p>
+                    <p>학습 = 이 숫자들을 정답에 가까워지도록 바꾸는 과정</p>
                 </div>
             </div>
         </div>
 
-        <!-- Part 3: 편미분 -->
+        <!-- Part 4: 오차 함수 -->
         <div class="conversation">
-            <h2>Part 3. 편미분은 뭐야?</h2>
+            <h2>Part 4. 오차를 어떻게 측정해?</h2>
+
+            <div class="chat">
+                <div class="q">"틀렸다"는 걸 어떻게 숫자로 나타내?</div>
+                <div class="a">
+                    <p><span class="key-point">오차 함수(Loss Function)</span>를 써.</p>
+                    <p>예측과 정답의 차이를 숫자로 나타내는 공식이야.</p>
+                </div>
+            </div>
+
+            <div class="code-block">가장 흔한 오차 함수:
+
+평균제곱오차 (Mean Squared Error):
+L = (예측 - 정답)²
+
+왜 제곱?
+→ 음수 방지 (오차는 항상 양수여야 함)
+→ 큰 오차에 더 큰 패널티
+
+
+예시:
+예측 = 8억
+정답 = 10억
+오차 = (8 - 10)² = (-2)² = 4
+
+예측 = 9억
+정답 = 10억
+오차 = (9 - 10)² = (-1)² = 1
+
+→ 오차가 작을수록 좋음!</div>
+
+            <div class="chat">
+                <div class="q">그래서 이 오차를 어떻게 줄이는데?</div>
+                <div class="a">
+                    <p>여기서 <strong>미분</strong>이 등장해!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 5: 미분이 방향을 알려주는 이유 -->
+        <div class="conversation">
+            <h2>Part 5. 왜 미분이 "개선 방향"을 알려줘?</h2>
+
+            <div class="chat">
+                <div class="q">미분은 기울기잖아. 그게 왜 방향이 돼?</div>
+                <div class="a">
+                    <p><span class="highlight">언덕을 내려가는 상상을 해봐.</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">언덕 내려가기 비유:
+
+상황:
+• 안개가 자욱해서 주변이 안 보임
+• 가장 낮은 곳(골짜기)로 가야 함
+• 발밑의 경사(기울기)만 느낄 수 있음
+
+전략:
+1. 발로 경사를 느낌 (미분!)
+2. 경사가 왼쪽으로 내려가면 → 왼쪽으로 이동
+3. 경사가 오른쪽으로 내려가면 → 오른쪽으로 이동
+4. 반복하면 결국 골짜기에 도착
+
+→ 경사(미분)가 내려갈 방향을 알려줌!
+
+
+AI 학습:
+• 오차 함수 = 언덕
+• 가중치 = 현재 위치
+• 목표 = 오차가 가장 낮은 곳 (골짜기)
+• 미분 = 경사 (어느 방향으로 가야 오차가 줄어들까?)
+
+→ 미분의 반대 방향으로 가면 오차가 줄어듦!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p>이해됐어?</p>
+                    <p><span class="key-point">미분 = 오차가 증가하는 방향</span></p>
+                    <p><span class="key-point">미분의 반대 = 오차가 감소하는 방향</span></p>
+                </div>
+            </div>
+
+            <div class="chat">
+                <div class="q">구체적인 숫자로 보면 어떻게 돼?</div>
+                <div class="a">
+                    <p>아까 집값 예시로 봐보자.</p>
+                </div>
+            </div>
+
+            <div class="code-block">구체적 계산:
+
+집값 = w × 평수 + b
+데이터: 평수=30, 실제 집값=10억
+현재: w=0.2, b=2
+
+1. 예측 계산
+   예측 = 0.2 × 30 + 2 = 8억
+
+2. 오차 계산
+   L = (예측 - 정답)²
+     = (8 - 10)²
+     = 4
+
+3. 미분 계산
+   dL/dw = 2(예측 - 정답) × 평수
+         = 2(8 - 10) × 30
+         = 2×(-2)×30 = -120
+
+   음수네! 이게 뭘 의미해?
+   → w를 증가시키면 오차가 감소한다!
+   → w를 늘려야 해!
+
+4. 가중치 업데이트
+   w_new = w - 학습률 × (dL/dw)
+         = 0.2 - 0.01 × (-120)
+         = 0.2 + 1.2 = 1.4
+
+5. 새 예측
+   예측 = 1.4 × 30 + 2 = 44억
+
+   어? 너무 커졌네? (과교정)
+   → 학습률을 더 작게 조정해야 함
+   → 이게 현실적인 학습 과정!</div>
+
+            <div class="chat">
+                <div class="a">
+                    <p><span class="highlight">핵심: 미분이 + 면 w를 줄이고, - 면 w를 늘린다</span></p>
+                    <p>이게 "경사를 따라 내려가는" 거야.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 6: 가중치가 여러 개면? -->
+        <div class="conversation">
+            <h2>Part 6. 가중치가 여러 개면 어떻게 해?</h2>
+
+            <div class="chat">
+                <div class="q">아까는 가중치가 w 하나였잖아. 실제로는 여러 개인데?</div>
+                <div class="a">
+                    <p>맞아. 아까 집값 예시에도 w랑 b 두 개가 있었지.</p>
+                    <p>이럴 때는 <span class="key-point">각각 따로 미분</span>해야 해.</p>
+                </div>
+            </div>
+
+            <div class="code-block">2개 가중치 예시:
+
+집값 = w × 평수 + b
+
+w와 b를 둘 다 조정해야 함
+
+오차 함수: L = (w × 평수 + b - 실제가격)²
+
+이제 두 가지를 계산해야 해:
+1. ∂L/∂w (w를 어떻게 조정?)
+2. ∂L/∂b (b를 어떻게 조정?)
+
+
+구체적 계산:
+데이터: 평수=30, 실제=10억
+현재: w=0.2, b=2
+예측 = 0.2×30 + 2 = 8억
+오차 = (8-10)² = 4
+
+∂L/∂w = 2(예측 - 정답) × 평수
+      = 2(8 - 10) × 30 = -120
+
+∂L/∂b = 2(예측 - 정답) × 1
+      = 2(8 - 10) = -4
+
+
+업데이트 (학습률 0.001):
+w_new = 0.2 - 0.001×(-120) = 0.2 + 0.12 = 0.32
+b_new = 2 - 0.001×(-4) = 2 + 0.004 = 2.004
+
+새 예측 = 0.32×30 + 2.004 = 11.6억
+→ 조금 개선됐네!</div>
+
+            <div class="chat">
+                <div class="q">이게 편미분이야?</div>
+                <div class="a">
+                    <p>맞아. <span class="highlight">편미분 = 여러 변수 중 하나만 미분</span></p>
+                    <p>∂L/∂w 계산할 때는 b를 상수로 취급</p>
+                    <p>∂L/∂b 계산할 때는 w를 상수로 취급</p>
+                </div>
+            </div>
 
             <div class="chat">
                 <div class="q">뉴럴 네트워크는 가중치가 수백만 개인데?</div>
                 <div class="a">
-                    <p><span class="key-point">편미분(Partial Derivative)</span>을 써.</p>
-                    <p>하나씩 미분하는 거야.</p>
+                    <p>원리는 똑같아. 각각 따로 편미분하면 돼.</p>
                 </div>
             </div>
 
-            <div class="code-block">편미분:
+            <div class="code-block">수백만 개 가중치:
 
-함수: f(x, y) = x² + 3xy + y²
-
-x로 편미분 (y는 상수 취급):
-∂f/∂x = 2x + 3y
-
-y로 편미분 (x는 상수 취급):
-∂f/∂y = 3x + 2y
-
-
-AI에서:
-손실함수 L(w1, w2, w3, ..., w1000000)
+손실함수: L(w1, w2, w3, ..., w1000000)
 
 각 가중치로 편미분:
 ∂L/∂w1  → w1 조정 방향
 ∂L/∂w2  → w2 조정 방향
+∂L/∂w3  → w3 조정 방향
 ...
 ∂L/∂w1000000 → w1000000 조정 방향
 
-→ 모든 가중치를 동시에 업데이트!</div>
+모두 동시에 업데이트:
+w1_new = w1 - 학습률 × ∂L/∂w1
+w2_new = w2 - 학습률 × ∂L/∂w2
+...
+
+
+이 모든 편미분을 모은 게 "경사도(Gradient)":
+∇L = [∂L/∂w1, ∂L/∂w2, ..., ∂L/∂w1000000]
+
+→ 이게 DirectX에서 쓰던 벡터랑 똑같은 개념!</div>
 
             <div class="chat">
                 <div class="a">
-                    <p><strong>경사도(Gradient)</strong>는 모든 편미분을 모은 벡터야.</p>
-                    <p>∇L = [∂L/∂w1, ∂L/∂w2, ..., ∂L/∂wn]</p>
+                    <p><span class="highlight">경사도 = 각 가중치별 개선 방향을 담은 벡터</span></p>
+                    <p>게임에서 물체의 위치를 (x, y, z) 벡터로 표현하는 것처럼,</p>
+                    <p>AI에서는 개선 방향을 (∂L/∂w1, ∂L/∂w2, ...) 벡터로 표현해.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Part 4: 체인룰 -->
+        <!-- Part 7: 층이 여러 개면? -->
         <div class="conversation">
-            <h2>Part 4. 역전파는 뭐야?</h2>
+            <h2>Part 7. 딥러닝은 층이 여러 개인데?</h2>
 
             <div class="chat">
-                <div class="q">딥러닝은 층이 여러 개인데 어떻게 미분해?</div>
+                <div class="q">뉴럴 네트워크는 층이 여러 개잖아. 어떻게 미분해?</div>
                 <div class="a">
-                    <p><span class="key-point">체인룰(Chain Rule)</span>을 써.</p>
-                    <p>연쇄적으로 미분하는 거야.</p>
+                    <p>좋은 질문. 먼저 간단한 예를 봐.</p>
                 </div>
             </div>
 
-            <div class="code-block">체인룰:
+            <div class="code-block">합성함수 미분 (체인룰):
 
-y = f(g(x))
+간단한 예:
+y = (x + 2)³
 
-dy/dx = (df/dg) × (dg/dx)
-
-→ 바깥 미분 × 안쪽 미분
+x=1일 때, dy/dx는?
 
 
-뉴럴 네트워크:
+방법 1: 전개해서 미분 (복잡함)
+y = x³ + 6x² + 12x + 8
+dy/dx = 3x² + 12x + 12 = 27
 
-입력 → 층1 → 층2 → 층3 → 출력 → 손실
 
-손실 L을 첫 번째 층 가중치 w1로 미분:
+방법 2: 체인룰 (간단함)
+안쪽 함수: u = x + 2
+바깥 함수: y = u³
 
-dL/dw1 = (dL/d출력) × (d출력/d층3) × (d층3/d층2)
-         × (d층2/d층1) × (d층1/dw1)
+dy/dx = (dy/du) × (du/dx)
+      = 3u² × 1
+      = 3(x+2)²
+      = 3(3)² = 27
 
-→ 뒤에서부터 앞으로 미분 전파
+→ 체인룰이 훨씬 쉽지?</div>
+
+            <div class="chat">
+                <div class="q">이게 딥러닝이랑 무슨 상관이야?</div>
+                <div class="a">
+                    <p><span class="highlight">딥러닝도 합성함수야!</span></p>
+                </div>
+            </div>
+
+            <div class="code-block">딥러닝의 구조:
+
+입력(x) → [층1] → [층2] → [층3] → 출력 → 손실(L)
+
+각 층은 함수:
+층1: h1 = f1(w1 × x)
+층2: h2 = f2(w2 × h1)
+층3: h3 = f3(w3 × h2)
+손실: L = (h3 - 정답)²
+
+→ L은 w1, w2, w3의 합성함수!
+
+
+첫 번째 층 가중치 w1을 조정하려면?
+→ dL/dw1을 계산해야 함
+
+하지만 L은 w1에 직접 연결되지 않음:
+w1 → 층1 → 층2 → 층3 → L
+
+체인룰 적용:
+dL/dw1 = (dL/d층3) × (d층3/d층2) × (d층2/d층1) × (d층1/dw1)
+
+→ 뒤에서부터 앞으로 차례대로 곱함
 → 이게 "역전파(Backpropagation)"!</div>
 
             <div class="chat">
                 <div class="a">
-                    <p><span class="highlight">역전파 = 체인룰로 모든 층의 기울기 계산</span></p>
-                    <p>이게 딥러닝 학습의 핵심이야.</p>
+                    <p>이해됐어?</p>
+                    <p><span class="key-point">역전파 = 체인룰로 여러 층을 거슬러 올라가며 미분</span></p>
+                    <p>마치 도미노를 거꾸로 밀듯이, 출력 층부터 입력 층까지 기울기를 전달해.</p>
                 </div>
             </div>
-        </div>
-
-        <!-- Part 5: 실제 예시 -->
-        <div class="conversation">
-            <h2>Part 5. 간단한 예시</h2>
 
             <div class="chat">
-                <div class="q">구체적인 예를 보여줄래?</div>
+                <div class="q">왜 역(backward)이야? 앞(forward)으로 가면 안 돼?</div>
                 <div class="a">
-                    <p>가장 간단한 선형 회귀로 볼게:</p>
+                    <p>순전파(Forward)는 이미 했어!</p>
                 </div>
             </div>
 
-            <div class="code-block">선형 회귀:
+            <div class="code-block">순전파 vs 역전파:
 
-예측 함수: y = w × x + b
-손실 함수: L = (예측 - 정답)² = (wx + b - y_true)²
+순전파 (Forward Propagation):
+입력 → 층1 → 층2 → 층3 → 출력 → 손실
+→ "예측을 만드는 과정"
+→ 데이터를 앞으로 흘려보냄
 
-데이터: x=2, y_true=7
-현재: w=1, b=1
-예측: 1×2 + 1 = 3
-오차: (3-7)² = 16
-
-
-미분:
-∂L/∂w = 2(wx + b - y_true) × x
-       = 2(3 - 7) × 2
-       = 2×(-4)×2 = -16
-
-∂L/∂b = 2(wx + b - y_true) × 1
-       = 2(3 - 7)
-       = -8
+역전파 (Backward Propagation):
+손실 ← 층3 ← 층2 ← 층1 ← 입력
+→ "기울기를 계산하는 과정"
+→ 미분값을 뒤로 흘려보냄
 
 
-업데이트 (학습률 0.01):
-w_new = w - 0.01 × (-16) = 1 + 0.16 = 1.16
-b_new = b - 0.01 × (-8) = 1 + 0.08 = 1.08
-
-
-새 예측: 1.16×2 + 1.08 = 3.4
-새 오차: (3.4-7)² = 12.96
-
-→ 오차가 16에서 12.96으로 감소!</div>
-
-            <div class="chat">
-                <div class="a">
-                    <p>이 과정을 수천 번 반복하면</p>
-                    <p><span class="key-point">오차가 0에 가까워지고 정확한 예측을 하게 돼.</span></p>
-                </div>
-            </div>
+학습 = 순전파 + 역전파 반복:
+1. 순전파로 예측 계산
+2. 손실 계산
+3. 역전파로 기울기 계산
+4. 가중치 업데이트
+5. 반복...</div>
         </div>
 
-        <!-- Part 6: 코드 -->
+        <!-- Part 8: 코드 -->
         <div class="conversation">
-            <h2>Part 6. 파이썬에서는?</h2>
+            <h2>Part 8. 파이썬에서는?</h2>
 
             <div class="chat">
                 <div class="q">직접 미분을 계산해야 해?</div>
@@ -425,14 +653,15 @@ print(f"새 b: {b.item()}")  # 1.08</div>
 
         <!-- 핵심 정리 -->
         <div class="summary-box">
-            <h3>핵심 정리</h3>
+            <h3>📌 핵심 정리</h3>
             <ul>
-                <li><strong>미분 = 변화율 = 기울기</strong> - 얼마나 빠르게 변하는가</li>
-                <li><strong>AI 학습의 핵심</strong> - 오차를 줄일 방향을 알려줌</li>
-                <li><strong>편미분으로 다변수 처리</strong> - 가중치별로 하나씩 미분</li>
-                <li><strong>체인룰 = 역전파</strong> - 여러 층을 연쇄적으로 미분</li>
-                <li><strong>경사도(Gradient)</strong> - 모든 편미분을 모은 벡터</li>
-                <li><strong>자동 미분</strong> - PyTorch/TensorFlow가 알아서 계산</li>
+                <li><strong>AI 학습 = 가중치 조정</strong> - 수백만 개의 숫자를 조금씩 바꿔가며 정답에 가까워짐</li>
+                <li><strong>가중치</strong> - AI가 배워야 하는 숫자들 (예: 집값 = w × 평수 + b)</li>
+                <li><strong>오차 함수</strong> - 예측과 정답의 차이를 측정 (예: L = (예측-정답)²)</li>
+                <li><strong>미분 = 개선 방향</strong> - 언덕의 경사처럼, 어느 방향으로 가야 오차가 줄어드는지 알려줌</li>
+                <li><strong>편미분</strong> - 가중치가 여러 개일 때 각각 따로 미분 (경사도 = 모든 편미분을 모은 벡터)</li>
+                <li><strong>역전파</strong> - 체인룰로 여러 층을 거슬러 올라가며 기울기 계산</li>
+                <li><strong>자동 미분</strong> - PyTorch/TensorFlow가 loss.backward() 한 줄로 모든 미분 자동 계산</li>
             </ul>
         </div>
 
